@@ -1,7 +1,7 @@
 # Cas Parser Python API library
 
 <!-- prettier-ignore -->
-[![PyPI version](https://img.shields.io/pypi/v/cas_parser.svg?label=pypi%20(stable))](https://pypi.org/project/cas_parser/)
+[![PyPI version](https://img.shields.io/pypi/v/cas-parser-python.svg?label=pypi%20(stable))](https://pypi.org/project/cas-parser-python/)
 
 The Cas Parser Python library provides convenient access to the Cas Parser REST API from any Python 3.8+
 application. The library includes type definitions for all request params and response fields,
@@ -17,7 +17,7 @@ The REST API documentation can be found on [docs.casparser.in](https://docs.casp
 
 ```sh
 # install from PyPI
-pip install cas_parser
+pip install cas-parser-python
 ```
 
 ## Usage
@@ -79,7 +79,7 @@ You can enable this by installing `aiohttp`:
 
 ```sh
 # install from PyPI
-pip install cas_parser[aiohttp]
+pip install cas-parser-python[aiohttp]
 ```
 
 Then you can enable it by instantiating the client with `http_client=DefaultAioHttpClient()`:
