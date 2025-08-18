@@ -16,8 +16,8 @@ The REST API documentation can be found on [docs.casparser.in](https://docs.casp
 ## Installation
 
 ```sh
-# install from this staging repo
-pip install git+ssh://git@github.com/stainless-sdks/cas-parser-python.git
+# install from the production repo
+pip install git+ssh://git@github.com/CASParser/cas-parser-python.git
 ```
 
 > [!NOTE]
@@ -79,8 +79,8 @@ By default, the async client uses `httpx` for HTTP requests. However, for improv
 You can enable this by installing `aiohttp`:
 
 ```sh
-# install from this staging repo
-pip install 'cas_parser[aiohttp] @ git+ssh://git@github.com/stainless-sdks/cas-parser-python.git'
+# install from the production repo
+pip install 'cas_parser[aiohttp] @ git+ssh://git@github.com/CASParser/cas-parser-python.git'
 ```
 
 Then you can enable it by instantiating the client with `http_client=DefaultAioHttpClient()`:
@@ -242,9 +242,9 @@ cas_parser = response.parse()  # get the object that `cas_parser.cams_kfintech()
 print(cas_parser.demat_accounts)
 ```
 
-These methods return an [`APIResponse`](https://github.com/stainless-sdks/cas-parser-python/tree/main/src/cas_parser/_response.py) object.
+These methods return an [`APIResponse`](https://github.com/CASParser/cas-parser-python/tree/main/src/cas_parser/_response.py) object.
 
-The async client returns an [`AsyncAPIResponse`](https://github.com/stainless-sdks/cas-parser-python/tree/main/src/cas_parser/_response.py) with the same structure, the only difference being `await`able methods for reading the response content.
+The async client returns an [`AsyncAPIResponse`](https://github.com/CASParser/cas-parser-python/tree/main/src/cas_parser/_response.py) with the same structure, the only difference being `await`able methods for reading the response content.
 
 #### `.with_streaming_response`
 
@@ -348,7 +348,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/cas-parser-python/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/CASParser/cas-parser-python/issues) with questions, bugs, or suggestions.
 
 ### Determining the installed version
 
