@@ -1,5 +1,5 @@
 [project]
-name = "cas_parser"
+name = "cas-parser-python"
 version = "1.0.0"
 description = "The official Python library for the CAS Parser API"
 dynamic = ["readme"]
