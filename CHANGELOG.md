@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.2 (2025-08-27)
+
+Full Changelog: [v1.0.1...v1.0.2](https://github.com/CASParser/cas-parser-python/compare/v1.0.1...v1.0.2)
+
+### Bug Fixes
+
+* avoid newer type syntax ([2ad1ea6](https://github.com/CASParser/cas-parser-python/commit/2ad1ea633d5c9d69de09045f97968aa961ccc6f3))
+
+
+### Chores
+
+* **internal:** change ci workflow machines ([f38494c](https://github.com/CASParser/cas-parser-python/commit/f38494c9f9f0df5069d8dd1ff23728a47f0e934c))
+* **internal:** update pyright exclude list ([d3f9237](https://github.com/CASParser/cas-parser-python/commit/d3f9237f030f0087d0f92741836aa8674d9b5287))
+* update github action ([83a551a](https://github.com/CASParser/cas-parser-python/commit/83a551a025d281efa4edaa89a9e4daed0f8aaa8e))
+
 ## 1.0.1 (2025-08-18)
 
 Full Changelog: [v1.0.0...v1.0.1](https://github.com/CASParser/cas-parser-python/compare/v1.0.0...v1.0.1)
