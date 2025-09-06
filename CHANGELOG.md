@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.1.0 (2025-09-06)
+
+Full Changelog: [v1.0.2...v1.1.0](https://github.com/CASParser/cas-parser-python/compare/v1.0.2...v1.1.0)
+
+### Features
+
+* improve future compat with pydantic v3 ([39d5f4a](https://github.com/CASParser/cas-parser-python/commit/39d5f4a6f631f01627f9e0ad3846431b2f36410d))
+* **types:** replace List[str] with SequenceNotStr in params ([ffdac79](https://github.com/CASParser/cas-parser-python/commit/ffdac79d2ac8394afc09f540c6b89c01675946d9))
+
+
+### Chores
+
+* **internal:** add Sequence related utils ([cffd684](https://github.com/CASParser/cas-parser-python/commit/cffd6844655dfe7f52a1c85140dc4ab2a370e8f7))
+* **internal:** move mypy configurations to `pyproject.toml` file ([2f7e6bc](https://github.com/CASParser/cas-parser-python/commit/2f7e6bccf82f65c0b753a909654ba1ee7cc61157))
+* **tests:** simplify `get_platform` test ([7c54665](https://github.com/CASParser/cas-parser-python/commit/7c546655385360b8ba97e20e79fbdedb43af07d5))
+
 ## 1.0.2 (2025-08-27)
 
 Full Changelog: [v1.0.1...v1.0.2](https://github.com/CASParser/cas-parser-python/compare/v1.0.1...v1.0.2)
