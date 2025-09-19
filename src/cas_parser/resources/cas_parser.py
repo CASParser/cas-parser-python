@@ -12,7 +12,7 @@ from ..types import (
     cas_parser_smart_parse_params,
     cas_parser_cams_kfintech_params,
 )
-from .._types import NOT_GIVEN, Body, Query, Headers, NotGiven
+from .._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from .._utils import extract_files, maybe_transform, deepcopy_minimal, async_maybe_transform
 from .._compat import cached_property
 from .._resource import SyncAPIResource, AsyncAPIResource
@@ -51,15 +51,15 @@ class CasParserResource(SyncAPIResource):
     def cams_kfintech(
         self,
         *,
-        password: str | NotGiven = NOT_GIVEN,
-        pdf_file: str | NotGiven = NOT_GIVEN,
-        pdf_url: str | NotGiven = NOT_GIVEN,
+        password: str | Omit = omit,
+        pdf_file: str | Omit = omit,
+        pdf_url: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> UnifiedResponse:
         """
         This endpoint specifically parses CAMS/KFintech CAS (Consolidated Account
@@ -107,15 +107,15 @@ class CasParserResource(SyncAPIResource):
     def cdsl(
         self,
         *,
-        password: str | NotGiven = NOT_GIVEN,
-        pdf_file: str | NotGiven = NOT_GIVEN,
-        pdf_url: str | NotGiven = NOT_GIVEN,
+        password: str | Omit = omit,
+        pdf_file: str | Omit = omit,
+        pdf_url: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> UnifiedResponse:
         """
         This endpoint specifically parses CDSL CAS (Consolidated Account Statement) PDF
@@ -163,15 +163,15 @@ class CasParserResource(SyncAPIResource):
     def nsdl(
         self,
         *,
-        password: str | NotGiven = NOT_GIVEN,
-        pdf_file: str | NotGiven = NOT_GIVEN,
-        pdf_url: str | NotGiven = NOT_GIVEN,
+        password: str | Omit = omit,
+        pdf_file: str | Omit = omit,
+        pdf_url: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> UnifiedResponse:
         """
         This endpoint specifically parses NSDL CAS (Consolidated Account Statement) PDF
@@ -219,15 +219,15 @@ class CasParserResource(SyncAPIResource):
     def smart_parse(
         self,
         *,
-        password: str | NotGiven = NOT_GIVEN,
-        pdf_file: str | NotGiven = NOT_GIVEN,
-        pdf_url: str | NotGiven = NOT_GIVEN,
+        password: str | Omit = omit,
+        pdf_file: str | Omit = omit,
+        pdf_url: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> UnifiedResponse:
         """
         This endpoint parses CAS (Consolidated Account Statement) PDF files from NSDL,
@@ -297,15 +297,15 @@ class AsyncCasParserResource(AsyncAPIResource):
     async def cams_kfintech(
         self,
         *,
-        password: str | NotGiven = NOT_GIVEN,
-        pdf_file: str | NotGiven = NOT_GIVEN,
-        pdf_url: str | NotGiven = NOT_GIVEN,
+        password: str | Omit = omit,
+        pdf_file: str | Omit = omit,
+        pdf_url: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> UnifiedResponse:
         """
         This endpoint specifically parses CAMS/KFintech CAS (Consolidated Account
@@ -353,15 +353,15 @@ class AsyncCasParserResource(AsyncAPIResource):
     async def cdsl(
         self,
         *,
-        password: str | NotGiven = NOT_GIVEN,
-        pdf_file: str | NotGiven = NOT_GIVEN,
-        pdf_url: str | NotGiven = NOT_GIVEN,
+        password: str | Omit = omit,
+        pdf_file: str | Omit = omit,
+        pdf_url: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> UnifiedResponse:
         """
         This endpoint specifically parses CDSL CAS (Consolidated Account Statement) PDF
@@ -409,15 +409,15 @@ class AsyncCasParserResource(AsyncAPIResource):
     async def nsdl(
         self,
         *,
-        password: str | NotGiven = NOT_GIVEN,
-        pdf_file: str | NotGiven = NOT_GIVEN,
-        pdf_url: str | NotGiven = NOT_GIVEN,
+        password: str | Omit = omit,
+        pdf_file: str | Omit = omit,
+        pdf_url: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> UnifiedResponse:
         """
         This endpoint specifically parses NSDL CAS (Consolidated Account Statement) PDF
@@ -465,15 +465,15 @@ class AsyncCasParserResource(AsyncAPIResource):
     async def smart_parse(
         self,
         *,
-        password: str | NotGiven = NOT_GIVEN,
-        pdf_file: str | NotGiven = NOT_GIVEN,
-        pdf_url: str | NotGiven = NOT_GIVEN,
+        password: str | Omit = omit,
+        pdf_file: str | Omit = omit,
+        pdf_url: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> UnifiedResponse:
         """
         This endpoint parses CAS (Consolidated Account Statement) PDF files from NSDL,
