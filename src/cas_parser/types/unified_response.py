@@ -18,6 +18,7 @@ __all__ = [
     "DematAccountHoldingsDematMutualFund",
     "DematAccountHoldingsEquity",
     "DematAccountHoldingsGovernmentSecurity",
+    "DematAccountLinkedHolder",
     "Insurance",
     "InsuranceLifeInsurancePolicy",
     "Investor",
@@ -25,15 +26,21 @@ __all__ = [
     "MetaStatementPeriod",
     "MutualFund",
     "MutualFundAdditionalInfo",
+    "MutualFundLinkedHolder",
     "MutualFundScheme",
     "MutualFundSchemeAdditionalInfo",
     "MutualFundSchemeGain",
     "MutualFundSchemeTransaction",
+    "Np",
+    "NpFund",
+    "NpFundAdditionalInfo",
+    "NpLinkedHolder",
     "Summary",
     "SummaryAccounts",
     "SummaryAccountsDemat",
     "SummaryAccountsInsurance",
     "SummaryAccountsMutualFunds",
+    "SummaryAccountsNps",
 ]
 
 
@@ -160,6 +167,14 @@ class DematAccountHoldings(BaseModel):
     government_securities: Optional[List[DematAccountHoldingsGovernmentSecurity]] = None
 
 
+class DematAccountLinkedHolder(BaseModel):
+    name: Optional[str] = None
+    """Name of the account holder"""
+
+    pan: Optional[str] = None
+    """PAN of the account holder"""
+
+
 class DematAccount(BaseModel):
     additional_info: Optional[DematAccountAdditionalInfo] = None
     """Additional information specific to the demat account type"""
@@ -180,6 +195,9 @@ class DematAccount(BaseModel):
     """Depository Participant name"""
 
     holdings: Optional[DematAccountHoldings] = None
+
+    linked_holders: Optional[List[DematAccountLinkedHolder]] = None
+    """List of account holders linked to this demat account"""
 
     value: Optional[float] = None
     """Total value of the demat account"""
@@ -268,6 +286,14 @@ class MutualFundAdditionalInfo(BaseModel):
 
     pankyc: Optional[str] = None
     """PAN KYC status"""
+
+
+class MutualFundLinkedHolder(BaseModel):
+    name: Optional[str] = None
+    """Name of the account holder"""
+
+    pan: Optional[str] = None
+    """PAN of the account holder"""
 
 
 class MutualFundSchemeAdditionalInfo(BaseModel):
@@ -370,6 +396,9 @@ class MutualFund(BaseModel):
     folio_number: Optional[str] = None
     """Folio number"""
 
+    linked_holders: Optional[List[MutualFundLinkedHolder]] = None
+    """List of account holders linked to this mutual fund folio"""
+
     registrar: Optional[str] = None
     """Registrar and Transfer Agent name"""
 
@@ -377,6 +406,61 @@ class MutualFund(BaseModel):
 
     value: Optional[float] = None
     """Total value of the folio"""
+
+
+class NpFundAdditionalInfo(BaseModel):
+    manager: Optional[str] = None
+    """Fund manager name"""
+
+    tier: Optional[Literal[1, 2]] = None
+    """NPS tier (Tier I or Tier II)"""
+
+
+class NpFund(BaseModel):
+    additional_info: Optional[NpFundAdditionalInfo] = None
+    """Additional information specific to the NPS fund"""
+
+    cost: Optional[float] = None
+    """Cost of investment"""
+
+    name: Optional[str] = None
+    """Name of the NPS fund"""
+
+    nav: Optional[float] = None
+    """Net Asset Value per unit"""
+
+    units: Optional[float] = None
+    """Number of units held"""
+
+    value: Optional[float] = None
+    """Current market value of the holding"""
+
+
+class NpLinkedHolder(BaseModel):
+    name: Optional[str] = None
+    """Name of the account holder"""
+
+    pan: Optional[str] = None
+    """PAN of the account holder"""
+
+
+class Np(BaseModel):
+    additional_info: Optional[object] = None
+    """Additional information specific to the NPS account"""
+
+    cra: Optional[str] = None
+    """Central Record Keeping Agency name"""
+
+    funds: Optional[List[NpFund]] = None
+
+    linked_holders: Optional[List[NpLinkedHolder]] = None
+    """List of account holders linked to this NPS account"""
+
+    pran: Optional[str] = None
+    """Permanent Retirement Account Number (PRAN)"""
+
+    value: Optional[float] = None
+    """Total value of the NPS account"""
 
 
 class SummaryAccountsDemat(BaseModel):
@@ -403,12 +487,22 @@ class SummaryAccountsMutualFunds(BaseModel):
     """Total value of mutual funds"""
 
 
+class SummaryAccountsNps(BaseModel):
+    count: Optional[int] = None
+    """Number of NPS accounts"""
+
+    total_value: Optional[float] = None
+    """Total value of NPS accounts"""
+
+
 class SummaryAccounts(BaseModel):
     demat: Optional[SummaryAccountsDemat] = None
 
     insurance: Optional[SummaryAccountsInsurance] = None
 
     mutual_funds: Optional[SummaryAccountsMutualFunds] = None
+
+    nps: Optional[SummaryAccountsNps] = None
 
 
 class Summary(BaseModel):
@@ -428,5 +522,8 @@ class UnifiedResponse(BaseModel):
     meta: Optional[Meta] = None
 
     mutual_funds: Optional[List[MutualFund]] = None
+
+    nps: Optional[List[Np]] = None
+    """List of NPS accounts"""
 
     summary: Optional[Summary] = None
