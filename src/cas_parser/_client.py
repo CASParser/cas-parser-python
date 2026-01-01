@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Mapping
+from typing import TYPE_CHECKING, Any, Mapping
 from typing_extensions import Self, override
 
 import httpx
@@ -20,8 +20,8 @@ from ._types import (
     not_given,
 )
 from ._utils import is_given, get_async_library
+from ._compat import cached_property
 from ._version import __version__
-from .resources import cas_parser, cas_generator
 from ._streaming import Stream as Stream, AsyncStream as AsyncStream
 from ._exceptions import APIStatusError, CasParserError
 from ._base_client import (
@@ -29,6 +29,11 @@ from ._base_client import (
     SyncAPIClient,
     AsyncAPIClient,
 )
+
+if TYPE_CHECKING:
+    from .resources import cas_parser, cas_generator
+    from .resources.cas_parser import CasParserResource, AsyncCasParserResource
+    from .resources.cas_generator import CasGeneratorResource, AsyncCasGeneratorResource
 
 __all__ = [
     "Timeout",
@@ -43,11 +48,6 @@ __all__ = [
 
 
 class CasParser(SyncAPIClient):
-    cas_parser: cas_parser.CasParserResource
-    cas_generator: cas_generator.CasGeneratorResource
-    with_raw_response: CasParserWithRawResponse
-    with_streaming_response: CasParserWithStreamedResponse
-
     # client options
     api_key: str
 
@@ -102,10 +102,25 @@ class CasParser(SyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.cas_parser = cas_parser.CasParserResource(self)
-        self.cas_generator = cas_generator.CasGeneratorResource(self)
-        self.with_raw_response = CasParserWithRawResponse(self)
-        self.with_streaming_response = CasParserWithStreamedResponse(self)
+    @cached_property
+    def cas_parser(self) -> CasParserResource:
+        from .resources.cas_parser import CasParserResource
+
+        return CasParserResource(self)
+
+    @cached_property
+    def cas_generator(self) -> CasGeneratorResource:
+        from .resources.cas_generator import CasGeneratorResource
+
+        return CasGeneratorResource(self)
+
+    @cached_property
+    def with_raw_response(self) -> CasParserWithRawResponse:
+        return CasParserWithRawResponse(self)
+
+    @cached_property
+    def with_streaming_response(self) -> CasParserWithStreamedResponse:
+        return CasParserWithStreamedResponse(self)
 
     @property
     @override
@@ -213,11 +228,6 @@ class CasParser(SyncAPIClient):
 
 
 class AsyncCasParser(AsyncAPIClient):
-    cas_parser: cas_parser.AsyncCasParserResource
-    cas_generator: cas_generator.AsyncCasGeneratorResource
-    with_raw_response: AsyncCasParserWithRawResponse
-    with_streaming_response: AsyncCasParserWithStreamedResponse
-
     # client options
     api_key: str
 
@@ -272,10 +282,25 @@ class AsyncCasParser(AsyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
-        self.cas_parser = cas_parser.AsyncCasParserResource(self)
-        self.cas_generator = cas_generator.AsyncCasGeneratorResource(self)
-        self.with_raw_response = AsyncCasParserWithRawResponse(self)
-        self.with_streaming_response = AsyncCasParserWithStreamedResponse(self)
+    @cached_property
+    def cas_parser(self) -> AsyncCasParserResource:
+        from .resources.cas_parser import AsyncCasParserResource
+
+        return AsyncCasParserResource(self)
+
+    @cached_property
+    def cas_generator(self) -> AsyncCasGeneratorResource:
+        from .resources.cas_generator import AsyncCasGeneratorResource
+
+        return AsyncCasGeneratorResource(self)
+
+    @cached_property
+    def with_raw_response(self) -> AsyncCasParserWithRawResponse:
+        return AsyncCasParserWithRawResponse(self)
+
+    @cached_property
+    def with_streaming_response(self) -> AsyncCasParserWithStreamedResponse:
+        return AsyncCasParserWithStreamedResponse(self)
 
     @property
     @override
@@ -383,27 +408,79 @@ class AsyncCasParser(AsyncAPIClient):
 
 
 class CasParserWithRawResponse:
+    _client: CasParser
+
     def __init__(self, client: CasParser) -> None:
-        self.cas_parser = cas_parser.CasParserResourceWithRawResponse(client.cas_parser)
-        self.cas_generator = cas_generator.CasGeneratorResourceWithRawResponse(client.cas_generator)
+        self._client = client
+
+    @cached_property
+    def cas_parser(self) -> cas_parser.CasParserResourceWithRawResponse:
+        from .resources.cas_parser import CasParserResourceWithRawResponse
+
+        return CasParserResourceWithRawResponse(self._client.cas_parser)
+
+    @cached_property
+    def cas_generator(self) -> cas_generator.CasGeneratorResourceWithRawResponse:
+        from .resources.cas_generator import CasGeneratorResourceWithRawResponse
+
+        return CasGeneratorResourceWithRawResponse(self._client.cas_generator)
 
 
 class AsyncCasParserWithRawResponse:
+    _client: AsyncCasParser
+
     def __init__(self, client: AsyncCasParser) -> None:
-        self.cas_parser = cas_parser.AsyncCasParserResourceWithRawResponse(client.cas_parser)
-        self.cas_generator = cas_generator.AsyncCasGeneratorResourceWithRawResponse(client.cas_generator)
+        self._client = client
+
+    @cached_property
+    def cas_parser(self) -> cas_parser.AsyncCasParserResourceWithRawResponse:
+        from .resources.cas_parser import AsyncCasParserResourceWithRawResponse
+
+        return AsyncCasParserResourceWithRawResponse(self._client.cas_parser)
+
+    @cached_property
+    def cas_generator(self) -> cas_generator.AsyncCasGeneratorResourceWithRawResponse:
+        from .resources.cas_generator import AsyncCasGeneratorResourceWithRawResponse
+
+        return AsyncCasGeneratorResourceWithRawResponse(self._client.cas_generator)
 
 
 class CasParserWithStreamedResponse:
+    _client: CasParser
+
     def __init__(self, client: CasParser) -> None:
-        self.cas_parser = cas_parser.CasParserResourceWithStreamingResponse(client.cas_parser)
-        self.cas_generator = cas_generator.CasGeneratorResourceWithStreamingResponse(client.cas_generator)
+        self._client = client
+
+    @cached_property
+    def cas_parser(self) -> cas_parser.CasParserResourceWithStreamingResponse:
+        from .resources.cas_parser import CasParserResourceWithStreamingResponse
+
+        return CasParserResourceWithStreamingResponse(self._client.cas_parser)
+
+    @cached_property
+    def cas_generator(self) -> cas_generator.CasGeneratorResourceWithStreamingResponse:
+        from .resources.cas_generator import CasGeneratorResourceWithStreamingResponse
+
+        return CasGeneratorResourceWithStreamingResponse(self._client.cas_generator)
 
 
 class AsyncCasParserWithStreamedResponse:
+    _client: AsyncCasParser
+
     def __init__(self, client: AsyncCasParser) -> None:
-        self.cas_parser = cas_parser.AsyncCasParserResourceWithStreamingResponse(client.cas_parser)
-        self.cas_generator = cas_generator.AsyncCasGeneratorResourceWithStreamingResponse(client.cas_generator)
+        self._client = client
+
+    @cached_property
+    def cas_parser(self) -> cas_parser.AsyncCasParserResourceWithStreamingResponse:
+        from .resources.cas_parser import AsyncCasParserResourceWithStreamingResponse
+
+        return AsyncCasParserResourceWithStreamingResponse(self._client.cas_parser)
+
+    @cached_property
+    def cas_generator(self) -> cas_generator.AsyncCasGeneratorResourceWithStreamingResponse:
+        from .resources.cas_generator import AsyncCasGeneratorResourceWithStreamingResponse
+
+        return AsyncCasGeneratorResourceWithStreamingResponse(self._client.cas_generator)
 
 
 Client = CasParser
