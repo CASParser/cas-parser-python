@@ -85,6 +85,7 @@ pip install cas-parser-python[aiohttp]
 Then you can enable it by instantiating the client with `http_client=DefaultAioHttpClient()`:
 
 ```python
+import os
 import asyncio
 from cas_parser import DefaultAioHttpClient
 from cas_parser import AsyncCasParser
@@ -92,7 +93,7 @@ from cas_parser import AsyncCasParser
 
 async def main() -> None:
     async with AsyncCasParser(
-        api_key="My API Key",
+        api_key=os.environ.get("CAS_PARSER_API_KEY"),  # This is the default and can be omitted
         http_client=DefaultAioHttpClient(),
     ) as client:
         unified_response = await client.cas_parser.smart_parse(
