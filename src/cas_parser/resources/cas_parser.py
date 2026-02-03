@@ -69,9 +69,9 @@ class CasParserResource(SyncAPIResource):
         Args:
           password: Password for the PDF file (if required)
 
-          pdf_file: Base64 encoded CAS PDF file
+          pdf_file: Base64 encoded CAS PDF file (required if pdf_url not provided)
 
-          pdf_url: URL to the CAS PDF file
+          pdf_url: URL to the CAS PDF file (required if pdf_file not provided)
 
           extra_headers: Send extra headers
 
@@ -125,9 +125,9 @@ class CasParserResource(SyncAPIResource):
         Args:
           password: Password for the PDF file (if required)
 
-          pdf_file: Base64 encoded CAS PDF file
+          pdf_file: Base64 encoded CAS PDF file (required if pdf_url not provided)
 
-          pdf_url: URL to the CAS PDF file
+          pdf_url: URL to the CAS PDF file (required if pdf_file not provided)
 
           extra_headers: Send extra headers
 
@@ -181,9 +181,9 @@ class CasParserResource(SyncAPIResource):
         Args:
           password: Password for the PDF file (if required)
 
-          pdf_file: Base64 encoded CAS PDF file
+          pdf_file: Base64 encoded CAS PDF file (required if pdf_url not provided)
 
-          pdf_url: URL to the CAS PDF file
+          pdf_url: URL to the CAS PDF file (required if pdf_file not provided)
 
           extra_headers: Send extra headers
 
@@ -238,9 +238,9 @@ class CasParserResource(SyncAPIResource):
         Args:
           password: Password for the PDF file (if required)
 
-          pdf_file: Base64 encoded CAS PDF file
+          pdf_file: Base64 encoded CAS PDF file (required if pdf_url not provided)
 
-          pdf_url: URL to the CAS PDF file
+          pdf_url: URL to the CAS PDF file (required if pdf_file not provided)
 
           extra_headers: Send extra headers
 
@@ -315,9 +315,9 @@ class AsyncCasParserResource(AsyncAPIResource):
         Args:
           password: Password for the PDF file (if required)
 
-          pdf_file: Base64 encoded CAS PDF file
+          pdf_file: Base64 encoded CAS PDF file (required if pdf_url not provided)
 
-          pdf_url: URL to the CAS PDF file
+          pdf_url: URL to the CAS PDF file (required if pdf_file not provided)
 
           extra_headers: Send extra headers
 
@@ -371,9 +371,9 @@ class AsyncCasParserResource(AsyncAPIResource):
         Args:
           password: Password for the PDF file (if required)
 
-          pdf_file: Base64 encoded CAS PDF file
+          pdf_file: Base64 encoded CAS PDF file (required if pdf_url not provided)
 
-          pdf_url: URL to the CAS PDF file
+          pdf_url: URL to the CAS PDF file (required if pdf_file not provided)
 
           extra_headers: Send extra headers
 
@@ -427,9 +427,9 @@ class AsyncCasParserResource(AsyncAPIResource):
         Args:
           password: Password for the PDF file (if required)
 
-          pdf_file: Base64 encoded CAS PDF file
+          pdf_file: Base64 encoded CAS PDF file (required if pdf_url not provided)
 
-          pdf_url: URL to the CAS PDF file
+          pdf_url: URL to the CAS PDF file (required if pdf_file not provided)
 
           extra_headers: Send extra headers
 
@@ -484,9 +484,9 @@ class AsyncCasParserResource(AsyncAPIResource):
         Args:
           password: Password for the PDF file (if required)
 
-          pdf_file: Base64 encoded CAS PDF file
+          pdf_file: Base64 encoded CAS PDF file (required if pdf_url not provided)
 
-          pdf_url: URL to the CAS PDF file
+          pdf_url: URL to the CAS PDF file (required if pdf_file not provided)
 
           extra_headers: Send extra headers
 
