@@ -1,5 +1,36 @@
 # Changelog
 
+## 1.2.0 (2026-02-03)
+
+Full Changelog: [v1.1.0...v1.2.0](https://github.com/CASParser/cas-parser-python/compare/v1.1.0...v1.2.0)
+
+### Features
+
+* **api:** api update ([bce15d3](https://github.com/CASParser/cas-parser-python/commit/bce15d3f55a18db8d0c6447b6537fbdf831a5816))
+* **api:** api update ([c265056](https://github.com/CASParser/cas-parser-python/commit/c265056c6b8f5b346172d89e9da82315976dc44f))
+* **api:** api update ([93a9613](https://github.com/CASParser/cas-parser-python/commit/93a9613c79ec70869cf11dd0b9bac0a8c6194a31))
+* **api:** api update ([bd6977a](https://github.com/CASParser/cas-parser-python/commit/bd6977a8a78c4a1633e4e6a1dc1d3335b1aa6611))
+* **api:** api update ([3fda81d](https://github.com/CASParser/cas-parser-python/commit/3fda81deb938a9b689cbb04f839e3b815259a9c5))
+* **api:** api update ([f1838dc](https://github.com/CASParser/cas-parser-python/commit/f1838dcb901635626cc87cb55dfaa4ef33ba5092))
+
+
+### Bug Fixes
+
+* **client:** close streams without requiring full consumption ([7090ef5](https://github.com/CASParser/cas-parser-python/commit/7090ef51af296fa6d6be8af8137543ef2023cbd7))
+
+
+### Chores
+
+* bump `httpx-aiohttp` version to 0.1.9 ([e1b65fb](https://github.com/CASParser/cas-parser-python/commit/e1b65fb2bd146a68ef50438899406ae2fb6178c3))
+* do not install brew dependencies in ./scripts/bootstrap by default ([35b17eb](https://github.com/CASParser/cas-parser-python/commit/35b17eb26264ab66e24b074bcb1790f6c33b7b9c))
+* **internal/tests:** avoid race condition with implicit client cleanup ([2a58fc0](https://github.com/CASParser/cas-parser-python/commit/2a58fc0e260b52ee314ac6d14676b2140711bd0b))
+* **internal:** codegen related update ([8e6c5b2](https://github.com/CASParser/cas-parser-python/commit/8e6c5b210e14602af113fa9fef5c789d6238419a))
+* **internal:** codegen related update ([20bcea0](https://github.com/CASParser/cas-parser-python/commit/20bcea057ce1974149394c899581ed31ffb56a4a))
+* **internal:** detect missing future annotations with ruff ([8c35489](https://github.com/CASParser/cas-parser-python/commit/8c354893c00887af1da9c197dc21dd4d6f0033af))
+* **internal:** grammar fix (it's -&gt; its) ([d2d29bc](https://github.com/CASParser/cas-parser-python/commit/d2d29bcc46989573e27c2178785c6b38df65bd90))
+* **internal:** update pydantic dependency ([1c3104b](https://github.com/CASParser/cas-parser-python/commit/1c3104b27350f4c906973bb56f89d5a16f55d35e))
+* **types:** change optional parameter type from NotGiven to Omit ([e739e12](https://github.com/CASParser/cas-parser-python/commit/e739e12ade4f91e52f0285c866354e970195aacf))
+
 ## 1.1.0 (2025-09-06)
 
 Full Changelog: [v1.0.2...v1.1.0](https://github.com/CASParser/cas-parser-python/compare/v1.0.2...v1.1.0)
