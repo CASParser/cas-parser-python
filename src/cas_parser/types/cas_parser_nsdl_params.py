@@ -12,7 +12,7 @@ class CasParserNsdlParams(TypedDict, total=False):
     """Password for the PDF file (if required)"""
 
     pdf_file: str
-    """Base64 encoded CAS PDF file"""
+    """Base64 encoded CAS PDF file (required if pdf_url not provided)"""
 
     pdf_url: str
-    """URL to the CAS PDF file"""
+    """URL to the CAS PDF file (required if pdf_file not provided)"""
