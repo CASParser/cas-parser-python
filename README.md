@@ -20,7 +20,7 @@ Use the Cas Parser MCP Server to enable AI assistants to interact with this API,
 
 ## Documentation
 
-The full API of this library can be found in [api.md](api.md).
+The REST API documentation can be found on [docs.casparser.in](https://docs.casparser.in). The full API of this library can be found in [api.md](api.md).
 
 ## Installation
 
