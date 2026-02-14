@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Any, Mapping
-from typing_extensions import Self, override
+from typing import TYPE_CHECKING, Any, Dict, Mapping, cast
+from typing_extensions import Self, Literal, override
 
 import httpx
 
@@ -31,10 +31,33 @@ from ._base_client import (
 )
 
 if TYPE_CHECKING:
-    from .resources import cas_parser
-    from .resources.cas_parser import CasParserResource, AsyncCasParserResource
+    from .resources import (
+        cdsl,
+        logs,
+        nsdl,
+        inbox,
+        smart,
+        credits,
+        kfintech,
+        access_token,
+        verify_token,
+        cams_kfintech,
+        contract_note,
+    )
+    from .resources.logs import LogsResource, AsyncLogsResource
+    from .resources.nsdl import NsdlResource, AsyncNsdlResource
+    from .resources.inbox import InboxResource, AsyncInboxResource
+    from .resources.smart import SmartResource, AsyncSmartResource
+    from .resources.credits import CreditsResource, AsyncCreditsResource
+    from .resources.kfintech import KfintechResource, AsyncKfintechResource
+    from .resources.cdsl.cdsl import CdslResource, AsyncCdslResource
+    from .resources.access_token import AccessTokenResource, AsyncAccessTokenResource
+    from .resources.verify_token import VerifyTokenResource, AsyncVerifyTokenResource
+    from .resources.cams_kfintech import CamsKfintechResource, AsyncCamsKfintechResource
+    from .resources.contract_note import ContractNoteResource, AsyncContractNoteResource
 
 __all__ = [
+    "ENVIRONMENTS",
     "Timeout",
     "Transport",
     "ProxiesTypes",
@@ -45,16 +68,25 @@ __all__ = [
     "AsyncClient",
 ]
 
+ENVIRONMENTS: Dict[str, str] = {
+    "production": "https://portfolio-parser.api.casparser.in",
+    "environment_1": "https://client-apis.casparser.in",
+    "environment_2": "http://localhost:5000",
+}
+
 
 class CasParser(SyncAPIClient):
     # client options
     api_key: str
 
+    _environment: Literal["production", "environment_1", "environment_2"] | NotGiven
+
     def __init__(
         self,
         *,
         api_key: str | None = None,
-        base_url: str | httpx.URL | None = None,
+        environment: Literal["production", "environment_1", "environment_2"] | NotGiven = not_given,
+        base_url: str | httpx.URL | None | NotGiven = not_given,
         timeout: float | Timeout | None | NotGiven = not_given,
         max_retries: int = DEFAULT_MAX_RETRIES,
         default_headers: Mapping[str, str] | None = None,
@@ -85,10 +117,31 @@ class CasParser(SyncAPIClient):
             )
         self.api_key = api_key
 
-        if base_url is None:
-            base_url = os.environ.get("CAS_PARSER_BASE_URL")
-        if base_url is None:
-            base_url = f"https://portfolio-parser.api.casparser.in"
+        self._environment = environment
+
+        base_url_env = os.environ.get("CAS_PARSER_BASE_URL")
+        if is_given(base_url) and base_url is not None:
+            # cast required because mypy doesn't understand the type narrowing
+            base_url = cast("str | httpx.URL", base_url)  # pyright: ignore[reportUnnecessaryCast]
+        elif is_given(environment):
+            if base_url_env and base_url is not None:
+                raise ValueError(
+                    "Ambiguous URL; The `CAS_PARSER_BASE_URL` env var and the `environment` argument are given. If you want to use the environment, you must pass base_url=None",
+                )
+
+            try:
+                base_url = ENVIRONMENTS[environment]
+            except KeyError as exc:
+                raise ValueError(f"Unknown environment: {environment}") from exc
+        elif base_url_env is not None:
+            base_url = base_url_env
+        else:
+            self._environment = environment = "production"
+
+            try:
+                base_url = ENVIRONMENTS[environment]
+            except KeyError as exc:
+                raise ValueError(f"Unknown environment: {environment}") from exc
 
         super().__init__(
             version=__version__,
@@ -102,10 +155,70 @@ class CasParser(SyncAPIClient):
         )
 
     @cached_property
-    def cas_parser(self) -> CasParserResource:
-        from .resources.cas_parser import CasParserResource
+    def credits(self) -> CreditsResource:
+        from .resources.credits import CreditsResource
 
-        return CasParserResource(self)
+        return CreditsResource(self)
+
+    @cached_property
+    def logs(self) -> LogsResource:
+        from .resources.logs import LogsResource
+
+        return LogsResource(self)
+
+    @cached_property
+    def access_token(self) -> AccessTokenResource:
+        from .resources.access_token import AccessTokenResource
+
+        return AccessTokenResource(self)
+
+    @cached_property
+    def verify_token(self) -> VerifyTokenResource:
+        from .resources.verify_token import VerifyTokenResource
+
+        return VerifyTokenResource(self)
+
+    @cached_property
+    def cams_kfintech(self) -> CamsKfintechResource:
+        from .resources.cams_kfintech import CamsKfintechResource
+
+        return CamsKfintechResource(self)
+
+    @cached_property
+    def cdsl(self) -> CdslResource:
+        from .resources.cdsl import CdslResource
+
+        return CdslResource(self)
+
+    @cached_property
+    def contract_note(self) -> ContractNoteResource:
+        from .resources.contract_note import ContractNoteResource
+
+        return ContractNoteResource(self)
+
+    @cached_property
+    def inbox(self) -> InboxResource:
+        from .resources.inbox import InboxResource
+
+        return InboxResource(self)
+
+    @cached_property
+    def kfintech(self) -> KfintechResource:
+        from .resources.kfintech import KfintechResource
+
+        return KfintechResource(self)
+
+    @cached_property
+    def nsdl(self) -> NsdlResource:
+        from .resources.nsdl import NsdlResource
+
+        return NsdlResource(self)
+
+    @cached_property
+    def smart(self) -> SmartResource:
+        from .resources.smart import SmartResource
+
+        return SmartResource(self)
 
     @cached_property
     def with_raw_response(self) -> CasParserWithRawResponse:
@@ -139,6 +252,7 @@ class CasParser(SyncAPIClient):
         self,
         *,
         api_key: str | None = None,
+        environment: Literal["production", "environment_1", "environment_2"] | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: float | Timeout | None | NotGiven = not_given,
         http_client: httpx.Client | None = None,
@@ -174,6 +288,7 @@ class CasParser(SyncAPIClient):
         return self.__class__(
             api_key=api_key or self.api_key,
             base_url=base_url or self.base_url,
+            environment=environment or self._environment,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,
             max_retries=max_retries if is_given(max_retries) else self.max_retries,
@@ -224,11 +339,14 @@ class AsyncCasParser(AsyncAPIClient):
     # client options
     api_key: str
 
+    _environment: Literal["production", "environment_1", "environment_2"] | NotGiven
+
     def __init__(
         self,
         *,
         api_key: str | None = None,
-        base_url: str | httpx.URL | None = None,
+        environment: Literal["production", "environment_1", "environment_2"] | NotGiven = not_given,
+        base_url: str | httpx.URL | None | NotGiven = not_given,
         timeout: float | Timeout | None | NotGiven = not_given,
         max_retries: int = DEFAULT_MAX_RETRIES,
         default_headers: Mapping[str, str] | None = None,
@@ -259,10 +377,31 @@ class AsyncCasParser(AsyncAPIClient):
             )
         self.api_key = api_key
 
-        if base_url is None:
-            base_url = os.environ.get("CAS_PARSER_BASE_URL")
-        if base_url is None:
-            base_url = f"https://portfolio-parser.api.casparser.in"
+        self._environment = environment
+
+        base_url_env = os.environ.get("CAS_PARSER_BASE_URL")
+        if is_given(base_url) and base_url is not None:
+            # cast required because mypy doesn't understand the type narrowing
+            base_url = cast("str | httpx.URL", base_url)  # pyright: ignore[reportUnnecessaryCast]
+        elif is_given(environment):
+            if base_url_env and base_url is not None:
+                raise ValueError(
+                    "Ambiguous URL; The `CAS_PARSER_BASE_URL` env var and the `environment` argument are given. If you want to use the environment, you must pass base_url=None",
+                )
+
+            try:
+                base_url = ENVIRONMENTS[environment]
+            except KeyError as exc:
+                raise ValueError(f"Unknown environment: {environment}") from exc
+        elif base_url_env is not None:
+            base_url = base_url_env
+        else:
+            self._environment = environment = "production"
+
+            try:
+                base_url = ENVIRONMENTS[environment]
+            except KeyError as exc:
+                raise ValueError(f"Unknown environment: {environment}") from exc
 
         super().__init__(
             version=__version__,
@@ -276,10 +415,70 @@ class AsyncCasParser(AsyncAPIClient):
         )
 
     @cached_property
-    def cas_parser(self) -> AsyncCasParserResource:
-        from .resources.cas_parser import AsyncCasParserResource
+    def credits(self) -> AsyncCreditsResource:
+        from .resources.credits import AsyncCreditsResource
 
-        return AsyncCasParserResource(self)
+        return AsyncCreditsResource(self)
+
+    @cached_property
+    def logs(self) -> AsyncLogsResource:
+        from .resources.logs import AsyncLogsResource
+
+        return AsyncLogsResource(self)
+
+    @cached_property
+    def access_token(self) -> AsyncAccessTokenResource:
+        from .resources.access_token import AsyncAccessTokenResource
+
+        return AsyncAccessTokenResource(self)
+
+    @cached_property
+    def verify_token(self) -> AsyncVerifyTokenResource:
+        from .resources.verify_token import AsyncVerifyTokenResource
+
+        return AsyncVerifyTokenResource(self)
+
+    @cached_property
+    def cams_kfintech(self) -> AsyncCamsKfintechResource:
+        from .resources.cams_kfintech import AsyncCamsKfintechResource
+
+        return AsyncCamsKfintechResource(self)
+
+    @cached_property
+    def cdsl(self) -> AsyncCdslResource:
+        from .resources.cdsl import AsyncCdslResource
+
+        return AsyncCdslResource(self)
+
+    @cached_property
+    def contract_note(self) -> AsyncContractNoteResource:
+        from .resources.contract_note import AsyncContractNoteResource
+
+        return AsyncContractNoteResource(self)
+
+    @cached_property
+    def inbox(self) -> AsyncInboxResource:
+        from .resources.inbox import AsyncInboxResource
+
+        return AsyncInboxResource(self)
+
+    @cached_property
+    def kfintech(self) -> AsyncKfintechResource:
+        from .resources.kfintech import AsyncKfintechResource
+
+        return AsyncKfintechResource(self)
+
+    @cached_property
+    def nsdl(self) -> AsyncNsdlResource:
+        from .resources.nsdl import AsyncNsdlResource
+
+        return AsyncNsdlResource(self)
+
+    @cached_property
+    def smart(self) -> AsyncSmartResource:
+        from .resources.smart import AsyncSmartResource
+
+        return AsyncSmartResource(self)
 
     @cached_property
     def with_raw_response(self) -> AsyncCasParserWithRawResponse:
@@ -313,6 +512,7 @@ class AsyncCasParser(AsyncAPIClient):
         self,
         *,
         api_key: str | None = None,
+        environment: Literal["production", "environment_1", "environment_2"] | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: float | Timeout | None | NotGiven = not_given,
         http_client: httpx.AsyncClient | None = None,
@@ -348,6 +548,7 @@ class AsyncCasParser(AsyncAPIClient):
         return self.__class__(
             api_key=api_key or self.api_key,
             base_url=base_url or self.base_url,
+            environment=environment or self._environment,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,
             max_retries=max_retries if is_given(max_retries) else self.max_retries,
@@ -401,10 +602,70 @@ class CasParserWithRawResponse:
         self._client = client
 
     @cached_property
-    def cas_parser(self) -> cas_parser.CasParserResourceWithRawResponse:
-        from .resources.cas_parser import CasParserResourceWithRawResponse
+    def credits(self) -> credits.CreditsResourceWithRawResponse:
+        from .resources.credits import CreditsResourceWithRawResponse
 
-        return CasParserResourceWithRawResponse(self._client.cas_parser)
+        return CreditsResourceWithRawResponse(self._client.credits)
+
+    @cached_property
+    def logs(self) -> logs.LogsResourceWithRawResponse:
+        from .resources.logs import LogsResourceWithRawResponse
+
+        return LogsResourceWithRawResponse(self._client.logs)
+
+    @cached_property
+    def access_token(self) -> access_token.AccessTokenResourceWithRawResponse:
+        from .resources.access_token import AccessTokenResourceWithRawResponse
+
+        return AccessTokenResourceWithRawResponse(self._client.access_token)
+
+    @cached_property
+    def verify_token(self) -> verify_token.VerifyTokenResourceWithRawResponse:
+        from .resources.verify_token import VerifyTokenResourceWithRawResponse
+
+        return VerifyTokenResourceWithRawResponse(self._client.verify_token)
+
+    @cached_property
+    def cams_kfintech(self) -> cams_kfintech.CamsKfintechResourceWithRawResponse:
+        from .resources.cams_kfintech import CamsKfintechResourceWithRawResponse
+
+        return CamsKfintechResourceWithRawResponse(self._client.cams_kfintech)
+
+    @cached_property
+    def cdsl(self) -> cdsl.CdslResourceWithRawResponse:
+        from .resources.cdsl import CdslResourceWithRawResponse
+
+        return CdslResourceWithRawResponse(self._client.cdsl)
+
+    @cached_property
+    def contract_note(self) -> contract_note.ContractNoteResourceWithRawResponse:
+        from .resources.contract_note import ContractNoteResourceWithRawResponse
+
+        return ContractNoteResourceWithRawResponse(self._client.contract_note)
+
+    @cached_property
+    def inbox(self) -> inbox.InboxResourceWithRawResponse:
+        from .resources.inbox import InboxResourceWithRawResponse
+
+        return InboxResourceWithRawResponse(self._client.inbox)
+
+    @cached_property
+    def kfintech(self) -> kfintech.KfintechResourceWithRawResponse:
+        from .resources.kfintech import KfintechResourceWithRawResponse
+
+        return KfintechResourceWithRawResponse(self._client.kfintech)
+
+    @cached_property
+    def nsdl(self) -> nsdl.NsdlResourceWithRawResponse:
+        from .resources.nsdl import NsdlResourceWithRawResponse
+
+        return NsdlResourceWithRawResponse(self._client.nsdl)
+
+    @cached_property
+    def smart(self) -> smart.SmartResourceWithRawResponse:
+        from .resources.smart import SmartResourceWithRawResponse
+
+        return SmartResourceWithRawResponse(self._client.smart)
 
 
 class AsyncCasParserWithRawResponse:
@@ -414,10 +675,70 @@ class AsyncCasParserWithRawResponse:
         self._client = client
 
     @cached_property
-    def cas_parser(self) -> cas_parser.AsyncCasParserResourceWithRawResponse:
-        from .resources.cas_parser import AsyncCasParserResourceWithRawResponse
+    def credits(self) -> credits.AsyncCreditsResourceWithRawResponse:
+        from .resources.credits import AsyncCreditsResourceWithRawResponse
 
-        return AsyncCasParserResourceWithRawResponse(self._client.cas_parser)
+        return AsyncCreditsResourceWithRawResponse(self._client.credits)
+
+    @cached_property
+    def logs(self) -> logs.AsyncLogsResourceWithRawResponse:
+        from .resources.logs import AsyncLogsResourceWithRawResponse
+
+        return AsyncLogsResourceWithRawResponse(self._client.logs)
+
+    @cached_property
+    def access_token(self) -> access_token.AsyncAccessTokenResourceWithRawResponse:
+        from .resources.access_token import AsyncAccessTokenResourceWithRawResponse
+
+        return AsyncAccessTokenResourceWithRawResponse(self._client.access_token)
+
+    @cached_property
+    def verify_token(self) -> verify_token.AsyncVerifyTokenResourceWithRawResponse:
+        from .resources.verify_token import AsyncVerifyTokenResourceWithRawResponse
+
+        return AsyncVerifyTokenResourceWithRawResponse(self._client.verify_token)
+
+    @cached_property
+    def cams_kfintech(self) -> cams_kfintech.AsyncCamsKfintechResourceWithRawResponse:
+        from .resources.cams_kfintech import AsyncCamsKfintechResourceWithRawResponse
+
+        return AsyncCamsKfintechResourceWithRawResponse(self._client.cams_kfintech)
+
+    @cached_property
+    def cdsl(self) -> cdsl.AsyncCdslResourceWithRawResponse:
+        from .resources.cdsl import AsyncCdslResourceWithRawResponse
+
+        return AsyncCdslResourceWithRawResponse(self._client.cdsl)
+
+    @cached_property
+    def contract_note(self) -> contract_note.AsyncContractNoteResourceWithRawResponse:
+        from .resources.contract_note import AsyncContractNoteResourceWithRawResponse
+
+        return AsyncContractNoteResourceWithRawResponse(self._client.contract_note)
+
+    @cached_property
+    def inbox(self) -> inbox.AsyncInboxResourceWithRawResponse:
+        from .resources.inbox import AsyncInboxResourceWithRawResponse
+
+        return AsyncInboxResourceWithRawResponse(self._client.inbox)
+
+    @cached_property
+    def kfintech(self) -> kfintech.AsyncKfintechResourceWithRawResponse:
+        from .resources.kfintech import AsyncKfintechResourceWithRawResponse
+
+        return AsyncKfintechResourceWithRawResponse(self._client.kfintech)
+
+    @cached_property
+    def nsdl(self) -> nsdl.AsyncNsdlResourceWithRawResponse:
+        from .resources.nsdl import AsyncNsdlResourceWithRawResponse
+
+        return AsyncNsdlResourceWithRawResponse(self._client.nsdl)
+
+    @cached_property
+    def smart(self) -> smart.AsyncSmartResourceWithRawResponse:
+        from .resources.smart import AsyncSmartResourceWithRawResponse
+
+        return AsyncSmartResourceWithRawResponse(self._client.smart)
 
 
 class CasParserWithStreamedResponse:
@@ -427,10 +748,70 @@ class CasParserWithStreamedResponse:
         self._client = client
 
     @cached_property
-    def cas_parser(self) -> cas_parser.CasParserResourceWithStreamingResponse:
-        from .resources.cas_parser import CasParserResourceWithStreamingResponse
+    def credits(self) -> credits.CreditsResourceWithStreamingResponse:
+        from .resources.credits import CreditsResourceWithStreamingResponse
 
-        return CasParserResourceWithStreamingResponse(self._client.cas_parser)
+        return CreditsResourceWithStreamingResponse(self._client.credits)
+
+    @cached_property
+    def logs(self) -> logs.LogsResourceWithStreamingResponse:
+        from .resources.logs import LogsResourceWithStreamingResponse
+
+        return LogsResourceWithStreamingResponse(self._client.logs)
+
+    @cached_property
+    def access_token(self) -> access_token.AccessTokenResourceWithStreamingResponse:
+        from .resources.access_token import AccessTokenResourceWithStreamingResponse
+
+        return AccessTokenResourceWithStreamingResponse(self._client.access_token)
+
+    @cached_property
+    def verify_token(self) -> verify_token.VerifyTokenResourceWithStreamingResponse:
+        from .resources.verify_token import VerifyTokenResourceWithStreamingResponse
+
+        return VerifyTokenResourceWithStreamingResponse(self._client.verify_token)
+
+    @cached_property
+    def cams_kfintech(self) -> cams_kfintech.CamsKfintechResourceWithStreamingResponse:
+        from .resources.cams_kfintech import CamsKfintechResourceWithStreamingResponse
+
+        return CamsKfintechResourceWithStreamingResponse(self._client.cams_kfintech)
+
+    @cached_property
+    def cdsl(self) -> cdsl.CdslResourceWithStreamingResponse:
+        from .resources.cdsl import CdslResourceWithStreamingResponse
+
+        return CdslResourceWithStreamingResponse(self._client.cdsl)
+
+    @cached_property
+    def contract_note(self) -> contract_note.ContractNoteResourceWithStreamingResponse:
+        from .resources.contract_note import ContractNoteResourceWithStreamingResponse
+
+        return ContractNoteResourceWithStreamingResponse(self._client.contract_note)
+
+    @cached_property
+    def inbox(self) -> inbox.InboxResourceWithStreamingResponse:
+        from .resources.inbox import InboxResourceWithStreamingResponse
+
+        return InboxResourceWithStreamingResponse(self._client.inbox)
+
+    @cached_property
+    def kfintech(self) -> kfintech.KfintechResourceWithStreamingResponse:
+        from .resources.kfintech import KfintechResourceWithStreamingResponse
+
+        return KfintechResourceWithStreamingResponse(self._client.kfintech)
+
+    @cached_property
+    def nsdl(self) -> nsdl.NsdlResourceWithStreamingResponse:
+        from .resources.nsdl import NsdlResourceWithStreamingResponse
+
+        return NsdlResourceWithStreamingResponse(self._client.nsdl)
+
+    @cached_property
+    def smart(self) -> smart.SmartResourceWithStreamingResponse:
+        from .resources.smart import SmartResourceWithStreamingResponse
+
+        return SmartResourceWithStreamingResponse(self._client.smart)
 
 
 class AsyncCasParserWithStreamedResponse:
@@ -440,10 +821,70 @@ class AsyncCasParserWithStreamedResponse:
         self._client = client
 
     @cached_property
-    def cas_parser(self) -> cas_parser.AsyncCasParserResourceWithStreamingResponse:
-        from .resources.cas_parser import AsyncCasParserResourceWithStreamingResponse
+    def credits(self) -> credits.AsyncCreditsResourceWithStreamingResponse:
+        from .resources.credits import AsyncCreditsResourceWithStreamingResponse
 
-        return AsyncCasParserResourceWithStreamingResponse(self._client.cas_parser)
+        return AsyncCreditsResourceWithStreamingResponse(self._client.credits)
+
+    @cached_property
+    def logs(self) -> logs.AsyncLogsResourceWithStreamingResponse:
+        from .resources.logs import AsyncLogsResourceWithStreamingResponse
+
+        return AsyncLogsResourceWithStreamingResponse(self._client.logs)
+
+    @cached_property
+    def access_token(self) -> access_token.AsyncAccessTokenResourceWithStreamingResponse:
+        from .resources.access_token import AsyncAccessTokenResourceWithStreamingResponse
+
+        return AsyncAccessTokenResourceWithStreamingResponse(self._client.access_token)
+
+    @cached_property
+    def verify_token(self) -> verify_token.AsyncVerifyTokenResourceWithStreamingResponse:
+        from .resources.verify_token import AsyncVerifyTokenResourceWithStreamingResponse
+
+        return AsyncVerifyTokenResourceWithStreamingResponse(self._client.verify_token)
+
+    @cached_property
+    def cams_kfintech(self) -> cams_kfintech.AsyncCamsKfintechResourceWithStreamingResponse:
+        from .resources.cams_kfintech import AsyncCamsKfintechResourceWithStreamingResponse
+
+        return AsyncCamsKfintechResourceWithStreamingResponse(self._client.cams_kfintech)
+
+    @cached_property
+    def cdsl(self) -> cdsl.AsyncCdslResourceWithStreamingResponse:
+        from .resources.cdsl import AsyncCdslResourceWithStreamingResponse
+
+        return AsyncCdslResourceWithStreamingResponse(self._client.cdsl)
+
+    @cached_property
+    def contract_note(self) -> contract_note.AsyncContractNoteResourceWithStreamingResponse:
+        from .resources.contract_note import AsyncContractNoteResourceWithStreamingResponse
+
+        return AsyncContractNoteResourceWithStreamingResponse(self._client.contract_note)
+
+    @cached_property
+    def inbox(self) -> inbox.AsyncInboxResourceWithStreamingResponse:
+        from .resources.inbox import AsyncInboxResourceWithStreamingResponse
+
+        return AsyncInboxResourceWithStreamingResponse(self._client.inbox)
+
+    @cached_property
+    def kfintech(self) -> kfintech.AsyncKfintechResourceWithStreamingResponse:
+        from .resources.kfintech import AsyncKfintechResourceWithStreamingResponse
+
+        return AsyncKfintechResourceWithStreamingResponse(self._client.kfintech)
+
+    @cached_property
+    def nsdl(self) -> nsdl.AsyncNsdlResourceWithStreamingResponse:
+        from .resources.nsdl import AsyncNsdlResourceWithStreamingResponse
+
+        return AsyncNsdlResourceWithStreamingResponse(self._client.nsdl)
+
+    @cached_property
+    def smart(self) -> smart.AsyncSmartResourceWithStreamingResponse:
+        from .resources.smart import AsyncSmartResourceWithStreamingResponse
+
+        return AsyncSmartResourceWithStreamingResponse(self._client.smart)
 
 
 Client = CasParser

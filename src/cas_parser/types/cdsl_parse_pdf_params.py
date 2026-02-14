@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from typing_extensions import TypedDict
 
-__all__ = ["CasParserNsdlParams"]
+__all__ = ["CdslParsePdfParams"]
 
 
-class CasParserNsdlParams(TypedDict, total=False):
+class CdslParsePdfParams(TypedDict, total=False):
     password: str
     """Password for the PDF file (if required)"""
 

@@ -1,7 +1,7 @@
 # Cas Parser Python API library
 
 <!-- prettier-ignore -->
-[![PyPI version](https://img.shields.io/pypi/v/cas-parser-python.svg?label=pypi%20(stable))](https://pypi.org/project/cas-parser-python/)
+[![PyPI version](https://img.shields.io/pypi/v/cas_parser.svg?label=pypi%20(stable))](https://pypi.org/project/cas_parser/)
 
 The Cas Parser Python library provides convenient access to the Cas Parser REST API from any Python 3.9+
 application. The library includes type definitions for all request params and response fields,
@@ -9,25 +9,19 @@ and offers both synchronous and asynchronous clients powered by [httpx](https://
 
 It is generated with [Stainless](https://www.stainless.com/).
 
-## MCP Server
-
-Use the Cas Parser MCP Server to enable AI assistants to interact with this API, allowing them to explore endpoints, make test requests, and use documentation to help integrate this SDK into your application.
-
-[![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en-US/install-mcp?name=cas-parser-node-mcp&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsImNhcy1wYXJzZXItbm9kZS1tY3AiXSwiZW52Ijp7IkNBU19QQVJTRVJfQVBJX0tFWSI6Ik15IEFQSSBLZXkifX0)
-[![Install in VS Code](https://img.shields.io/badge/_-Add_to_VS_Code-blue?style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCA0MCA0MCI+PHBhdGggZmlsbD0iI0VFRSIgZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNMzAuMjM1IDM5Ljg4NGEyLjQ5MSAyLjQ5MSAwIDAgMS0xLjc4MS0uNzNMMTIuNyAyNC43OGwtMy40NiAyLjYyNC0zLjQwNiAyLjU4MmExLjY2NSAxLjY2NSAwIDAgMS0xLjA4Mi4zMzggMS42NjQgMS42NjQgMCAwIDEtMS4wNDYtLjQzMWwtMi4yLTJhMS42NjYgMS42NjYgMCAwIDEgMC0yLjQ2M0w3LjQ1OCAyMCA0LjY3IDE3LjQ1MyAxLjUwNyAxNC41N2ExLjY2NSAxLjY2NSAwIDAgMSAwLTIuNDYzbDIuMi0yYTEuNjY1IDEuNjY1IDAgMCAxIDIuMTMtLjA5N2w2Ljg2MyA1LjIwOUwyOC40NTIuODQ0YTIuNDg4IDIuNDg4IDAgMCAxIDEuODQxLS43MjljLjM1MS4wMDkuNjk5LjA5MSAxLjAxOS4yNDVsOC4yMzYgMy45NjFhMi41IDIuNSAwIDAgMSAxLjQxNSAyLjI1M3YuMDk5LS4wNDVWMzMuMzd2LS4wNDUuMDk1YTIuNTAxIDIuNTAxIDAgMCAxLTEuNDE2IDIuMjU3bC04LjIzNSAzLjk2MWEyLjQ5MiAyLjQ5MiAwIDAgMS0xLjA3Ny4yNDZabS43MTYtMjguOTQ3LTExLjk0OCA5LjA2MiAxMS45NTIgOS4wNjUtLjAwNC0xOC4xMjdaIi8+PC9zdmc+)](https://vscode.stainless.com/mcp/%7B%22name%22%3A%22cas-parser-node-mcp%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22cas-parser-node-mcp%22%5D%2C%22env%22%3A%7B%22CAS_PARSER_API_KEY%22%3A%22My%20API%20Key%22%7D%7D)
-
-> Note: You may need to set environment variables in your MCP client.
-
 ## Documentation
 
-The REST API documentation can be found on [docs.casparser.in](https://docs.casparser.in/reference). The full API of this library can be found in [api.md](api.md).
+The full API of this library can be found in [api.md](api.md).
 
 ## Installation
 
 ```sh
-# install from PyPI
-pip install cas-parser-python
+# install from this staging repo
+pip install git+ssh://git@github.com/stainless-sdks/cas-parser-python.git
 ```
+
+> [!NOTE]
+> Once this package is [published to PyPI](https://www.stainless.com/docs/guides/publish), this will become: `pip install cas_parser`
 
 ## Usage
 
@@ -39,13 +33,12 @@ from cas_parser import CasParser
 
 client = CasParser(
     api_key=os.environ.get("CAS_PARSER_API_KEY"),  # This is the default and can be omitted
+    # or 'production' | 'environment_2'; defaults to "production".
+    environment="environment_1",
 )
 
-unified_response = client.cas_parser.smart_parse(
-    password="ABCDF",
-    pdf_url="https://your-cas-pdf-url-here.com",
-)
-print(unified_response.demat_accounts)
+response = client.credits.check()
+print(response.enabled_features)
 ```
 
 While you can provide an `api_key` keyword argument,
@@ -64,15 +57,14 @@ from cas_parser import AsyncCasParser
 
 client = AsyncCasParser(
     api_key=os.environ.get("CAS_PARSER_API_KEY"),  # This is the default and can be omitted
+    # or 'production' | 'environment_2'; defaults to "production".
+    environment="environment_1",
 )
 
 
 async def main() -> None:
-    unified_response = await client.cas_parser.smart_parse(
-        password="ABCDF",
-        pdf_url="https://your-cas-pdf-url-here.com",
-    )
-    print(unified_response.demat_accounts)
+    response = await client.credits.check()
+    print(response.enabled_features)
 
 
 asyncio.run(main())
@@ -87,8 +79,8 @@ By default, the async client uses `httpx` for HTTP requests. However, for improv
 You can enable this by installing `aiohttp`:
 
 ```sh
-# install from PyPI
-pip install cas-parser-python[aiohttp]
+# install from this staging repo
+pip install 'cas_parser[aiohttp] @ git+ssh://git@github.com/stainless-sdks/cas-parser-python.git'
 ```
 
 Then you can enable it by instantiating the client with `http_client=DefaultAioHttpClient()`:
@@ -105,11 +97,8 @@ async def main() -> None:
         api_key=os.environ.get("CAS_PARSER_API_KEY"),  # This is the default and can be omitted
         http_client=DefaultAioHttpClient(),
     ) as client:
-        unified_response = await client.cas_parser.smart_parse(
-            password="ABCDF",
-            pdf_url="https://your-cas-pdf-url-here.com",
-        )
-        print(unified_response.demat_accounts)
+        response = await client.credits.check()
+        print(response.enabled_features)
 
 
 asyncio.run(main())
@@ -140,10 +129,7 @@ from cas_parser import CasParser
 client = CasParser()
 
 try:
-    client.cas_parser.smart_parse(
-        password="ABCDF",
-        pdf_url="https://you-cas-pdf-url-here.com",
-    )
+    client.credits.check()
 except cas_parser.APIConnectionError as e:
     print("The server could not be reached")
     print(e.__cause__)  # an underlying Exception, likely raised within httpx.
@@ -186,10 +172,7 @@ client = CasParser(
 )
 
 # Or, configure per-request:
-client.with_options(max_retries=5).cas_parser.smart_parse(
-    password="ABCDF",
-    pdf_url="https://you-cas-pdf-url-here.com",
-)
+client.with_options(max_retries=5).credits.check()
 ```
 
 ### Timeouts
@@ -212,10 +195,7 @@ client = CasParser(
 )
 
 # Override per-request:
-client.with_options(timeout=5.0).cas_parser.smart_parse(
-    password="ABCDF",
-    pdf_url="https://you-cas-pdf-url-here.com",
-)
+client.with_options(timeout=5.0).credits.check()
 ```
 
 On timeout, an `APITimeoutError` is thrown.
@@ -256,19 +236,16 @@ The "raw" Response object can be accessed by prefixing `.with_raw_response.` to 
 from cas_parser import CasParser
 
 client = CasParser()
-response = client.cas_parser.with_raw_response.smart_parse(
-    password="ABCDF",
-    pdf_url="https://you-cas-pdf-url-here.com",
-)
+response = client.credits.with_raw_response.check()
 print(response.headers.get('X-My-Header'))
 
-cas_parser = response.parse()  # get the object that `cas_parser.smart_parse()` would have returned
-print(cas_parser.demat_accounts)
+credit = response.parse()  # get the object that `credits.check()` would have returned
+print(credit.enabled_features)
 ```
 
-These methods return an [`APIResponse`](https://github.com/CASParser/cas-parser-python/tree/main/src/cas_parser/_response.py) object.
+These methods return an [`APIResponse`](https://github.com/stainless-sdks/cas-parser-python/tree/main/src/cas_parser/_response.py) object.
 
-The async client returns an [`AsyncAPIResponse`](https://github.com/CASParser/cas-parser-python/tree/main/src/cas_parser/_response.py) with the same structure, the only difference being `await`able methods for reading the response content.
+The async client returns an [`AsyncAPIResponse`](https://github.com/stainless-sdks/cas-parser-python/tree/main/src/cas_parser/_response.py) with the same structure, the only difference being `await`able methods for reading the response content.
 
 #### `.with_streaming_response`
 
@@ -277,10 +254,7 @@ The above interface eagerly reads the full response body when you make the reque
 To stream the response body, use `.with_streaming_response` instead, which requires a context manager and only reads the response body once you call `.read()`, `.text()`, `.json()`, `.iter_bytes()`, `.iter_text()`, `.iter_lines()` or `.parse()`. In the async client, these are async methods.
 
 ```python
-with client.cas_parser.with_streaming_response.smart_parse(
-    password="ABCDF",
-    pdf_url="https://you-cas-pdf-url-here.com",
-) as response:
+with client.credits.with_streaming_response.check() as response:
     print(response.headers.get("X-My-Header"))
 
     for line in response.iter_lines():
@@ -375,7 +349,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/CASParser/cas-parser-python/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/cas-parser-python/issues) with questions, bugs, or suggestions.
 
 ### Determining the installed version
 
