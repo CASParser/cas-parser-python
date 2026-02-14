@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from typing_extensions import TypedDict
 
-__all__ = ["CasParserCamsKfintechParams"]
+__all__ = ["SmartParseCasPdfParams"]
 
 
-class CasParserCamsKfintechParams(TypedDict, total=False):
+class SmartParseCasPdfParams(TypedDict, total=False):
     password: str
     """Password for the PDF file (if required)"""
 

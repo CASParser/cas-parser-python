@@ -691,6 +691,18 @@ class TestCasParser:
             client = CasParser(api_key=api_key, _strict_response_validation=True)
             assert client.base_url == "http://localhost:5000/from/env/"
 
+        # explicit environment arg requires explicitness
+        with update_env(CAS_PARSER_BASE_URL="http://localhost:5000/from/env"):
+            with pytest.raises(ValueError, match=r"you must pass base_url=None"):
+                CasParser(api_key=api_key, _strict_response_validation=True, environment="production")
+
+            client = CasParser(
+                base_url=None, api_key=api_key, _strict_response_validation=True, environment="production"
+            )
+            assert str(client.base_url).startswith("https://portfolio-parser.api.casparser.in")
+
+            client.close()
+
     @pytest.mark.parametrize(
         "client",
         [
@@ -851,20 +863,20 @@ class TestCasParser:
     @mock.patch("cas_parser._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_timeout_errors_doesnt_leak(self, respx_mock: MockRouter, client: CasParser) -> None:
-        respx_mock.post("/v4/smart/parse").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.post("/credits").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            client.cas_parser.with_streaming_response.smart_parse().__enter__()
+            client.credits.with_streaming_response.check().__enter__()
 
         assert _get_open_connections(client) == 0
 
     @mock.patch("cas_parser._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_status_errors_doesnt_leak(self, respx_mock: MockRouter, client: CasParser) -> None:
-        respx_mock.post("/v4/smart/parse").mock(return_value=httpx.Response(500))
+        respx_mock.post("/credits").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            client.cas_parser.with_streaming_response.smart_parse().__enter__()
+            client.credits.with_streaming_response.check().__enter__()
         assert _get_open_connections(client) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
@@ -891,9 +903,9 @@ class TestCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/v4/smart/parse").mock(side_effect=retry_handler)
+        respx_mock.post("/credits").mock(side_effect=retry_handler)
 
-        response = client.cas_parser.with_raw_response.smart_parse()
+        response = client.credits.with_raw_response.check()
 
         assert response.retries_taken == failures_before_success
         assert int(response.http_request.headers.get("x-stainless-retry-count")) == failures_before_success
@@ -915,9 +927,9 @@ class TestCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/v4/smart/parse").mock(side_effect=retry_handler)
+        respx_mock.post("/credits").mock(side_effect=retry_handler)
 
-        response = client.cas_parser.with_raw_response.smart_parse(extra_headers={"x-stainless-retry-count": Omit()})
+        response = client.credits.with_raw_response.check(extra_headers={"x-stainless-retry-count": Omit()})
 
         assert len(response.http_request.headers.get_list("x-stainless-retry-count")) == 0
 
@@ -938,9 +950,9 @@ class TestCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/v4/smart/parse").mock(side_effect=retry_handler)
+        respx_mock.post("/credits").mock(side_effect=retry_handler)
 
-        response = client.cas_parser.with_raw_response.smart_parse(extra_headers={"x-stainless-retry-count": "42"})
+        response = client.credits.with_raw_response.check(extra_headers={"x-stainless-retry-count": "42"})
 
         assert response.http_request.headers.get("x-stainless-retry-count") == "42"
 
@@ -1580,6 +1592,18 @@ class TestAsyncCasParser:
             client = AsyncCasParser(api_key=api_key, _strict_response_validation=True)
             assert client.base_url == "http://localhost:5000/from/env/"
 
+        # explicit environment arg requires explicitness
+        with update_env(CAS_PARSER_BASE_URL="http://localhost:5000/from/env"):
+            with pytest.raises(ValueError, match=r"you must pass base_url=None"):
+                AsyncCasParser(api_key=api_key, _strict_response_validation=True, environment="production")
+
+            client = AsyncCasParser(
+                base_url=None, api_key=api_key, _strict_response_validation=True, environment="production"
+            )
+            assert str(client.base_url).startswith("https://portfolio-parser.api.casparser.in")
+
+            await client.close()
+
     @pytest.mark.parametrize(
         "client",
         [
@@ -1751,10 +1775,10 @@ class TestAsyncCasParser:
     async def test_retrying_timeout_errors_doesnt_leak(
         self, respx_mock: MockRouter, async_client: AsyncCasParser
     ) -> None:
-        respx_mock.post("/v4/smart/parse").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.post("/credits").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            await async_client.cas_parser.with_streaming_response.smart_parse().__aenter__()
+            await async_client.credits.with_streaming_response.check().__aenter__()
 
         assert _get_open_connections(async_client) == 0
 
@@ -1763,10 +1787,10 @@ class TestAsyncCasParser:
     async def test_retrying_status_errors_doesnt_leak(
         self, respx_mock: MockRouter, async_client: AsyncCasParser
     ) -> None:
-        respx_mock.post("/v4/smart/parse").mock(return_value=httpx.Response(500))
+        respx_mock.post("/credits").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            await async_client.cas_parser.with_streaming_response.smart_parse().__aenter__()
+            await async_client.credits.with_streaming_response.check().__aenter__()
         assert _get_open_connections(async_client) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
@@ -1793,9 +1817,9 @@ class TestAsyncCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/v4/smart/parse").mock(side_effect=retry_handler)
+        respx_mock.post("/credits").mock(side_effect=retry_handler)
 
-        response = await client.cas_parser.with_raw_response.smart_parse()
+        response = await client.credits.with_raw_response.check()
 
         assert response.retries_taken == failures_before_success
         assert int(response.http_request.headers.get("x-stainless-retry-count")) == failures_before_success
@@ -1817,11 +1841,9 @@ class TestAsyncCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/v4/smart/parse").mock(side_effect=retry_handler)
+        respx_mock.post("/credits").mock(side_effect=retry_handler)
 
-        response = await client.cas_parser.with_raw_response.smart_parse(
-            extra_headers={"x-stainless-retry-count": Omit()}
-        )
+        response = await client.credits.with_raw_response.check(extra_headers={"x-stainless-retry-count": Omit()})
 
         assert len(response.http_request.headers.get_list("x-stainless-retry-count")) == 0
 
@@ -1842,11 +1864,9 @@ class TestAsyncCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/v4/smart/parse").mock(side_effect=retry_handler)
+        respx_mock.post("/credits").mock(side_effect=retry_handler)
 
-        response = await client.cas_parser.with_raw_response.smart_parse(
-            extra_headers={"x-stainless-retry-count": "42"}
-        )
+        response = await client.credits.with_raw_response.check(extra_headers={"x-stainless-retry-count": "42"})
 
         assert response.http_request.headers.get("x-stainless-retry-count") == "42"
 
