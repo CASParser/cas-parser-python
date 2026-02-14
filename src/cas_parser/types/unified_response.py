@@ -14,10 +14,26 @@ __all__ = [
     "DematAccountAdditionalInfo",
     "DematAccountHoldings",
     "DematAccountHoldingsAif",
+    "DematAccountHoldingsAifAdditionalInfo",
+    "DematAccountHoldingsAifTransaction",
+    "DematAccountHoldingsAifTransactionAdditionalInfo",
     "DematAccountHoldingsCorporateBond",
+    "DematAccountHoldingsCorporateBondAdditionalInfo",
+    "DematAccountHoldingsCorporateBondTransaction",
+    "DematAccountHoldingsCorporateBondTransactionAdditionalInfo",
     "DematAccountHoldingsDematMutualFund",
+    "DematAccountHoldingsDematMutualFundAdditionalInfo",
+    "DematAccountHoldingsDematMutualFundTransaction",
+    "DematAccountHoldingsDematMutualFundTransactionAdditionalInfo",
     "DematAccountHoldingsEquity",
+    "DematAccountHoldingsEquityAdditionalInfo",
+    "DematAccountHoldingsEquityTransaction",
+    "DematAccountHoldingsEquityTransactionAdditionalInfo",
     "DematAccountHoldingsGovernmentSecurity",
+    "DematAccountHoldingsGovernmentSecurityAdditionalInfo",
+    "DematAccountHoldingsGovernmentSecurityTransaction",
+    "DematAccountHoldingsGovernmentSecurityTransactionAdditionalInfo",
+    "DematAccountLinkedHolder",
     "Insurance",
     "InsuranceLifeInsurancePolicy",
     "Investor",
@@ -25,19 +41,28 @@ __all__ = [
     "MetaStatementPeriod",
     "MutualFund",
     "MutualFundAdditionalInfo",
+    "MutualFundLinkedHolder",
     "MutualFundScheme",
     "MutualFundSchemeAdditionalInfo",
     "MutualFundSchemeGain",
     "MutualFundSchemeTransaction",
+    "MutualFundSchemeTransactionAdditionalInfo",
+    "Np",
+    "NpFund",
+    "NpFundAdditionalInfo",
+    "NpLinkedHolder",
     "Summary",
     "SummaryAccounts",
     "SummaryAccountsDemat",
     "SummaryAccountsInsurance",
     "SummaryAccountsMutualFunds",
+    "SummaryAccountsNps",
 ]
 
 
 class DematAccountAdditionalInfo(BaseModel):
+    """Additional information specific to the demat account type"""
+
     bo_status: Optional[str] = None
     """Beneficiary Owner status (CDSL)"""
 
@@ -63,8 +88,101 @@ class DematAccountAdditionalInfo(BaseModel):
     """Account status (CDSL)"""
 
 
+class DematAccountHoldingsAifAdditionalInfo(BaseModel):
+    """Additional information specific to the AIF"""
+
+    close_units: Optional[float] = None
+    """Closing balance units for the statement period (beta)"""
+
+    open_units: Optional[float] = None
+    """Opening balance units for the statement period (beta)"""
+
+
+class DematAccountHoldingsAifTransactionAdditionalInfo(BaseModel):
+    """Additional transaction-specific fields that vary by source"""
+
+    capital_withdrawal: Optional[float] = None
+    """Capital withdrawal amount (CDSL MF transactions)"""
+
+    credit: Optional[float] = None
+    """Units credited (demat transactions)"""
+
+    debit: Optional[float] = None
+    """Units debited (demat transactions)"""
+
+    income_distribution: Optional[float] = None
+    """Income distribution amount (CDSL MF transactions)"""
+
+    order_no: Optional[str] = None
+    """Order/transaction reference number (demat transactions)"""
+
+    price: Optional[float] = None
+    """Price per unit (NSDL/CDSL MF transactions)"""
+
+    stamp_duty: Optional[float] = None
+    """Stamp duty charged"""
+
+
+class DematAccountHoldingsAifTransaction(BaseModel):
+    """
+    Unified transaction schema for all holding types (MF folios, equities, bonds, etc.)
+    """
+
+    additional_info: Optional[DematAccountHoldingsAifTransactionAdditionalInfo] = None
+    """Additional transaction-specific fields that vary by source"""
+
+    amount: Optional[float] = None
+    """Transaction amount in currency (computed from units × price/NAV)"""
+
+    balance: Optional[float] = None
+    """Balance units after transaction"""
+
+    date: Optional[datetime.date] = None
+    """Transaction date (YYYY-MM-DD)"""
+
+    description: Optional[str] = None
+    """Transaction description/particulars"""
+
+    dividend_rate: Optional[float] = None
+    """Dividend rate (for DIVIDEND_PAYOUT transactions)"""
+
+    nav: Optional[float] = None
+    """NAV/price per unit on transaction date"""
+
+    type: Optional[
+        Literal[
+            "PURCHASE",
+            "PURCHASE_SIP",
+            "REDEMPTION",
+            "SWITCH_IN",
+            "SWITCH_IN_MERGER",
+            "SWITCH_OUT",
+            "SWITCH_OUT_MERGER",
+            "DIVIDEND_PAYOUT",
+            "DIVIDEND_REINVEST",
+            "SEGREGATION",
+            "STAMP_DUTY_TAX",
+            "TDS_TAX",
+            "STT_TAX",
+            "MISC",
+            "REVERSAL",
+            "UNKNOWN",
+        ]
+    ] = None
+    """Transaction type.
+
+    Possible values are PURCHASE, PURCHASE_SIP, REDEMPTION, SWITCH_IN,
+    SWITCH_IN_MERGER, SWITCH_OUT, SWITCH_OUT_MERGER, DIVIDEND_PAYOUT,
+    DIVIDEND_REINVEST, SEGREGATION, STAMP_DUTY_TAX, TDS_TAX, STT_TAX, MISC,
+    REVERSAL, UNKNOWN.
+    """
+
+    units: Optional[float] = None
+    """Number of units involved in transaction"""
+
+
 class DematAccountHoldingsAif(BaseModel):
-    additional_info: Optional[object] = None
+    additional_info: Optional[DematAccountHoldingsAifAdditionalInfo] = None
     """Additional information specific to the AIF"""
 
     isin: Optional[str] = None
@@ -73,6 +191,9 @@ class DematAccountHoldingsAif(BaseModel):
     name: Optional[str] = None
     """Name of the AIF"""
 
+    transactions: Optional[List[DematAccountHoldingsAifTransaction]] = None
+    """List of transactions for this holding (beta)"""
+
     units: Optional[float] = None
     """Number of units held"""
 
@@ -80,8 +201,101 @@ class DematAccountHoldingsAif(BaseModel):
     """Current market value of the holding"""
 
 
+class DematAccountHoldingsCorporateBondAdditionalInfo(BaseModel):
+    """Additional information specific to the corporate bond"""
+
+    close_units: Optional[float] = None
+    """Closing balance units for the statement period (beta)"""
+
+    open_units: Optional[float] = None
+    """Opening balance units for the statement period (beta)"""
+
+
+class DematAccountHoldingsCorporateBondTransactionAdditionalInfo(BaseModel):
+    """Additional transaction-specific fields that vary by source"""
+
+    capital_withdrawal: Optional[float] = None
+    """Capital withdrawal amount (CDSL MF transactions)"""
+
+    credit: Optional[float] = None
+    """Units credited (demat transactions)"""
+
+    debit: Optional[float] = None
+    """Units debited (demat transactions)"""
+
+    income_distribution: Optional[float] = None
+    """Income distribution amount (CDSL MF transactions)"""
+
+    order_no: Optional[str] = None
+    """Order/transaction reference number (demat transactions)"""
+
+    price: Optional[float] = None
+    """Price per unit (NSDL/CDSL MF transactions)"""
+
+    stamp_duty: Optional[float] = None
+    """Stamp duty charged"""
+
+
+class DematAccountHoldingsCorporateBondTransaction(BaseModel):
+    """
+    Unified transaction schema for all holding types (MF folios, equities, bonds, etc.)
+    """
+
+    additional_info: Optional[DematAccountHoldingsCorporateBondTransactionAdditionalInfo] = None
+    """Additional transaction-specific fields that vary by source"""
+
+    amount: Optional[float] = None
+    """Transaction amount in currency (computed from units × price/NAV)"""
+
+    balance: Optional[float] = None
+    """Balance units after transaction"""
+
+    date: Optional[datetime.date] = None
+    """Transaction date (YYYY-MM-DD)"""
+
+    description: Optional[str] = None
+    """Transaction description/particulars"""
+
+    dividend_rate: Optional[float] = None
+    """Dividend rate (for DIVIDEND_PAYOUT transactions)"""
+
+    nav: Optional[float] = None
+    """NAV/price per unit on transaction date"""
+
+    type: Optional[
+        Literal[
+            "PURCHASE",
+            "PURCHASE_SIP",
+            "REDEMPTION",
+            "SWITCH_IN",
+            "SWITCH_IN_MERGER",
+            "SWITCH_OUT",
+            "SWITCH_OUT_MERGER",
+            "DIVIDEND_PAYOUT",
+            "DIVIDEND_REINVEST",
+            "SEGREGATION",
+            "STAMP_DUTY_TAX",
+            "TDS_TAX",
+            "STT_TAX",
+            "MISC",
+            "REVERSAL",
+            "UNKNOWN",
+        ]
+    ] = None
+    """Transaction type.
+
+    Possible values are PURCHASE, PURCHASE_SIP, REDEMPTION, SWITCH_IN,
+    SWITCH_IN_MERGER, SWITCH_OUT, SWITCH_OUT_MERGER, DIVIDEND_PAYOUT,
+    DIVIDEND_REINVEST, SEGREGATION, STAMP_DUTY_TAX, TDS_TAX, STT_TAX, MISC,
+    REVERSAL, UNKNOWN.
+    """
+
+    units: Optional[float] = None
+    """Number of units involved in transaction"""
+
+
 class DematAccountHoldingsCorporateBond(BaseModel):
-    additional_info: Optional[object] = None
+    additional_info: Optional[DematAccountHoldingsCorporateBondAdditionalInfo] = None
     """Additional information specific to the corporate bond"""
 
     isin: Optional[str] = None
@@ -90,6 +304,9 @@ class DematAccountHoldingsCorporateBond(BaseModel):
     name: Optional[str] = None
     """Name of the corporate bond"""
 
+    transactions: Optional[List[DematAccountHoldingsCorporateBondTransaction]] = None
+    """List of transactions for this holding (beta)"""
+
     units: Optional[float] = None
     """Number of units held"""
 
@@ -97,8 +314,101 @@ class DematAccountHoldingsCorporateBond(BaseModel):
     """Current market value of the holding"""
 
 
+class DematAccountHoldingsDematMutualFundAdditionalInfo(BaseModel):
+    """Additional information specific to the mutual fund"""
+
+    close_units: Optional[float] = None
+    """Closing balance units for the statement period (beta)"""
+
+    open_units: Optional[float] = None
+    """Opening balance units for the statement period (beta)"""
+
+
+class DematAccountHoldingsDematMutualFundTransactionAdditionalInfo(BaseModel):
+    """Additional transaction-specific fields that vary by source"""
+
+    capital_withdrawal: Optional[float] = None
+    """Capital withdrawal amount (CDSL MF transactions)"""
+
+    credit: Optional[float] = None
+    """Units credited (demat transactions)"""
+
+    debit: Optional[float] = None
+    """Units debited (demat transactions)"""
+
+    income_distribution: Optional[float] = None
+    """Income distribution amount (CDSL MF transactions)"""
+
+    order_no: Optional[str] = None
+    """Order/transaction reference number (demat transactions)"""
+
+    price: Optional[float] = None
+    """Price per unit (NSDL/CDSL MF transactions)"""
+
+    stamp_duty: Optional[float] = None
+    """Stamp duty charged"""
+
+
+class DematAccountHoldingsDematMutualFundTransaction(BaseModel):
+    """
+    Unified transaction schema for all holding types (MF folios, equities, bonds, etc.)
+    """
+
+    additional_info: Optional[DematAccountHoldingsDematMutualFundTransactionAdditionalInfo] = None
+    """Additional transaction-specific fields that vary by source"""
+
+    amount: Optional[float] = None
+    """Transaction amount in currency (computed from units × price/NAV)"""
+
+    balance: Optional[float] = None
+    """Balance units after transaction"""
+
+    date: Optional[datetime.date] = None
+    """Transaction date (YYYY-MM-DD)"""
+
+    description: Optional[str] = None
+    """Transaction description/particulars"""
+
+    dividend_rate: Optional[float] = None
+    """Dividend rate (for DIVIDEND_PAYOUT transactions)"""
+
+    nav: Optional[float] = None
+    """NAV/price per unit on transaction date"""
+
+    type: Optional[
+        Literal[
+            "PURCHASE",
+            "PURCHASE_SIP",
+            "REDEMPTION",
+            "SWITCH_IN",
+            "SWITCH_IN_MERGER",
+            "SWITCH_OUT",
+            "SWITCH_OUT_MERGER",
+            "DIVIDEND_PAYOUT",
+            "DIVIDEND_REINVEST",
+            "SEGREGATION",
+            "STAMP_DUTY_TAX",
+            "TDS_TAX",
+            "STT_TAX",
+            "MISC",
+            "REVERSAL",
+            "UNKNOWN",
+        ]
+    ] = None
+    """Transaction type.
+
+    Possible values are PURCHASE, PURCHASE_SIP, REDEMPTION, SWITCH_IN,
+    SWITCH_IN_MERGER, SWITCH_OUT, SWITCH_OUT_MERGER, DIVIDEND_PAYOUT,
+    DIVIDEND_REINVEST, SEGREGATION, STAMP_DUTY_TAX, TDS_TAX, STT_TAX, MISC,
+    REVERSAL, UNKNOWN.
+    """
+
+    units: Optional[float] = None
+    """Number of units involved in transaction"""
+
+
 class DematAccountHoldingsDematMutualFund(BaseModel):
-    additional_info: Optional[object] = None
+    additional_info: Optional[DematAccountHoldingsDematMutualFundAdditionalInfo] = None
     """Additional information specific to the mutual fund"""
 
     isin: Optional[str] = None
@@ -107,6 +417,9 @@ class DematAccountHoldingsDematMutualFund(BaseModel):
     name: Optional[str] = None
     """Name of the mutual fund"""
 
+    transactions: Optional[List[DematAccountHoldingsDematMutualFundTransaction]] = None
+    """List of transactions for this holding (beta)"""
+
     units: Optional[float] = None
     """Number of units held"""
 
@@ -114,8 +427,101 @@ class DematAccountHoldingsDematMutualFund(BaseModel):
     """Current market value of the holding"""
 
 
+class DematAccountHoldingsEquityAdditionalInfo(BaseModel):
+    """Additional information specific to the equity"""
+
+    close_units: Optional[float] = None
+    """Closing balance units for the statement period (beta)"""
+
+    open_units: Optional[float] = None
+    """Opening balance units for the statement period (beta)"""
+
+
+class DematAccountHoldingsEquityTransactionAdditionalInfo(BaseModel):
+    """Additional transaction-specific fields that vary by source"""
+
+    capital_withdrawal: Optional[float] = None
+    """Capital withdrawal amount (CDSL MF transactions)"""
+
+    credit: Optional[float] = None
+    """Units credited (demat transactions)"""
+
+    debit: Optional[float] = None
+    """Units debited (demat transactions)"""
+
+    income_distribution: Optional[float] = None
+    """Income distribution amount (CDSL MF transactions)"""
+
+    order_no: Optional[str] = None
+    """Order/transaction reference number (demat transactions)"""
+
+    price: Optional[float] = None
+    """Price per unit (NSDL/CDSL MF transactions)"""
+
+    stamp_duty: Optional[float] = None
+    """Stamp duty charged"""
+
+
+class DematAccountHoldingsEquityTransaction(BaseModel):
+    """
+    Unified transaction schema for all holding types (MF folios, equities, bonds, etc.)
+    """
+
+    additional_info: Optional[DematAccountHoldingsEquityTransactionAdditionalInfo] = None
+    """Additional transaction-specific fields that vary by source"""
+
+    amount: Optional[float] = None
+    """Transaction amount in currency (computed from units × price/NAV)"""
+
+    balance: Optional[float] = None
+    """Balance units after transaction"""
+
+    date: Optional[datetime.date] = None
+    """Transaction date (YYYY-MM-DD)"""
+
+    description: Optional[str] = None
+    """Transaction description/particulars"""
+
+    dividend_rate: Optional[float] = None
+    """Dividend rate (for DIVIDEND_PAYOUT transactions)"""
+
+    nav: Optional[float] = None
+    """NAV/price per unit on transaction date"""
+
+    type: Optional[
+        Literal[
+            "PURCHASE",
+            "PURCHASE_SIP",
+            "REDEMPTION",
+            "SWITCH_IN",
+            "SWITCH_IN_MERGER",
+            "SWITCH_OUT",
+            "SWITCH_OUT_MERGER",
+            "DIVIDEND_PAYOUT",
+            "DIVIDEND_REINVEST",
+            "SEGREGATION",
+            "STAMP_DUTY_TAX",
+            "TDS_TAX",
+            "STT_TAX",
+            "MISC",
+            "REVERSAL",
+            "UNKNOWN",
+        ]
+    ] = None
+    """Transaction type.
+
+    Possible values are PURCHASE, PURCHASE_SIP, REDEMPTION, SWITCH_IN,
+    SWITCH_IN_MERGER, SWITCH_OUT, SWITCH_OUT_MERGER, DIVIDEND_PAYOUT,
+    DIVIDEND_REINVEST, SEGREGATION, STAMP_DUTY_TAX, TDS_TAX, STT_TAX, MISC,
+    REVERSAL, UNKNOWN.
+    """
+
+    units: Optional[float] = None
+    """Number of units involved in transaction"""
+
+
 class DematAccountHoldingsEquity(BaseModel):
-    additional_info: Optional[object] = None
+    additional_info: Optional[DematAccountHoldingsEquityAdditionalInfo] = None
     """Additional information specific to the equity"""
 
     isin: Optional[str] = None
@@ -124,6 +530,9 @@ class DematAccountHoldingsEquity(BaseModel):
     name: Optional[str] = None
     """Name of the equity"""
 
+    transactions: Optional[List[DematAccountHoldingsEquityTransaction]] = None
+    """List of transactions for this holding (beta)"""
+
     units: Optional[float] = None
     """Number of units held"""
 
@@ -131,8 +540,101 @@ class DematAccountHoldingsEquity(BaseModel):
     """Current market value of the holding"""
 
 
+class DematAccountHoldingsGovernmentSecurityAdditionalInfo(BaseModel):
+    """Additional information specific to the government security"""
+
+    close_units: Optional[float] = None
+    """Closing balance units for the statement period (beta)"""
+
+    open_units: Optional[float] = None
+    """Opening balance units for the statement period (beta)"""
+
+
+class DematAccountHoldingsGovernmentSecurityTransactionAdditionalInfo(BaseModel):
+    """Additional transaction-specific fields that vary by source"""
+
+    capital_withdrawal: Optional[float] = None
+    """Capital withdrawal amount (CDSL MF transactions)"""
+
+    credit: Optional[float] = None
+    """Units credited (demat transactions)"""
+
+    debit: Optional[float] = None
+    """Units debited (demat transactions)"""
+
+    income_distribution: Optional[float] = None
+    """Income distribution amount (CDSL MF transactions)"""
+
+    order_no: Optional[str] = None
+    """Order/transaction reference number (demat transactions)"""
+
+    price: Optional[float] = None
+    """Price per unit (NSDL/CDSL MF transactions)"""
+
+    stamp_duty: Optional[float] = None
+    """Stamp duty charged"""
+
+
+class DematAccountHoldingsGovernmentSecurityTransaction(BaseModel):
+    """
+    Unified transaction schema for all holding types (MF folios, equities, bonds, etc.)
+    """
+
+    additional_info: Optional[DematAccountHoldingsGovernmentSecurityTransactionAdditionalInfo] = None
+    """Additional transaction-specific fields that vary by source"""
+
+    amount: Optional[float] = None
+    """Transaction amount in currency (computed from units × price/NAV)"""
+
+    balance: Optional[float] = None
+    """Balance units after transaction"""
+
+    date: Optional[datetime.date] = None
+    """Transaction date (YYYY-MM-DD)"""
+
+    description: Optional[str] = None
+    """Transaction description/particulars"""
+
+    dividend_rate: Optional[float] = None
+    """Dividend rate (for DIVIDEND_PAYOUT transactions)"""
+
+    nav: Optional[float] = None
+    """NAV/price per unit on transaction date"""
+
+    type: Optional[
+        Literal[
+            "PURCHASE",
+            "PURCHASE_SIP",
+            "REDEMPTION",
+            "SWITCH_IN",
+            "SWITCH_IN_MERGER",
+            "SWITCH_OUT",
+            "SWITCH_OUT_MERGER",
+            "DIVIDEND_PAYOUT",
+            "DIVIDEND_REINVEST",
+            "SEGREGATION",
+            "STAMP_DUTY_TAX",
+            "TDS_TAX",
+            "STT_TAX",
+            "MISC",
+            "REVERSAL",
+            "UNKNOWN",
+        ]
+    ] = None
+    """Transaction type.
+
+    Possible values are PURCHASE, PURCHASE_SIP, REDEMPTION, SWITCH_IN,
+    SWITCH_IN_MERGER, SWITCH_OUT, SWITCH_OUT_MERGER, DIVIDEND_PAYOUT,
+    DIVIDEND_REINVEST, SEGREGATION, STAMP_DUTY_TAX, TDS_TAX, STT_TAX, MISC,
+    REVERSAL, UNKNOWN.
+    """
+
+    units: Optional[float] = None
+    """Number of units involved in transaction"""
+
+
 class DematAccountHoldingsGovernmentSecurity(BaseModel):
-    additional_info: Optional[object] = None
+    additional_info: Optional[DematAccountHoldingsGovernmentSecurityAdditionalInfo] = None
     """Additional information specific to the government security"""
 
     isin: Optional[str] = None
@@ -140,6 +642,9 @@ class DematAccountHoldingsGovernmentSecurity(BaseModel):
 
     name: Optional[str] = None
     """Name of the government security"""
+
+    transactions: Optional[List[DematAccountHoldingsGovernmentSecurityTransaction]] = None
+    """List of transactions for this holding (beta)"""
 
     units: Optional[float] = None
     """Number of units held"""
@@ -158,6 +663,14 @@ class DematAccountHoldings(BaseModel):
     equities: Optional[List[DematAccountHoldingsEquity]] = None
 
     government_securities: Optional[List[DematAccountHoldingsGovernmentSecurity]] = None
+
+
+class DematAccountLinkedHolder(BaseModel):
+    name: Optional[str] = None
+    """Name of the account holder"""
+
+    pan: Optional[str] = None
+    """PAN of the account holder"""
 
 
 class DematAccount(BaseModel):
@@ -180,6 +693,9 @@ class DematAccount(BaseModel):
     """Depository Participant name"""
 
     holdings: Optional[DematAccountHoldings] = None
+
+    linked_holders: Optional[List[DematAccountLinkedHolder]] = None
+    """List of account holders linked to this demat account"""
 
     value: Optional[float] = None
     """Total value of the demat account"""
@@ -260,6 +776,8 @@ class Meta(BaseModel):
 
 
 class MutualFundAdditionalInfo(BaseModel):
+    """Additional folio information"""
+
     kyc: Optional[str] = None
     """KYC status of the folio"""
 
@@ -270,7 +788,17 @@ class MutualFundAdditionalInfo(BaseModel):
     """PAN KYC status"""
 
 
+class MutualFundLinkedHolder(BaseModel):
+    name: Optional[str] = None
+    """Name of the account holder"""
+
+    pan: Optional[str] = None
+    """PAN of the account holder"""
+
+
 class MutualFundSchemeAdditionalInfo(BaseModel):
+    """Additional information specific to the scheme"""
+
     advisor: Optional[str] = None
     """Financial advisor name (CAMS/KFintech)"""
 
@@ -278,10 +806,10 @@ class MutualFundSchemeAdditionalInfo(BaseModel):
     """AMFI code for the scheme (CAMS/KFintech)"""
 
     close_units: Optional[float] = None
-    """Closing balance units (CAMS/KFintech)"""
+    """Closing balance units for the statement period"""
 
     open_units: Optional[float] = None
-    """Opening balance units (CAMS/KFintech)"""
+    """Opening balance units for the statement period"""
 
     rta_code: Optional[str] = None
     """RTA code for the scheme (CAMS/KFintech)"""
@@ -295,36 +823,87 @@ class MutualFundSchemeGain(BaseModel):
     """Percentage gain or loss"""
 
 
+class MutualFundSchemeTransactionAdditionalInfo(BaseModel):
+    """Additional transaction-specific fields that vary by source"""
+
+    capital_withdrawal: Optional[float] = None
+    """Capital withdrawal amount (CDSL MF transactions)"""
+
+    credit: Optional[float] = None
+    """Units credited (demat transactions)"""
+
+    debit: Optional[float] = None
+    """Units debited (demat transactions)"""
+
+    income_distribution: Optional[float] = None
+    """Income distribution amount (CDSL MF transactions)"""
+
+    order_no: Optional[str] = None
+    """Order/transaction reference number (demat transactions)"""
+
+    price: Optional[float] = None
+    """Price per unit (NSDL/CDSL MF transactions)"""
+
+    stamp_duty: Optional[float] = None
+    """Stamp duty charged"""
+
+
 class MutualFundSchemeTransaction(BaseModel):
+    """
+    Unified transaction schema for all holding types (MF folios, equities, bonds, etc.)
+    """
+
+    additional_info: Optional[MutualFundSchemeTransactionAdditionalInfo] = None
+    """Additional transaction-specific fields that vary by source"""
+
     amount: Optional[float] = None
-    """Transaction amount"""
+    """Transaction amount in currency (computed from units × price/NAV)"""
 
     balance: Optional[float] = None
     """Balance units after transaction"""
 
     date: Optional[datetime.date] = None
-    """Transaction date"""
+    """Transaction date (YYYY-MM-DD)"""
 
     description: Optional[str] = None
-    """Transaction description"""
+    """Transaction description/particulars"""
 
     dividend_rate: Optional[float] = None
-    """Dividend rate (for dividend transactions)"""
+    """Dividend rate (for DIVIDEND_PAYOUT transactions)"""
 
     nav: Optional[float] = None
-    """NAV on transaction date"""
+    """NAV/price per unit on transaction date"""
 
-    type: Optional[str] = None
-    """Transaction type detected based on description.
+    type: Optional[
+        Literal[
+            "PURCHASE",
+            "PURCHASE_SIP",
+            "REDEMPTION",
+            "SWITCH_IN",
+            "SWITCH_IN_MERGER",
+            "SWITCH_OUT",
+            "SWITCH_OUT_MERGER",
+            "DIVIDEND_PAYOUT",
+            "DIVIDEND_REINVEST",
+            "SEGREGATION",
+            "STAMP_DUTY_TAX",
+            "TDS_TAX",
+            "STT_TAX",
+            "MISC",
+            "REVERSAL",
+            "UNKNOWN",
+        ]
+    ] = None
+    """Transaction type.
 
-    Possible values are
-    PURCHASE,PURCHASE_SIP,REDEMPTION,SWITCH_IN,SWITCH_IN_MERGER,SWITCH_OUT,SWITCH_OUT_MERGER,DIVIDEND_PAYOUT,DIVIDEND_REINVESTMENT,SEGREGATION,STAMP_DUTY_TAX,TDS_TAX,STT_TAX,MISC.
-    If dividend_rate is present, then possible values are dividend_rate is
-    applicable only for DIVIDEND_PAYOUT and DIVIDEND_REINVESTMENT.
+    Possible values are PURCHASE, PURCHASE_SIP, REDEMPTION, SWITCH_IN,
+    SWITCH_IN_MERGER, SWITCH_OUT, SWITCH_OUT_MERGER, DIVIDEND_PAYOUT,
+    DIVIDEND_REINVEST, SEGREGATION, STAMP_DUTY_TAX, TDS_TAX, STT_TAX, MISC,
+    REVERSAL, UNKNOWN.
     """
 
     units: Optional[float] = None
-    """Number of units involved"""
+    """Number of units involved in transaction"""
 
 
 class MutualFundScheme(BaseModel):
@@ -370,6 +949,9 @@ class MutualFund(BaseModel):
     folio_number: Optional[str] = None
     """Folio number"""
 
+    linked_holders: Optional[List[MutualFundLinkedHolder]] = None
+    """List of account holders linked to this mutual fund folio"""
+
     registrar: Optional[str] = None
     """Registrar and Transfer Agent name"""
 
@@ -377,6 +959,63 @@ class MutualFund(BaseModel):
 
     value: Optional[float] = None
     """Total value of the folio"""
+
+
+class NpFundAdditionalInfo(BaseModel):
+    """Additional information specific to the NPS fund"""
+
+    manager: Optional[str] = None
+    """Fund manager name"""
+
+    tier: Optional[Literal[1, 2]] = None
+    """NPS tier (Tier I or Tier II)"""
+
+
+class NpFund(BaseModel):
+    additional_info: Optional[NpFundAdditionalInfo] = None
+    """Additional information specific to the NPS fund"""
+
+    cost: Optional[float] = None
+    """Cost of investment"""
+
+    name: Optional[str] = None
+    """Name of the NPS fund"""
+
+    nav: Optional[float] = None
+    """Net Asset Value per unit"""
+
+    units: Optional[float] = None
+    """Number of units held"""
+
+    value: Optional[float] = None
+    """Current market value of the holding"""
+
+
+class NpLinkedHolder(BaseModel):
+    name: Optional[str] = None
+    """Name of the account holder"""
+
+    pan: Optional[str] = None
+    """PAN of the account holder"""
+
+
+class Np(BaseModel):
+    additional_info: Optional[object] = None
+    """Additional information specific to the NPS account"""
+
+    cra: Optional[str] = None
+    """Central Record Keeping Agency name"""
+
+    funds: Optional[List[NpFund]] = None
+
+    linked_holders: Optional[List[NpLinkedHolder]] = None
+    """List of account holders linked to this NPS account"""
+
+    pran: Optional[str] = None
+    """Permanent Retirement Account Number (PRAN)"""
+
+    value: Optional[float] = None
+    """Total value of the NPS account"""
 
 
 class SummaryAccountsDemat(BaseModel):
@@ -403,12 +1042,22 @@ class SummaryAccountsMutualFunds(BaseModel):
     """Total value of mutual funds"""
 
 
+class SummaryAccountsNps(BaseModel):
+    count: Optional[int] = None
+    """Number of NPS accounts"""
+
+    total_value: Optional[float] = None
+    """Total value of NPS accounts"""
+
+
 class SummaryAccounts(BaseModel):
     demat: Optional[SummaryAccountsDemat] = None
 
     insurance: Optional[SummaryAccountsInsurance] = None
 
     mutual_funds: Optional[SummaryAccountsMutualFunds] = None
+
+    nps: Optional[SummaryAccountsNps] = None
 
 
 class Summary(BaseModel):
@@ -428,5 +1077,8 @@ class UnifiedResponse(BaseModel):
     meta: Optional[Meta] = None
 
     mutual_funds: Optional[List[MutualFund]] = None
+
+    nps: Optional[List[Np]] = None
+    """List of NPS accounts"""
 
     summary: Optional[Summary] = None

@@ -9,6 +9,7 @@ import asyncio
 import inspect
 import logging
 import platform
+import warnings
 import email.utils
 from types import TracebackType
 from random import random
@@ -42,7 +43,6 @@ from . import _exceptions
 from ._qs import Querystring
 from ._files import to_httpx_files, async_to_httpx_files
 from ._types import (
-    NOT_GIVEN,
     Body,
     Omit,
     Query,
@@ -52,11 +52,14 @@ from ._types import (
     ResponseT,
     AnyMapping,
     PostParser,
+    BinaryTypes,
     RequestFiles,
     HttpxSendArgs,
     RequestOptions,
+    AsyncBinaryTypes,
     HttpxRequestFiles,
     ModelBuilderProtocol,
+    not_given,
 )
 from ._utils import is_dict, is_list, asyncify, is_given, lru_cache, is_mapping
 from ._compat import PYDANTIC_V1, model_copy, model_dump
@@ -83,6 +86,7 @@ from ._exceptions import (
     APIConnectionError,
     APIResponseValidationError,
 )
+from ._utils._json import openapi_dumps
 
 log: logging.Logger = logging.getLogger(__name__)
 
@@ -145,9 +149,9 @@ class PageInfo:
     def __init__(
         self,
         *,
-        url: URL | NotGiven = NOT_GIVEN,
-        json: Body | NotGiven = NOT_GIVEN,
-        params: Query | NotGiven = NOT_GIVEN,
+        url: URL | NotGiven = not_given,
+        json: Body | NotGiven = not_given,
+        params: Query | NotGiven = not_given,
     ) -> None:
         self.url = url
         self.json = json
@@ -477,8 +481,19 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
         retries_taken: int = 0,
     ) -> httpx.Request:
         if log.isEnabledFor(logging.DEBUG):
-            log.debug("Request options: %s", model_dump(options, exclude_unset=True))
-
+            log.debug(
+                "Request options: %s",
+                model_dump(
+                    options,
+                    exclude_unset=True,
+                    # Pydantic v1 can't dump every type we support in content, so we exclude it for now.
+                    exclude={
+                        "content",
+                    }
+                    if PYDANTIC_V1
+                    else {},
+                ),
+            )
         kwargs: dict[str, Any] = {}
 
         json_data = options.json_data
@@ -532,10 +547,18 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
         is_body_allowed = options.method.lower() != "get"
 
         if is_body_allowed:
-            if isinstance(json_data, bytes):
+            if options.content is not None and json_data is not None:
+                raise TypeError("Passing both `content` and `json_data` is not supported")
+            if options.content is not None and files is not None:
+                raise TypeError("Passing both `content` and `files` is not supported")
+            if options.content is not None:
+                kwargs["content"] = options.content
+            elif isinstance(json_data, bytes):
                 kwargs["content"] = json_data
-            else:
-                kwargs["json"] = json_data if is_given(json_data) else None
+            elif not files:
+                # Don't set content when JSON is sent as multipart/form-data,
+                # since httpx's content param overrides other body arguments
+                kwargs["content"] = openapi_dumps(json_data) if is_given(json_data) and json_data is not None else None
             kwargs["files"] = files
         else:
             headers.pop("Content-Type", None)
@@ -595,7 +618,7 @@ class BaseClient(Generic[_HttpxClientT, _DefaultStreamT]):
         # we internally support defining a temporary header to override the
         # default `cast_to` type for use with `.with_raw_response` and `.with_streaming_response`
         # see _response.py for implementation details
-        override_cast_to = headers.pop(OVERRIDE_CAST_TO_HEADER, NOT_GIVEN)
+        override_cast_to = headers.pop(OVERRIDE_CAST_TO_HEADER, not_given)
         if is_given(override_cast_to):
             options.headers = headers
             return cast(Type[ResponseT], override_cast_to)
@@ -825,7 +848,7 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         version: str,
         base_url: str | URL,
         max_retries: int = DEFAULT_MAX_RETRIES,
-        timeout: float | Timeout | None | NotGiven = NOT_GIVEN,
+        timeout: float | Timeout | None | NotGiven = not_given,
         http_client: httpx.Client | None = None,
         custom_headers: Mapping[str, str] | None = None,
         custom_query: Mapping[str, object] | None = None,
@@ -1194,6 +1217,7 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         *,
         cast_to: Type[ResponseT],
         body: Body | None = None,
+        content: BinaryTypes | None = None,
         options: RequestOptions = {},
         files: RequestFiles | None = None,
         stream: Literal[False] = False,
@@ -1206,6 +1230,7 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         *,
         cast_to: Type[ResponseT],
         body: Body | None = None,
+        content: BinaryTypes | None = None,
         options: RequestOptions = {},
         files: RequestFiles | None = None,
         stream: Literal[True],
@@ -1219,6 +1244,7 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         *,
         cast_to: Type[ResponseT],
         body: Body | None = None,
+        content: BinaryTypes | None = None,
         options: RequestOptions = {},
         files: RequestFiles | None = None,
         stream: bool,
@@ -1231,13 +1257,25 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         *,
         cast_to: Type[ResponseT],
         body: Body | None = None,
+        content: BinaryTypes | None = None,
         options: RequestOptions = {},
         files: RequestFiles | None = None,
         stream: bool = False,
         stream_cls: type[_StreamT] | None = None,
     ) -> ResponseT | _StreamT:
+        if body is not None and content is not None:
+            raise TypeError("Passing both `body` and `content` is not supported")
+        if files is not None and content is not None:
+            raise TypeError("Passing both `files` and `content` is not supported")
+        if isinstance(body, bytes):
+            warnings.warn(
+                "Passing raw bytes as `body` is deprecated and will be removed in a future version. "
+                "Please pass raw bytes via the `content` parameter instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         opts = FinalRequestOptions.construct(
-            method="post", url=path, json_data=body, files=to_httpx_files(files), **options
+            method="post", url=path, json_data=body, content=content, files=to_httpx_files(files), **options
         )
         return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
 
@@ -1247,9 +1285,24 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         *,
         cast_to: Type[ResponseT],
         body: Body | None = None,
+        content: BinaryTypes | None = None,
+        files: RequestFiles | None = None,
         options: RequestOptions = {},
     ) -> ResponseT:
-        opts = FinalRequestOptions.construct(method="patch", url=path, json_data=body, **options)
+        if body is not None and content is not None:
+            raise TypeError("Passing both `body` and `content` is not supported")
+        if files is not None and content is not None:
+            raise TypeError("Passing both `files` and `content` is not supported")
+        if isinstance(body, bytes):
+            warnings.warn(
+                "Passing raw bytes as `body` is deprecated and will be removed in a future version. "
+                "Please pass raw bytes via the `content` parameter instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        opts = FinalRequestOptions.construct(
+            method="patch", url=path, json_data=body, content=content, files=to_httpx_files(files), **options
+        )
         return self.request(cast_to, opts)
 
     def put(
@@ -1258,11 +1311,23 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         *,
         cast_to: Type[ResponseT],
         body: Body | None = None,
+        content: BinaryTypes | None = None,
         files: RequestFiles | None = None,
         options: RequestOptions = {},
     ) -> ResponseT:
+        if body is not None and content is not None:
+            raise TypeError("Passing both `body` and `content` is not supported")
+        if files is not None and content is not None:
+            raise TypeError("Passing both `files` and `content` is not supported")
+        if isinstance(body, bytes):
+            warnings.warn(
+                "Passing raw bytes as `body` is deprecated and will be removed in a future version. "
+                "Please pass raw bytes via the `content` parameter instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         opts = FinalRequestOptions.construct(
-            method="put", url=path, json_data=body, files=to_httpx_files(files), **options
+            method="put", url=path, json_data=body, content=content, files=to_httpx_files(files), **options
         )
         return self.request(cast_to, opts)
 
@@ -1272,9 +1337,19 @@ class SyncAPIClient(BaseClient[httpx.Client, Stream[Any]]):
         *,
         cast_to: Type[ResponseT],
         body: Body | None = None,
+        content: BinaryTypes | None = None,
         options: RequestOptions = {},
     ) -> ResponseT:
-        opts = FinalRequestOptions.construct(method="delete", url=path, json_data=body, **options)
+        if body is not None and content is not None:
+            raise TypeError("Passing both `body` and `content` is not supported")
+        if isinstance(body, bytes):
+            warnings.warn(
+                "Passing raw bytes as `body` is deprecated and will be removed in a future version. "
+                "Please pass raw bytes via the `content` parameter instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        opts = FinalRequestOptions.construct(method="delete", url=path, json_data=body, content=content, **options)
         return self.request(cast_to, opts)
 
     def get_api_list(
@@ -1356,7 +1431,7 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         base_url: str | URL,
         _strict_response_validation: bool,
         max_retries: int = DEFAULT_MAX_RETRIES,
-        timeout: float | Timeout | None | NotGiven = NOT_GIVEN,
+        timeout: float | Timeout | None | NotGiven = not_given,
         http_client: httpx.AsyncClient | None = None,
         custom_headers: Mapping[str, str] | None = None,
         custom_query: Mapping[str, object] | None = None,
@@ -1714,6 +1789,7 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         *,
         cast_to: Type[ResponseT],
         body: Body | None = None,
+        content: AsyncBinaryTypes | None = None,
         files: RequestFiles | None = None,
         options: RequestOptions = {},
         stream: Literal[False] = False,
@@ -1726,6 +1802,7 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         *,
         cast_to: Type[ResponseT],
         body: Body | None = None,
+        content: AsyncBinaryTypes | None = None,
         files: RequestFiles | None = None,
         options: RequestOptions = {},
         stream: Literal[True],
@@ -1739,6 +1816,7 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         *,
         cast_to: Type[ResponseT],
         body: Body | None = None,
+        content: AsyncBinaryTypes | None = None,
         files: RequestFiles | None = None,
         options: RequestOptions = {},
         stream: bool,
@@ -1751,13 +1829,25 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         *,
         cast_to: Type[ResponseT],
         body: Body | None = None,
+        content: AsyncBinaryTypes | None = None,
         files: RequestFiles | None = None,
         options: RequestOptions = {},
         stream: bool = False,
         stream_cls: type[_AsyncStreamT] | None = None,
     ) -> ResponseT | _AsyncStreamT:
+        if body is not None and content is not None:
+            raise TypeError("Passing both `body` and `content` is not supported")
+        if files is not None and content is not None:
+            raise TypeError("Passing both `files` and `content` is not supported")
+        if isinstance(body, bytes):
+            warnings.warn(
+                "Passing raw bytes as `body` is deprecated and will be removed in a future version. "
+                "Please pass raw bytes via the `content` parameter instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         opts = FinalRequestOptions.construct(
-            method="post", url=path, json_data=body, files=await async_to_httpx_files(files), **options
+            method="post", url=path, json_data=body, content=content, files=await async_to_httpx_files(files), **options
         )
         return await self.request(cast_to, opts, stream=stream, stream_cls=stream_cls)
 
@@ -1767,9 +1857,29 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         *,
         cast_to: Type[ResponseT],
         body: Body | None = None,
+        content: AsyncBinaryTypes | None = None,
+        files: RequestFiles | None = None,
         options: RequestOptions = {},
     ) -> ResponseT:
-        opts = FinalRequestOptions.construct(method="patch", url=path, json_data=body, **options)
+        if body is not None and content is not None:
+            raise TypeError("Passing both `body` and `content` is not supported")
+        if files is not None and content is not None:
+            raise TypeError("Passing both `files` and `content` is not supported")
+        if isinstance(body, bytes):
+            warnings.warn(
+                "Passing raw bytes as `body` is deprecated and will be removed in a future version. "
+                "Please pass raw bytes via the `content` parameter instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        opts = FinalRequestOptions.construct(
+            method="patch",
+            url=path,
+            json_data=body,
+            content=content,
+            files=await async_to_httpx_files(files),
+            **options,
+        )
         return await self.request(cast_to, opts)
 
     async def put(
@@ -1778,11 +1888,23 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         *,
         cast_to: Type[ResponseT],
         body: Body | None = None,
+        content: AsyncBinaryTypes | None = None,
         files: RequestFiles | None = None,
         options: RequestOptions = {},
     ) -> ResponseT:
+        if body is not None and content is not None:
+            raise TypeError("Passing both `body` and `content` is not supported")
+        if files is not None and content is not None:
+            raise TypeError("Passing both `files` and `content` is not supported")
+        if isinstance(body, bytes):
+            warnings.warn(
+                "Passing raw bytes as `body` is deprecated and will be removed in a future version. "
+                "Please pass raw bytes via the `content` parameter instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         opts = FinalRequestOptions.construct(
-            method="put", url=path, json_data=body, files=await async_to_httpx_files(files), **options
+            method="put", url=path, json_data=body, content=content, files=await async_to_httpx_files(files), **options
         )
         return await self.request(cast_to, opts)
 
@@ -1792,9 +1914,19 @@ class AsyncAPIClient(BaseClient[httpx.AsyncClient, AsyncStream[Any]]):
         *,
         cast_to: Type[ResponseT],
         body: Body | None = None,
+        content: AsyncBinaryTypes | None = None,
         options: RequestOptions = {},
     ) -> ResponseT:
-        opts = FinalRequestOptions.construct(method="delete", url=path, json_data=body, **options)
+        if body is not None and content is not None:
+            raise TypeError("Passing both `body` and `content` is not supported")
+        if isinstance(body, bytes):
+            warnings.warn(
+                "Passing raw bytes as `body` is deprecated and will be removed in a future version. "
+                "Please pass raw bytes via the `content` parameter instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        opts = FinalRequestOptions.construct(method="delete", url=path, json_data=body, content=content, **options)
         return await self.request(cast_to, opts)
 
     def get_api_list(
@@ -1818,8 +1950,8 @@ def make_request_options(
     extra_query: Query | None = None,
     extra_body: Body | None = None,
     idempotency_key: str | None = None,
-    timeout: float | httpx.Timeout | None | NotGiven = NOT_GIVEN,
-    post_parser: PostParser | NotGiven = NOT_GIVEN,
+    timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    post_parser: PostParser | NotGiven = not_given,
 ) -> RequestOptions:
     """Create a dict of type RequestOptions without keys of NotGiven values."""
     options: RequestOptions = {}
