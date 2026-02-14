@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.1 (2026-02-14)
+
+Full Changelog: [v1.3.0...v1.3.1](https://github.com/CASParser/cas-parser-python/compare/v1.3.0...v1.3.1)
+
+### Chores
+
+* configure new SDK language ([1349249](https://github.com/CASParser/cas-parser-python/commit/13492498f165a4c6aa35b0798ecee6ac21ba45d7))
+
 ## 1.3.0 (2026-02-14)
 
 Full Changelog: [v1.2.1...v1.3.0](https://github.com/CASParser/cas-parser-python/compare/v1.2.1...v1.3.0)
