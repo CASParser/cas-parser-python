@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.1 (2026-02-14)
+
+Full Changelog: [v1.2.0...v1.2.1](https://github.com/CASParser/cas-parser-python/compare/v1.2.0...v1.2.1)
+
+### Chores
+
+* update SDK settings ([0231f54](https://github.com/CASParser/cas-parser-python/commit/0231f540b484945a3bbc5d023a11197913e56642))
+
 ## 1.2.0 (2026-02-03)
 
 Full Changelog: [v1.1.0...v1.2.0](https://github.com/CASParser/cas-parser-python/compare/v1.1.0...v1.2.0)
