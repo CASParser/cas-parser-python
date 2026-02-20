@@ -17,13 +17,13 @@ base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 class TestContractNote:
     parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_parse(self, client: CasParser) -> None:
         contract_note = client.contract_note.parse()
         assert_matches_type(ContractNoteParseResponse, contract_note, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_parse_with_all_params(self, client: CasParser) -> None:
         contract_note = client.contract_note.parse(
@@ -34,7 +34,7 @@ class TestContractNote:
         )
         assert_matches_type(ContractNoteParseResponse, contract_note, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_raw_response_parse(self, client: CasParser) -> None:
         response = client.contract_note.with_raw_response.parse()
@@ -44,7 +44,7 @@ class TestContractNote:
         contract_note = response.parse()
         assert_matches_type(ContractNoteParseResponse, contract_note, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_streaming_response_parse(self, client: CasParser) -> None:
         with client.contract_note.with_streaming_response.parse() as response:
@@ -62,13 +62,13 @@ class TestAsyncContractNote:
         "async_client", [False, True, {"http_client": "aiohttp"}], indirect=True, ids=["loose", "strict", "aiohttp"]
     )
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_parse(self, async_client: AsyncCasParser) -> None:
         contract_note = await async_client.contract_note.parse()
         assert_matches_type(ContractNoteParseResponse, contract_note, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_parse_with_all_params(self, async_client: AsyncCasParser) -> None:
         contract_note = await async_client.contract_note.parse(
@@ -79,7 +79,7 @@ class TestAsyncContractNote:
         )
         assert_matches_type(ContractNoteParseResponse, contract_note, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_raw_response_parse(self, async_client: AsyncCasParser) -> None:
         response = await async_client.contract_note.with_raw_response.parse()
@@ -89,7 +89,7 @@ class TestAsyncContractNote:
         contract_note = await response.parse()
         assert_matches_type(ContractNoteParseResponse, contract_note, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_streaming_response_parse(self, async_client: AsyncCasParser) -> None:
         async with async_client.contract_note.with_streaming_response.parse() as response:

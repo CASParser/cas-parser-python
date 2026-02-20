@@ -17,13 +17,13 @@ base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 class TestCdsl:
     parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_parse_pdf(self, client: CasParser) -> None:
         cdsl = client.cdsl.parse_pdf()
         assert_matches_type(UnifiedResponse, cdsl, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_parse_pdf_with_all_params(self, client: CasParser) -> None:
         cdsl = client.cdsl.parse_pdf(
@@ -33,7 +33,7 @@ class TestCdsl:
         )
         assert_matches_type(UnifiedResponse, cdsl, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_raw_response_parse_pdf(self, client: CasParser) -> None:
         response = client.cdsl.with_raw_response.parse_pdf()
@@ -43,7 +43,7 @@ class TestCdsl:
         cdsl = response.parse()
         assert_matches_type(UnifiedResponse, cdsl, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_streaming_response_parse_pdf(self, client: CasParser) -> None:
         with client.cdsl.with_streaming_response.parse_pdf() as response:
@@ -61,13 +61,13 @@ class TestAsyncCdsl:
         "async_client", [False, True, {"http_client": "aiohttp"}], indirect=True, ids=["loose", "strict", "aiohttp"]
     )
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_parse_pdf(self, async_client: AsyncCasParser) -> None:
         cdsl = await async_client.cdsl.parse_pdf()
         assert_matches_type(UnifiedResponse, cdsl, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_parse_pdf_with_all_params(self, async_client: AsyncCasParser) -> None:
         cdsl = await async_client.cdsl.parse_pdf(
@@ -77,7 +77,7 @@ class TestAsyncCdsl:
         )
         assert_matches_type(UnifiedResponse, cdsl, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_raw_response_parse_pdf(self, async_client: AsyncCasParser) -> None:
         response = await async_client.cdsl.with_raw_response.parse_pdf()
@@ -87,7 +87,7 @@ class TestAsyncCdsl:
         cdsl = await response.parse()
         assert_matches_type(UnifiedResponse, cdsl, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_streaming_response_parse_pdf(self, async_client: AsyncCasParser) -> None:
         async with async_client.cdsl.with_streaming_response.parse_pdf() as response:

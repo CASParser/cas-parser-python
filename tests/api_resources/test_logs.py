@@ -18,13 +18,13 @@ base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 class TestLogs:
     parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_create(self, client: CasParser) -> None:
         log = client.logs.create()
         assert_matches_type(LogCreateResponse, log, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_create_with_all_params(self, client: CasParser) -> None:
         log = client.logs.create(
@@ -34,7 +34,7 @@ class TestLogs:
         )
         assert_matches_type(LogCreateResponse, log, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_raw_response_create(self, client: CasParser) -> None:
         response = client.logs.with_raw_response.create()
@@ -44,7 +44,7 @@ class TestLogs:
         log = response.parse()
         assert_matches_type(LogCreateResponse, log, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_streaming_response_create(self, client: CasParser) -> None:
         with client.logs.with_streaming_response.create() as response:
@@ -56,13 +56,13 @@ class TestLogs:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_get_summary(self, client: CasParser) -> None:
         log = client.logs.get_summary()
         assert_matches_type(LogGetSummaryResponse, log, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_get_summary_with_all_params(self, client: CasParser) -> None:
         log = client.logs.get_summary(
@@ -71,7 +71,7 @@ class TestLogs:
         )
         assert_matches_type(LogGetSummaryResponse, log, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_raw_response_get_summary(self, client: CasParser) -> None:
         response = client.logs.with_raw_response.get_summary()
@@ -81,7 +81,7 @@ class TestLogs:
         log = response.parse()
         assert_matches_type(LogGetSummaryResponse, log, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_streaming_response_get_summary(self, client: CasParser) -> None:
         with client.logs.with_streaming_response.get_summary() as response:
@@ -99,13 +99,13 @@ class TestAsyncLogs:
         "async_client", [False, True, {"http_client": "aiohttp"}], indirect=True, ids=["loose", "strict", "aiohttp"]
     )
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_create(self, async_client: AsyncCasParser) -> None:
         log = await async_client.logs.create()
         assert_matches_type(LogCreateResponse, log, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncCasParser) -> None:
         log = await async_client.logs.create(
@@ -115,7 +115,7 @@ class TestAsyncLogs:
         )
         assert_matches_type(LogCreateResponse, log, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncCasParser) -> None:
         response = await async_client.logs.with_raw_response.create()
@@ -125,7 +125,7 @@ class TestAsyncLogs:
         log = await response.parse()
         assert_matches_type(LogCreateResponse, log, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncCasParser) -> None:
         async with async_client.logs.with_streaming_response.create() as response:
@@ -137,13 +137,13 @@ class TestAsyncLogs:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_get_summary(self, async_client: AsyncCasParser) -> None:
         log = await async_client.logs.get_summary()
         assert_matches_type(LogGetSummaryResponse, log, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_get_summary_with_all_params(self, async_client: AsyncCasParser) -> None:
         log = await async_client.logs.get_summary(
@@ -152,7 +152,7 @@ class TestAsyncLogs:
         )
         assert_matches_type(LogGetSummaryResponse, log, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_raw_response_get_summary(self, async_client: AsyncCasParser) -> None:
         response = await async_client.logs.with_raw_response.get_summary()
@@ -162,7 +162,7 @@ class TestAsyncLogs:
         log = await response.parse()
         assert_matches_type(LogGetSummaryResponse, log, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_streaming_response_get_summary(self, async_client: AsyncCasParser) -> None:
         async with async_client.logs.with_streaming_response.get_summary() as response:
