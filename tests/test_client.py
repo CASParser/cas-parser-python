@@ -863,20 +863,20 @@ class TestCasParser:
     @mock.patch("cas_parser._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_timeout_errors_doesnt_leak(self, respx_mock: MockRouter, client: CasParser) -> None:
-        respx_mock.post("/credits").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.post("/v4/cams_kfintech/parse").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            client.credits.with_streaming_response.check().__enter__()
+            client.cams_kfintech.with_streaming_response.parse().__enter__()
 
         assert _get_open_connections(client) == 0
 
     @mock.patch("cas_parser._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_status_errors_doesnt_leak(self, respx_mock: MockRouter, client: CasParser) -> None:
-        respx_mock.post("/credits").mock(return_value=httpx.Response(500))
+        respx_mock.post("/v4/cams_kfintech/parse").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            client.credits.with_streaming_response.check().__enter__()
+            client.cams_kfintech.with_streaming_response.parse().__enter__()
         assert _get_open_connections(client) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
@@ -903,9 +903,9 @@ class TestCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/credits").mock(side_effect=retry_handler)
+        respx_mock.post("/v4/cams_kfintech/parse").mock(side_effect=retry_handler)
 
-        response = client.credits.with_raw_response.check()
+        response = client.cams_kfintech.with_raw_response.parse()
 
         assert response.retries_taken == failures_before_success
         assert int(response.http_request.headers.get("x-stainless-retry-count")) == failures_before_success
@@ -927,9 +927,9 @@ class TestCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/credits").mock(side_effect=retry_handler)
+        respx_mock.post("/v4/cams_kfintech/parse").mock(side_effect=retry_handler)
 
-        response = client.credits.with_raw_response.check(extra_headers={"x-stainless-retry-count": Omit()})
+        response = client.cams_kfintech.with_raw_response.parse(extra_headers={"x-stainless-retry-count": Omit()})
 
         assert len(response.http_request.headers.get_list("x-stainless-retry-count")) == 0
 
@@ -950,9 +950,9 @@ class TestCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/credits").mock(side_effect=retry_handler)
+        respx_mock.post("/v4/cams_kfintech/parse").mock(side_effect=retry_handler)
 
-        response = client.credits.with_raw_response.check(extra_headers={"x-stainless-retry-count": "42"})
+        response = client.cams_kfintech.with_raw_response.parse(extra_headers={"x-stainless-retry-count": "42"})
 
         assert response.http_request.headers.get("x-stainless-retry-count") == "42"
 
@@ -1775,10 +1775,10 @@ class TestAsyncCasParser:
     async def test_retrying_timeout_errors_doesnt_leak(
         self, respx_mock: MockRouter, async_client: AsyncCasParser
     ) -> None:
-        respx_mock.post("/credits").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.post("/v4/cams_kfintech/parse").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
-            await async_client.credits.with_streaming_response.check().__aenter__()
+            await async_client.cams_kfintech.with_streaming_response.parse().__aenter__()
 
         assert _get_open_connections(async_client) == 0
 
@@ -1787,10 +1787,10 @@ class TestAsyncCasParser:
     async def test_retrying_status_errors_doesnt_leak(
         self, respx_mock: MockRouter, async_client: AsyncCasParser
     ) -> None:
-        respx_mock.post("/credits").mock(return_value=httpx.Response(500))
+        respx_mock.post("/v4/cams_kfintech/parse").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
-            await async_client.credits.with_streaming_response.check().__aenter__()
+            await async_client.cams_kfintech.with_streaming_response.parse().__aenter__()
         assert _get_open_connections(async_client) == 0
 
     @pytest.mark.parametrize("failures_before_success", [0, 2, 4])
@@ -1817,9 +1817,9 @@ class TestAsyncCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/credits").mock(side_effect=retry_handler)
+        respx_mock.post("/v4/cams_kfintech/parse").mock(side_effect=retry_handler)
 
-        response = await client.credits.with_raw_response.check()
+        response = await client.cams_kfintech.with_raw_response.parse()
 
         assert response.retries_taken == failures_before_success
         assert int(response.http_request.headers.get("x-stainless-retry-count")) == failures_before_success
@@ -1841,9 +1841,9 @@ class TestAsyncCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/credits").mock(side_effect=retry_handler)
+        respx_mock.post("/v4/cams_kfintech/parse").mock(side_effect=retry_handler)
 
-        response = await client.credits.with_raw_response.check(extra_headers={"x-stainless-retry-count": Omit()})
+        response = await client.cams_kfintech.with_raw_response.parse(extra_headers={"x-stainless-retry-count": Omit()})
 
         assert len(response.http_request.headers.get_list("x-stainless-retry-count")) == 0
 
@@ -1864,9 +1864,9 @@ class TestAsyncCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/credits").mock(side_effect=retry_handler)
+        respx_mock.post("/v4/cams_kfintech/parse").mock(side_effect=retry_handler)
 
-        response = await client.credits.with_raw_response.check(extra_headers={"x-stainless-retry-count": "42"})
+        response = await client.cams_kfintech.with_raw_response.parse(extra_headers={"x-stainless-retry-count": "42"})
 
         assert response.http_request.headers.get("x-stainless-retry-count") == "42"
 
