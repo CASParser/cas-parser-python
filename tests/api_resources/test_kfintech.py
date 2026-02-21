@@ -17,7 +17,7 @@ base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 class TestKfintech:
     parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_generate_cas(self, client: CasParser) -> None:
         kfintech = client.kfintech.generate_cas(
@@ -28,7 +28,7 @@ class TestKfintech:
         )
         assert_matches_type(KfintechGenerateCasResponse, kfintech, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_generate_cas_with_all_params(self, client: CasParser) -> None:
         kfintech = client.kfintech.generate_cas(
@@ -40,7 +40,7 @@ class TestKfintech:
         )
         assert_matches_type(KfintechGenerateCasResponse, kfintech, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_raw_response_generate_cas(self, client: CasParser) -> None:
         response = client.kfintech.with_raw_response.generate_cas(
@@ -55,7 +55,7 @@ class TestKfintech:
         kfintech = response.parse()
         assert_matches_type(KfintechGenerateCasResponse, kfintech, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_streaming_response_generate_cas(self, client: CasParser) -> None:
         with client.kfintech.with_streaming_response.generate_cas(
@@ -78,7 +78,7 @@ class TestAsyncKfintech:
         "async_client", [False, True, {"http_client": "aiohttp"}], indirect=True, ids=["loose", "strict", "aiohttp"]
     )
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_generate_cas(self, async_client: AsyncCasParser) -> None:
         kfintech = await async_client.kfintech.generate_cas(
@@ -89,7 +89,7 @@ class TestAsyncKfintech:
         )
         assert_matches_type(KfintechGenerateCasResponse, kfintech, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_generate_cas_with_all_params(self, async_client: AsyncCasParser) -> None:
         kfintech = await async_client.kfintech.generate_cas(
@@ -101,7 +101,7 @@ class TestAsyncKfintech:
         )
         assert_matches_type(KfintechGenerateCasResponse, kfintech, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_raw_response_generate_cas(self, async_client: AsyncCasParser) -> None:
         response = await async_client.kfintech.with_raw_response.generate_cas(
@@ -116,7 +116,7 @@ class TestAsyncKfintech:
         kfintech = await response.parse()
         assert_matches_type(KfintechGenerateCasResponse, kfintech, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_streaming_response_generate_cas(self, async_client: AsyncCasParser) -> None:
         async with async_client.kfintech.with_streaming_response.generate_cas(

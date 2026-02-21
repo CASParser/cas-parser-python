@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.4.1 (2026-02-20)
+
+Full Changelog: [v1.4.0...v1.4.1](https://github.com/CASParser/cas-parser-python/compare/v1.4.0...v1.4.1)
+
+### Chores
+
+* **internal:** remove mock server code ([582f64d](https://github.com/CASParser/cas-parser-python/commit/582f64db76f09909f2c406877633b3db56b492dc))
+* update mock server docs ([d2942ae](https://github.com/CASParser/cas-parser-python/commit/d2942aef06e12bb1e57040358b68555f7e28bf15))
+
 ## 1.4.0 (2026-02-14)
 
 Full Changelog: [v1.3.2...v1.4.0](https://github.com/CASParser/cas-parser-python/compare/v1.3.2...v1.4.0)

@@ -23,7 +23,7 @@ base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 class TestInbox:
     parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_check_connection_status(self, client: CasParser) -> None:
         inbox = client.inbox.check_connection_status(
@@ -31,7 +31,7 @@ class TestInbox:
         )
         assert_matches_type(InboxCheckConnectionStatusResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_raw_response_check_connection_status(self, client: CasParser) -> None:
         response = client.inbox.with_raw_response.check_connection_status(
@@ -43,7 +43,7 @@ class TestInbox:
         inbox = response.parse()
         assert_matches_type(InboxCheckConnectionStatusResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_streaming_response_check_connection_status(self, client: CasParser) -> None:
         with client.inbox.with_streaming_response.check_connection_status(
@@ -57,7 +57,7 @@ class TestInbox:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_connect_email(self, client: CasParser) -> None:
         inbox = client.inbox.connect_email(
@@ -65,7 +65,7 @@ class TestInbox:
         )
         assert_matches_type(InboxConnectEmailResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_connect_email_with_all_params(self, client: CasParser) -> None:
         inbox = client.inbox.connect_email(
@@ -74,7 +74,7 @@ class TestInbox:
         )
         assert_matches_type(InboxConnectEmailResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_raw_response_connect_email(self, client: CasParser) -> None:
         response = client.inbox.with_raw_response.connect_email(
@@ -86,7 +86,7 @@ class TestInbox:
         inbox = response.parse()
         assert_matches_type(InboxConnectEmailResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_streaming_response_connect_email(self, client: CasParser) -> None:
         with client.inbox.with_streaming_response.connect_email(
@@ -100,7 +100,7 @@ class TestInbox:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_disconnect_email(self, client: CasParser) -> None:
         inbox = client.inbox.disconnect_email(
@@ -108,7 +108,7 @@ class TestInbox:
         )
         assert_matches_type(InboxDisconnectEmailResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_raw_response_disconnect_email(self, client: CasParser) -> None:
         response = client.inbox.with_raw_response.disconnect_email(
@@ -120,7 +120,7 @@ class TestInbox:
         inbox = response.parse()
         assert_matches_type(InboxDisconnectEmailResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_streaming_response_disconnect_email(self, client: CasParser) -> None:
         with client.inbox.with_streaming_response.disconnect_email(
@@ -134,7 +134,7 @@ class TestInbox:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_list_cas_files(self, client: CasParser) -> None:
         inbox = client.inbox.list_cas_files(
@@ -142,7 +142,7 @@ class TestInbox:
         )
         assert_matches_type(InboxListCasFilesResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_list_cas_files_with_all_params(self, client: CasParser) -> None:
         inbox = client.inbox.list_cas_files(
@@ -153,7 +153,7 @@ class TestInbox:
         )
         assert_matches_type(InboxListCasFilesResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_raw_response_list_cas_files(self, client: CasParser) -> None:
         response = client.inbox.with_raw_response.list_cas_files(
@@ -165,7 +165,7 @@ class TestInbox:
         inbox = response.parse()
         assert_matches_type(InboxListCasFilesResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_streaming_response_list_cas_files(self, client: CasParser) -> None:
         with client.inbox.with_streaming_response.list_cas_files(
@@ -185,7 +185,7 @@ class TestAsyncInbox:
         "async_client", [False, True, {"http_client": "aiohttp"}], indirect=True, ids=["loose", "strict", "aiohttp"]
     )
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_check_connection_status(self, async_client: AsyncCasParser) -> None:
         inbox = await async_client.inbox.check_connection_status(
@@ -193,7 +193,7 @@ class TestAsyncInbox:
         )
         assert_matches_type(InboxCheckConnectionStatusResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_raw_response_check_connection_status(self, async_client: AsyncCasParser) -> None:
         response = await async_client.inbox.with_raw_response.check_connection_status(
@@ -205,7 +205,7 @@ class TestAsyncInbox:
         inbox = await response.parse()
         assert_matches_type(InboxCheckConnectionStatusResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_streaming_response_check_connection_status(self, async_client: AsyncCasParser) -> None:
         async with async_client.inbox.with_streaming_response.check_connection_status(
@@ -219,7 +219,7 @@ class TestAsyncInbox:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_connect_email(self, async_client: AsyncCasParser) -> None:
         inbox = await async_client.inbox.connect_email(
@@ -227,7 +227,7 @@ class TestAsyncInbox:
         )
         assert_matches_type(InboxConnectEmailResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_connect_email_with_all_params(self, async_client: AsyncCasParser) -> None:
         inbox = await async_client.inbox.connect_email(
@@ -236,7 +236,7 @@ class TestAsyncInbox:
         )
         assert_matches_type(InboxConnectEmailResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_raw_response_connect_email(self, async_client: AsyncCasParser) -> None:
         response = await async_client.inbox.with_raw_response.connect_email(
@@ -248,7 +248,7 @@ class TestAsyncInbox:
         inbox = await response.parse()
         assert_matches_type(InboxConnectEmailResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_streaming_response_connect_email(self, async_client: AsyncCasParser) -> None:
         async with async_client.inbox.with_streaming_response.connect_email(
@@ -262,7 +262,7 @@ class TestAsyncInbox:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_disconnect_email(self, async_client: AsyncCasParser) -> None:
         inbox = await async_client.inbox.disconnect_email(
@@ -270,7 +270,7 @@ class TestAsyncInbox:
         )
         assert_matches_type(InboxDisconnectEmailResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_raw_response_disconnect_email(self, async_client: AsyncCasParser) -> None:
         response = await async_client.inbox.with_raw_response.disconnect_email(
@@ -282,7 +282,7 @@ class TestAsyncInbox:
         inbox = await response.parse()
         assert_matches_type(InboxDisconnectEmailResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_streaming_response_disconnect_email(self, async_client: AsyncCasParser) -> None:
         async with async_client.inbox.with_streaming_response.disconnect_email(
@@ -296,7 +296,7 @@ class TestAsyncInbox:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_list_cas_files(self, async_client: AsyncCasParser) -> None:
         inbox = await async_client.inbox.list_cas_files(
@@ -304,7 +304,7 @@ class TestAsyncInbox:
         )
         assert_matches_type(InboxListCasFilesResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_list_cas_files_with_all_params(self, async_client: AsyncCasParser) -> None:
         inbox = await async_client.inbox.list_cas_files(
@@ -315,7 +315,7 @@ class TestAsyncInbox:
         )
         assert_matches_type(InboxListCasFilesResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_raw_response_list_cas_files(self, async_client: AsyncCasParser) -> None:
         response = await async_client.inbox.with_raw_response.list_cas_files(
@@ -327,7 +327,7 @@ class TestAsyncInbox:
         inbox = await response.parse()
         assert_matches_type(InboxListCasFilesResponse, inbox, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_streaming_response_list_cas_files(self, async_client: AsyncCasParser) -> None:
         async with async_client.inbox.with_streaming_response.list_cas_files(

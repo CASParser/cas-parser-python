@@ -17,13 +17,13 @@ base_url = os.environ.get("TEST_API_BASE_URL", "http://127.0.0.1:4010")
 class TestNsdl:
     parametrize = pytest.mark.parametrize("client", [False, True], indirect=True, ids=["loose", "strict"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_parse(self, client: CasParser) -> None:
         nsdl = client.nsdl.parse()
         assert_matches_type(UnifiedResponse, nsdl, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_parse_with_all_params(self, client: CasParser) -> None:
         nsdl = client.nsdl.parse(
@@ -33,7 +33,7 @@ class TestNsdl:
         )
         assert_matches_type(UnifiedResponse, nsdl, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_raw_response_parse(self, client: CasParser) -> None:
         response = client.nsdl.with_raw_response.parse()
@@ -43,7 +43,7 @@ class TestNsdl:
         nsdl = response.parse()
         assert_matches_type(UnifiedResponse, nsdl, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_streaming_response_parse(self, client: CasParser) -> None:
         with client.nsdl.with_streaming_response.parse() as response:
@@ -61,13 +61,13 @@ class TestAsyncNsdl:
         "async_client", [False, True, {"http_client": "aiohttp"}], indirect=True, ids=["loose", "strict", "aiohttp"]
     )
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_parse(self, async_client: AsyncCasParser) -> None:
         nsdl = await async_client.nsdl.parse()
         assert_matches_type(UnifiedResponse, nsdl, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_parse_with_all_params(self, async_client: AsyncCasParser) -> None:
         nsdl = await async_client.nsdl.parse(
@@ -77,7 +77,7 @@ class TestAsyncNsdl:
         )
         assert_matches_type(UnifiedResponse, nsdl, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_raw_response_parse(self, async_client: AsyncCasParser) -> None:
         response = await async_client.nsdl.with_raw_response.parse()
@@ -87,7 +87,7 @@ class TestAsyncNsdl:
         nsdl = await response.parse()
         assert_matches_type(UnifiedResponse, nsdl, path=["response"])
 
-    @pytest.mark.skip(reason="Prism tests are disabled")
+    @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_streaming_response_parse(self, async_client: AsyncCasParser) -> None:
         async with async_client.nsdl.with_streaming_response.parse() as response:
