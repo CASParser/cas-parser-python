@@ -30,6 +30,9 @@ class File(BaseModel):
     original_filename: Optional[str] = None
     """Original attachment filename from the email"""
 
+    sender_email: Optional[str] = None
+    """Email address of the CAS authority who sent this"""
+
     size: Optional[int] = None
     """File size in bytes"""
 
