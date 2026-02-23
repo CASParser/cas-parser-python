@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.0 (2026-02-23)
+
+Full Changelog: [v1.5.0...v1.6.0](https://github.com/CASParser/cas-parser-python/compare/v1.5.0...v1.6.0)
+
+### Features
+
+* **api:** manual updates ([6551087](https://github.com/CASParser/cas-parser-python/commit/6551087fbe4480228ebfd967674eddf89c006684))
+
 ## 1.5.0 (2026-02-23)
 
 Full Changelog: [v1.4.1...v1.5.0](https://github.com/CASParser/cas-parser-python/compare/v1.4.1...v1.5.0)
