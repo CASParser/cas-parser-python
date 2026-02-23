@@ -31,7 +31,10 @@ class File(BaseModel):
     """Original attachment filename from the email"""
 
     sender_email: Optional[str] = None
-    """Email address of the CAS authority who sent this"""
+    """
+    Email address of the CAS authority (CDSL, NSDL, CAMS, or KFintech) who
+    originally sent this statement
+    """
 
     size: Optional[int] = None
     """File size in bytes"""
