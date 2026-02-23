@@ -31,14 +31,32 @@ from ._base_client import (
 )
 
 if TYPE_CHECKING:
-    from .resources import cdsl, nsdl, inbox, smart, kfintech, cams_kfintech, contract_note
+    from .resources import (
+        cdsl,
+        logs,
+        nsdl,
+        inbox,
+        smart,
+        credits,
+        kfintech,
+        access_token,
+        verify_token,
+        cams_kfintech,
+        contract_note,
+        inbound_email,
+    )
+    from .resources.logs import LogsResource, AsyncLogsResource
     from .resources.nsdl import NsdlResource, AsyncNsdlResource
     from .resources.inbox import InboxResource, AsyncInboxResource
     from .resources.smart import SmartResource, AsyncSmartResource
+    from .resources.credits import CreditsResource, AsyncCreditsResource
     from .resources.kfintech import KfintechResource, AsyncKfintechResource
     from .resources.cdsl.cdsl import CdslResource, AsyncCdslResource
+    from .resources.access_token import AccessTokenResource, AsyncAccessTokenResource
+    from .resources.verify_token import VerifyTokenResource, AsyncVerifyTokenResource
     from .resources.cams_kfintech import CamsKfintechResource, AsyncCamsKfintechResource
     from .resources.contract_note import ContractNoteResource, AsyncContractNoteResource
+    from .resources.inbound_email import InboundEmailResource, AsyncInboundEmailResource
 
 __all__ = [
     "ENVIRONMENTS",
@@ -139,6 +157,30 @@ class CasParser(SyncAPIClient):
         )
 
     @cached_property
+    def credits(self) -> CreditsResource:
+        from .resources.credits import CreditsResource
+
+        return CreditsResource(self)
+
+    @cached_property
+    def logs(self) -> LogsResource:
+        from .resources.logs import LogsResource
+
+        return LogsResource(self)
+
+    @cached_property
+    def access_token(self) -> AccessTokenResource:
+        from .resources.access_token import AccessTokenResource
+
+        return AccessTokenResource(self)
+
+    @cached_property
+    def verify_token(self) -> VerifyTokenResource:
+        from .resources.verify_token import VerifyTokenResource
+
+        return VerifyTokenResource(self)
+
+    @cached_property
     def cams_kfintech(self) -> CamsKfintechResource:
         from .resources.cams_kfintech import CamsKfintechResource
 
@@ -179,6 +221,12 @@ class CasParser(SyncAPIClient):
         from .resources.smart import SmartResource
 
         return SmartResource(self)
+
+    @cached_property
+    def inbound_email(self) -> InboundEmailResource:
+        from .resources.inbound_email import InboundEmailResource
+
+        return InboundEmailResource(self)
 
     @cached_property
     def with_raw_response(self) -> CasParserWithRawResponse:
@@ -375,6 +423,30 @@ class AsyncCasParser(AsyncAPIClient):
         )
 
     @cached_property
+    def credits(self) -> AsyncCreditsResource:
+        from .resources.credits import AsyncCreditsResource
+
+        return AsyncCreditsResource(self)
+
+    @cached_property
+    def logs(self) -> AsyncLogsResource:
+        from .resources.logs import AsyncLogsResource
+
+        return AsyncLogsResource(self)
+
+    @cached_property
+    def access_token(self) -> AsyncAccessTokenResource:
+        from .resources.access_token import AsyncAccessTokenResource
+
+        return AsyncAccessTokenResource(self)
+
+    @cached_property
+    def verify_token(self) -> AsyncVerifyTokenResource:
+        from .resources.verify_token import AsyncVerifyTokenResource
+
+        return AsyncVerifyTokenResource(self)
+
+    @cached_property
     def cams_kfintech(self) -> AsyncCamsKfintechResource:
         from .resources.cams_kfintech import AsyncCamsKfintechResource
 
@@ -415,6 +487,12 @@ class AsyncCasParser(AsyncAPIClient):
         from .resources.smart import AsyncSmartResource
 
         return AsyncSmartResource(self)
+
+    @cached_property
+    def inbound_email(self) -> AsyncInboundEmailResource:
+        from .resources.inbound_email import AsyncInboundEmailResource
+
+        return AsyncInboundEmailResource(self)
 
     @cached_property
     def with_raw_response(self) -> AsyncCasParserWithRawResponse:
@@ -538,6 +616,30 @@ class CasParserWithRawResponse:
         self._client = client
 
     @cached_property
+    def credits(self) -> credits.CreditsResourceWithRawResponse:
+        from .resources.credits import CreditsResourceWithRawResponse
+
+        return CreditsResourceWithRawResponse(self._client.credits)
+
+    @cached_property
+    def logs(self) -> logs.LogsResourceWithRawResponse:
+        from .resources.logs import LogsResourceWithRawResponse
+
+        return LogsResourceWithRawResponse(self._client.logs)
+
+    @cached_property
+    def access_token(self) -> access_token.AccessTokenResourceWithRawResponse:
+        from .resources.access_token import AccessTokenResourceWithRawResponse
+
+        return AccessTokenResourceWithRawResponse(self._client.access_token)
+
+    @cached_property
+    def verify_token(self) -> verify_token.VerifyTokenResourceWithRawResponse:
+        from .resources.verify_token import VerifyTokenResourceWithRawResponse
+
+        return VerifyTokenResourceWithRawResponse(self._client.verify_token)
+
+    @cached_property
     def cams_kfintech(self) -> cams_kfintech.CamsKfintechResourceWithRawResponse:
         from .resources.cams_kfintech import CamsKfintechResourceWithRawResponse
 
@@ -579,12 +681,42 @@ class CasParserWithRawResponse:
 
         return SmartResourceWithRawResponse(self._client.smart)
 
+    @cached_property
+    def inbound_email(self) -> inbound_email.InboundEmailResourceWithRawResponse:
+        from .resources.inbound_email import InboundEmailResourceWithRawResponse
+
+        return InboundEmailResourceWithRawResponse(self._client.inbound_email)
+
 
 class AsyncCasParserWithRawResponse:
     _client: AsyncCasParser
 
     def __init__(self, client: AsyncCasParser) -> None:
         self._client = client
+
+    @cached_property
+    def credits(self) -> credits.AsyncCreditsResourceWithRawResponse:
+        from .resources.credits import AsyncCreditsResourceWithRawResponse
+
+        return AsyncCreditsResourceWithRawResponse(self._client.credits)
+
+    @cached_property
+    def logs(self) -> logs.AsyncLogsResourceWithRawResponse:
+        from .resources.logs import AsyncLogsResourceWithRawResponse
+
+        return AsyncLogsResourceWithRawResponse(self._client.logs)
+
+    @cached_property
+    def access_token(self) -> access_token.AsyncAccessTokenResourceWithRawResponse:
+        from .resources.access_token import AsyncAccessTokenResourceWithRawResponse
+
+        return AsyncAccessTokenResourceWithRawResponse(self._client.access_token)
+
+    @cached_property
+    def verify_token(self) -> verify_token.AsyncVerifyTokenResourceWithRawResponse:
+        from .resources.verify_token import AsyncVerifyTokenResourceWithRawResponse
+
+        return AsyncVerifyTokenResourceWithRawResponse(self._client.verify_token)
 
     @cached_property
     def cams_kfintech(self) -> cams_kfintech.AsyncCamsKfintechResourceWithRawResponse:
@@ -628,12 +760,42 @@ class AsyncCasParserWithRawResponse:
 
         return AsyncSmartResourceWithRawResponse(self._client.smart)
 
+    @cached_property
+    def inbound_email(self) -> inbound_email.AsyncInboundEmailResourceWithRawResponse:
+        from .resources.inbound_email import AsyncInboundEmailResourceWithRawResponse
+
+        return AsyncInboundEmailResourceWithRawResponse(self._client.inbound_email)
+
 
 class CasParserWithStreamedResponse:
     _client: CasParser
 
     def __init__(self, client: CasParser) -> None:
         self._client = client
+
+    @cached_property
+    def credits(self) -> credits.CreditsResourceWithStreamingResponse:
+        from .resources.credits import CreditsResourceWithStreamingResponse
+
+        return CreditsResourceWithStreamingResponse(self._client.credits)
+
+    @cached_property
+    def logs(self) -> logs.LogsResourceWithStreamingResponse:
+        from .resources.logs import LogsResourceWithStreamingResponse
+
+        return LogsResourceWithStreamingResponse(self._client.logs)
+
+    @cached_property
+    def access_token(self) -> access_token.AccessTokenResourceWithStreamingResponse:
+        from .resources.access_token import AccessTokenResourceWithStreamingResponse
+
+        return AccessTokenResourceWithStreamingResponse(self._client.access_token)
+
+    @cached_property
+    def verify_token(self) -> verify_token.VerifyTokenResourceWithStreamingResponse:
+        from .resources.verify_token import VerifyTokenResourceWithStreamingResponse
+
+        return VerifyTokenResourceWithStreamingResponse(self._client.verify_token)
 
     @cached_property
     def cams_kfintech(self) -> cams_kfintech.CamsKfintechResourceWithStreamingResponse:
@@ -677,12 +839,42 @@ class CasParserWithStreamedResponse:
 
         return SmartResourceWithStreamingResponse(self._client.smart)
 
+    @cached_property
+    def inbound_email(self) -> inbound_email.InboundEmailResourceWithStreamingResponse:
+        from .resources.inbound_email import InboundEmailResourceWithStreamingResponse
+
+        return InboundEmailResourceWithStreamingResponse(self._client.inbound_email)
+
 
 class AsyncCasParserWithStreamedResponse:
     _client: AsyncCasParser
 
     def __init__(self, client: AsyncCasParser) -> None:
         self._client = client
+
+    @cached_property
+    def credits(self) -> credits.AsyncCreditsResourceWithStreamingResponse:
+        from .resources.credits import AsyncCreditsResourceWithStreamingResponse
+
+        return AsyncCreditsResourceWithStreamingResponse(self._client.credits)
+
+    @cached_property
+    def logs(self) -> logs.AsyncLogsResourceWithStreamingResponse:
+        from .resources.logs import AsyncLogsResourceWithStreamingResponse
+
+        return AsyncLogsResourceWithStreamingResponse(self._client.logs)
+
+    @cached_property
+    def access_token(self) -> access_token.AsyncAccessTokenResourceWithStreamingResponse:
+        from .resources.access_token import AsyncAccessTokenResourceWithStreamingResponse
+
+        return AsyncAccessTokenResourceWithStreamingResponse(self._client.access_token)
+
+    @cached_property
+    def verify_token(self) -> verify_token.AsyncVerifyTokenResourceWithStreamingResponse:
+        from .resources.verify_token import AsyncVerifyTokenResourceWithStreamingResponse
+
+        return AsyncVerifyTokenResourceWithStreamingResponse(self._client.verify_token)
 
     @cached_property
     def cams_kfintech(self) -> cams_kfintech.AsyncCamsKfintechResourceWithStreamingResponse:
@@ -725,6 +917,12 @@ class AsyncCasParserWithStreamedResponse:
         from .resources.smart import AsyncSmartResourceWithStreamingResponse
 
         return AsyncSmartResourceWithStreamingResponse(self._client.smart)
+
+    @cached_property
+    def inbound_email(self) -> inbound_email.AsyncInboundEmailResourceWithStreamingResponse:
+        from .resources.inbound_email import AsyncInboundEmailResourceWithStreamingResponse
+
+        return AsyncInboundEmailResourceWithStreamingResponse(self._client.inbound_email)
 
 
 Client = CasParser
