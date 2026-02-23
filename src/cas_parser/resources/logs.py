@@ -64,6 +64,8 @@ class LogsResource(SyncAPIResource):
         Returns a list of API calls with timestamps, features used, status codes, and
         credits consumed. Useful for monitoring usage patterns and debugging.
 
+        **Legacy path:** `/logs` (still supported)
+
         Args:
           end_time: End time filter (ISO 8601). Defaults to now.
 
@@ -80,7 +82,7 @@ class LogsResource(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         return self._post(
-            "/logs",
+            "/v1/usage",
             body=maybe_transform(
                 {
                     "end_time": end_time,
@@ -113,6 +115,8 @@ class LogsResource(SyncAPIResource):
         Useful for understanding which API features are being used most and tracking
         usage trends.
 
+        **Legacy path:** `/logs/summary` (still supported)
+
         Args:
           end_time: End time filter (ISO 8601). Defaults to now.
 
@@ -127,7 +131,7 @@ class LogsResource(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         return self._post(
-            "/logs/summary",
+            "/v1/usage/summary",
             body=maybe_transform(
                 {
                     "end_time": end_time,
@@ -181,6 +185,8 @@ class AsyncLogsResource(AsyncAPIResource):
         Returns a list of API calls with timestamps, features used, status codes, and
         credits consumed. Useful for monitoring usage patterns and debugging.
 
+        **Legacy path:** `/logs` (still supported)
+
         Args:
           end_time: End time filter (ISO 8601). Defaults to now.
 
@@ -197,7 +203,7 @@ class AsyncLogsResource(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         return await self._post(
-            "/logs",
+            "/v1/usage",
             body=await async_maybe_transform(
                 {
                     "end_time": end_time,
@@ -230,6 +236,8 @@ class AsyncLogsResource(AsyncAPIResource):
         Useful for understanding which API features are being used most and tracking
         usage trends.
 
+        **Legacy path:** `/logs/summary` (still supported)
+
         Args:
           end_time: End time filter (ISO 8601). Defaults to now.
 
@@ -244,7 +252,7 @@ class AsyncLogsResource(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         return await self._post(
-            "/logs/summary",
+            "/v1/usage/summary",
             body=await async_maybe_transform(
                 {
                     "end_time": end_time,

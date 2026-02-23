@@ -863,7 +863,7 @@ class TestCasParser:
     @mock.patch("cas_parser._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_timeout_errors_doesnt_leak(self, respx_mock: MockRouter, client: CasParser) -> None:
-        respx_mock.post("/credits").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.post("/v1/credits").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
             client.credits.with_streaming_response.check().__enter__()
@@ -873,7 +873,7 @@ class TestCasParser:
     @mock.patch("cas_parser._base_client.BaseClient._calculate_retry_timeout", _low_retry_timeout)
     @pytest.mark.respx(base_url=base_url)
     def test_retrying_status_errors_doesnt_leak(self, respx_mock: MockRouter, client: CasParser) -> None:
-        respx_mock.post("/credits").mock(return_value=httpx.Response(500))
+        respx_mock.post("/v1/credits").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
             client.credits.with_streaming_response.check().__enter__()
@@ -903,7 +903,7 @@ class TestCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/credits").mock(side_effect=retry_handler)
+        respx_mock.post("/v1/credits").mock(side_effect=retry_handler)
 
         response = client.credits.with_raw_response.check()
 
@@ -927,7 +927,7 @@ class TestCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/credits").mock(side_effect=retry_handler)
+        respx_mock.post("/v1/credits").mock(side_effect=retry_handler)
 
         response = client.credits.with_raw_response.check(extra_headers={"x-stainless-retry-count": Omit()})
 
@@ -950,7 +950,7 @@ class TestCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/credits").mock(side_effect=retry_handler)
+        respx_mock.post("/v1/credits").mock(side_effect=retry_handler)
 
         response = client.credits.with_raw_response.check(extra_headers={"x-stainless-retry-count": "42"})
 
@@ -1775,7 +1775,7 @@ class TestAsyncCasParser:
     async def test_retrying_timeout_errors_doesnt_leak(
         self, respx_mock: MockRouter, async_client: AsyncCasParser
     ) -> None:
-        respx_mock.post("/credits").mock(side_effect=httpx.TimeoutException("Test timeout error"))
+        respx_mock.post("/v1/credits").mock(side_effect=httpx.TimeoutException("Test timeout error"))
 
         with pytest.raises(APITimeoutError):
             await async_client.credits.with_streaming_response.check().__aenter__()
@@ -1787,7 +1787,7 @@ class TestAsyncCasParser:
     async def test_retrying_status_errors_doesnt_leak(
         self, respx_mock: MockRouter, async_client: AsyncCasParser
     ) -> None:
-        respx_mock.post("/credits").mock(return_value=httpx.Response(500))
+        respx_mock.post("/v1/credits").mock(return_value=httpx.Response(500))
 
         with pytest.raises(APIStatusError):
             await async_client.credits.with_streaming_response.check().__aenter__()
@@ -1817,7 +1817,7 @@ class TestAsyncCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/credits").mock(side_effect=retry_handler)
+        respx_mock.post("/v1/credits").mock(side_effect=retry_handler)
 
         response = await client.credits.with_raw_response.check()
 
@@ -1841,7 +1841,7 @@ class TestAsyncCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/credits").mock(side_effect=retry_handler)
+        respx_mock.post("/v1/credits").mock(side_effect=retry_handler)
 
         response = await client.credits.with_raw_response.check(extra_headers={"x-stainless-retry-count": Omit()})
 
@@ -1864,7 +1864,7 @@ class TestAsyncCasParser:
                 return httpx.Response(500)
             return httpx.Response(200)
 
-        respx_mock.post("/credits").mock(side_effect=retry_handler)
+        respx_mock.post("/v1/credits").mock(side_effect=retry_handler)
 
         response = await client.credits.with_raw_response.check(extra_headers={"x-stainless-retry-count": "42"})
 

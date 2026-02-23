@@ -88,6 +88,14 @@ from .contract_note import (
     ContractNoteResourceWithStreamingResponse,
     AsyncContractNoteResourceWithStreamingResponse,
 )
+from .inbound_email import (
+    InboundEmailResource,
+    AsyncInboundEmailResource,
+    InboundEmailResourceWithRawResponse,
+    AsyncInboundEmailResourceWithRawResponse,
+    InboundEmailResourceWithStreamingResponse,
+    AsyncInboundEmailResourceWithStreamingResponse,
+)
 
 __all__ = [
     "CreditsResource",
@@ -156,4 +164,10 @@ __all__ = [
     "AsyncSmartResourceWithRawResponse",
     "SmartResourceWithStreamingResponse",
     "AsyncSmartResourceWithStreamingResponse",
+    "InboundEmailResource",
+    "AsyncInboundEmailResource",
+    "InboundEmailResourceWithRawResponse",
+    "AsyncInboundEmailResourceWithRawResponse",
+    "InboundEmailResourceWithStreamingResponse",
+    "AsyncInboundEmailResourceWithStreamingResponse",
 ]

@@ -58,6 +58,8 @@ class AccessTokenResource(SyncAPIResource):
         **Use this endpoint from your backend** to create tokens that can be safely
         passed to frontend/SDK.
 
+        **Legacy path:** `/v1/access-token` (still supported)
+
         Access tokens:
 
         - Are prefixed with `at_` for easy identification
@@ -77,7 +79,7 @@ class AccessTokenResource(SyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         return self._post(
-            "/v1/access-token",
+            "/v1/token",
             body=maybe_transform(
                 {"expiry_minutes": expiry_minutes}, access_token_create_params.AccessTokenCreateParams
             ),
@@ -125,6 +127,8 @@ class AsyncAccessTokenResource(AsyncAPIResource):
         **Use this endpoint from your backend** to create tokens that can be safely
         passed to frontend/SDK.
 
+        **Legacy path:** `/v1/access-token` (still supported)
+
         Access tokens:
 
         - Are prefixed with `at_` for easy identification
@@ -144,7 +148,7 @@ class AsyncAccessTokenResource(AsyncAPIResource):
           timeout: Override the client-level default timeout for this request, in seconds
         """
         return await self._post(
-            "/v1/access-token",
+            "/v1/token",
             body=await async_maybe_transform(
                 {"expiry_minutes": expiry_minutes}, access_token_create_params.AccessTokenCreateParams
             ),

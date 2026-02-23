@@ -61,7 +61,7 @@ class CreditsResource(SyncAPIResource):
         Credits reset at the start of each billing period.
         """
         return self._post(
-            "/credits",
+            "/v1/credits",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -111,7 +111,7 @@ class AsyncCreditsResource(AsyncAPIResource):
         Credits reset at the start of each billing period.
         """
         return await self._post(
-            "/credits",
+            "/v1/credits",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),

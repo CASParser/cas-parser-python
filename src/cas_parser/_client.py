@@ -43,6 +43,7 @@ if TYPE_CHECKING:
         verify_token,
         cams_kfintech,
         contract_note,
+        inbound_email,
     )
     from .resources.logs import LogsResource, AsyncLogsResource
     from .resources.nsdl import NsdlResource, AsyncNsdlResource
@@ -55,6 +56,7 @@ if TYPE_CHECKING:
     from .resources.verify_token import VerifyTokenResource, AsyncVerifyTokenResource
     from .resources.cams_kfintech import CamsKfintechResource, AsyncCamsKfintechResource
     from .resources.contract_note import ContractNoteResource, AsyncContractNoteResource
+    from .resources.inbound_email import InboundEmailResource, AsyncInboundEmailResource
 
 __all__ = [
     "ENVIRONMENTS",
@@ -219,6 +221,12 @@ class CasParser(SyncAPIClient):
         from .resources.smart import SmartResource
 
         return SmartResource(self)
+
+    @cached_property
+    def inbound_email(self) -> InboundEmailResource:
+        from .resources.inbound_email import InboundEmailResource
+
+        return InboundEmailResource(self)
 
     @cached_property
     def with_raw_response(self) -> CasParserWithRawResponse:
@@ -481,6 +489,12 @@ class AsyncCasParser(AsyncAPIClient):
         return AsyncSmartResource(self)
 
     @cached_property
+    def inbound_email(self) -> AsyncInboundEmailResource:
+        from .resources.inbound_email import AsyncInboundEmailResource
+
+        return AsyncInboundEmailResource(self)
+
+    @cached_property
     def with_raw_response(self) -> AsyncCasParserWithRawResponse:
         return AsyncCasParserWithRawResponse(self)
 
@@ -667,6 +681,12 @@ class CasParserWithRawResponse:
 
         return SmartResourceWithRawResponse(self._client.smart)
 
+    @cached_property
+    def inbound_email(self) -> inbound_email.InboundEmailResourceWithRawResponse:
+        from .resources.inbound_email import InboundEmailResourceWithRawResponse
+
+        return InboundEmailResourceWithRawResponse(self._client.inbound_email)
+
 
 class AsyncCasParserWithRawResponse:
     _client: AsyncCasParser
@@ -739,6 +759,12 @@ class AsyncCasParserWithRawResponse:
         from .resources.smart import AsyncSmartResourceWithRawResponse
 
         return AsyncSmartResourceWithRawResponse(self._client.smart)
+
+    @cached_property
+    def inbound_email(self) -> inbound_email.AsyncInboundEmailResourceWithRawResponse:
+        from .resources.inbound_email import AsyncInboundEmailResourceWithRawResponse
+
+        return AsyncInboundEmailResourceWithRawResponse(self._client.inbound_email)
 
 
 class CasParserWithStreamedResponse:
@@ -813,6 +839,12 @@ class CasParserWithStreamedResponse:
 
         return SmartResourceWithStreamingResponse(self._client.smart)
 
+    @cached_property
+    def inbound_email(self) -> inbound_email.InboundEmailResourceWithStreamingResponse:
+        from .resources.inbound_email import InboundEmailResourceWithStreamingResponse
+
+        return InboundEmailResourceWithStreamingResponse(self._client.inbound_email)
+
 
 class AsyncCasParserWithStreamedResponse:
     _client: AsyncCasParser
@@ -885,6 +917,12 @@ class AsyncCasParserWithStreamedResponse:
         from .resources.smart import AsyncSmartResourceWithStreamingResponse
 
         return AsyncSmartResourceWithStreamingResponse(self._client.smart)
+
+    @cached_property
+    def inbound_email(self) -> inbound_email.AsyncInboundEmailResourceWithStreamingResponse:
+        from .resources.inbound_email import AsyncInboundEmailResourceWithStreamingResponse
+
+        return AsyncInboundEmailResourceWithStreamingResponse(self._client.inbound_email)
 
 
 Client = CasParser

@@ -55,7 +55,7 @@ class VerifyTokenResource(SyncAPIResource):
         issues.
         """
         return self._post(
-            "/v1/verify-token",
+            "/v1/token/verify",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -99,7 +99,7 @@ class AsyncVerifyTokenResource(AsyncAPIResource):
         issues.
         """
         return await self._post(
-            "/v1/verify-token",
+            "/v1/token/verify",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
