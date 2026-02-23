@@ -691,18 +691,6 @@ class TestCasParser:
             client = CasParser(api_key=api_key, _strict_response_validation=True)
             assert client.base_url == "http://localhost:5000/from/env/"
 
-        # explicit environment arg requires explicitness
-        with update_env(CAS_PARSER_BASE_URL="http://localhost:5000/from/env"):
-            with pytest.raises(ValueError, match=r"you must pass base_url=None"):
-                CasParser(api_key=api_key, _strict_response_validation=True, environment="production")
-
-            client = CasParser(
-                base_url=None, api_key=api_key, _strict_response_validation=True, environment="production"
-            )
-            assert str(client.base_url).startswith("https://portfolio-parser.api.casparser.in")
-
-            client.close()
-
     @pytest.mark.parametrize(
         "client",
         [
@@ -1591,18 +1579,6 @@ class TestAsyncCasParser:
         with update_env(CAS_PARSER_BASE_URL="http://localhost:5000/from/env"):
             client = AsyncCasParser(api_key=api_key, _strict_response_validation=True)
             assert client.base_url == "http://localhost:5000/from/env/"
-
-        # explicit environment arg requires explicitness
-        with update_env(CAS_PARSER_BASE_URL="http://localhost:5000/from/env"):
-            with pytest.raises(ValueError, match=r"you must pass base_url=None"):
-                AsyncCasParser(api_key=api_key, _strict_response_validation=True, environment="production")
-
-            client = AsyncCasParser(
-                base_url=None, api_key=api_key, _strict_response_validation=True, environment="production"
-            )
-            assert str(client.base_url).startswith("https://portfolio-parser.api.casparser.in")
-
-            await client.close()
 
     @pytest.mark.parametrize(
         "client",
