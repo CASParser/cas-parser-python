@@ -1,3 +1,52 @@
+# Credits
+
+Types:
+
+```python
+from cas_parser.types import CreditCheckResponse
+```
+
+Methods:
+
+- <code title="post /v1/credits">client.credits.<a href="./src/cas_parser/resources/credits.py">check</a>() -> <a href="./src/cas_parser/types/credit_check_response.py">CreditCheckResponse</a></code>
+
+# Logs
+
+Types:
+
+```python
+from cas_parser.types import LogCreateResponse, LogGetSummaryResponse
+```
+
+Methods:
+
+- <code title="post /v1/usage">client.logs.<a href="./src/cas_parser/resources/logs.py">create</a>(\*\*<a href="src/cas_parser/types/log_create_params.py">params</a>) -> <a href="./src/cas_parser/types/log_create_response.py">LogCreateResponse</a></code>
+- <code title="post /v1/usage/summary">client.logs.<a href="./src/cas_parser/resources/logs.py">get_summary</a>(\*\*<a href="src/cas_parser/types/log_get_summary_params.py">params</a>) -> <a href="./src/cas_parser/types/log_get_summary_response.py">LogGetSummaryResponse</a></code>
+
+# AccessToken
+
+Types:
+
+```python
+from cas_parser.types import AccessTokenCreateResponse
+```
+
+Methods:
+
+- <code title="post /v1/token">client.access_token.<a href="./src/cas_parser/resources/access_token.py">create</a>(\*\*<a href="src/cas_parser/types/access_token_create_params.py">params</a>) -> <a href="./src/cas_parser/types/access_token_create_response.py">AccessTokenCreateResponse</a></code>
+
+# VerifyToken
+
+Types:
+
+```python
+from cas_parser.types import VerifyTokenVerifyResponse
+```
+
+Methods:
+
+- <code title="post /v1/token/verify">client.verify_token.<a href="./src/cas_parser/resources/verify_token.py">verify</a>() -> <a href="./src/cas_parser/types/verify_token_verify_response.py">VerifyTokenVerifyResponse</a></code>
+
 # CamsKfintech
 
 Types:
@@ -84,3 +133,23 @@ Methods:
 Methods:
 
 - <code title="post /v4/smart/parse">client.smart.<a href="./src/cas_parser/resources/smart.py">parse_cas_pdf</a>(\*\*<a href="src/cas_parser/types/smart_parse_cas_pdf_params.py">params</a>) -> <a href="./src/cas_parser/types/unified_response.py">UnifiedResponse</a></code>
+
+# InboundEmail
+
+Types:
+
+```python
+from cas_parser.types import (
+    InboundEmailCreateResponse,
+    InboundEmailRetrieveResponse,
+    InboundEmailListResponse,
+    InboundEmailDeleteResponse,
+)
+```
+
+Methods:
+
+- <code title="post /v4/inbound-email">client.inbound_email.<a href="./src/cas_parser/resources/inbound_email.py">create</a>(\*\*<a href="src/cas_parser/types/inbound_email_create_params.py">params</a>) -> <a href="./src/cas_parser/types/inbound_email_create_response.py">InboundEmailCreateResponse</a></code>
+- <code title="get /v4/inbound-email/{inbound_email_id}">client.inbound_email.<a href="./src/cas_parser/resources/inbound_email.py">retrieve</a>(inbound_email_id) -> <a href="./src/cas_parser/types/inbound_email_retrieve_response.py">InboundEmailRetrieveResponse</a></code>
+- <code title="get /v4/inbound-email">client.inbound_email.<a href="./src/cas_parser/resources/inbound_email.py">list</a>(\*\*<a href="src/cas_parser/types/inbound_email_list_params.py">params</a>) -> <a href="./src/cas_parser/types/inbound_email_list_response.py">InboundEmailListResponse</a></code>
+- <code title="delete /v4/inbound-email/{inbound_email_id}">client.inbound_email.<a href="./src/cas_parser/resources/inbound_email.py">delete</a>(inbound_email_id) -> <a href="./src/cas_parser/types/inbound_email_delete_response.py">InboundEmailDeleteResponse</a></code>
