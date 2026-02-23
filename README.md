@@ -20,7 +20,7 @@ Use the Cas Parser MCP Server to enable AI assistants to interact with this API,
 
 ## Documentation
 
-The REST API documentation can be found on [docs.casparser.in](https://docs.casparser.in). The full API of this library can be found in [api.md](api.md).
+The REST API documentation can be found on [casparser.in](https://casparser.in/docs). The full API of this library can be found in [api.md](api.md).
 
 ## Installation
 
@@ -39,8 +39,6 @@ from cas_parser import CasParser
 
 client = CasParser(
     api_key=os.environ.get("CAS_PARSER_API_KEY"),  # This is the default and can be omitted
-    # or 'production' | 'environment_2'; defaults to "production".
-    environment="environment_1",
 )
 
 response = client.credits.check()
@@ -63,8 +61,6 @@ from cas_parser import AsyncCasParser
 
 client = AsyncCasParser(
     api_key=os.environ.get("CAS_PARSER_API_KEY"),  # This is the default and can be omitted
-    # or 'production' | 'environment_2'; defaults to "production".
-    environment="environment_1",
 )
 
 
