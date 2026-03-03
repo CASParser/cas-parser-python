@@ -24,6 +24,8 @@ __all__ = ["NsdlResource", "AsyncNsdlResource"]
 
 
 class NsdlResource(SyncAPIResource):
+    """Endpoints for parsing CAS PDF files from different sources."""
+
     @cached_property
     def with_raw_response(self) -> NsdlResourceWithRawResponse:
         """
@@ -101,6 +103,8 @@ class NsdlResource(SyncAPIResource):
 
 
 class AsyncNsdlResource(AsyncAPIResource):
+    """Endpoints for parsing CAS PDF files from different sources."""
+
     @cached_property
     def with_raw_response(self) -> AsyncNsdlResourceWithRawResponse:
         """

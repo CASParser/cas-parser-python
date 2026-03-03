@@ -25,6 +25,10 @@ __all__ = ["ContractNoteResource", "AsyncContractNoteResource"]
 
 
 class ContractNoteResource(SyncAPIResource):
+    """
+    Endpoints for parsing Contract Note PDF files from various SEBI brokers like Zerodha, Groww, Upstox, ICICI etc.
+    """
+
     @cached_property
     def with_raw_response(self) -> ContractNoteResourceWithRawResponse:
         """
@@ -132,6 +136,10 @@ class ContractNoteResource(SyncAPIResource):
 
 
 class AsyncContractNoteResource(AsyncAPIResource):
+    """
+    Endpoints for parsing Contract Note PDF files from various SEBI brokers like Zerodha, Groww, Upstox, ICICI etc.
+    """
+
     @cached_property
     def with_raw_response(self) -> AsyncContractNoteResourceWithRawResponse:
         """

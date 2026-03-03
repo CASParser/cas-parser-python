@@ -21,6 +21,7 @@ from ._types import (
 )
 from ._utils import is_given, get_async_library
 from ._compat import cached_property
+from ._models import SecurityOptions
 from ._version import __version__
 from ._streaming import Stream as Stream, AsyncStream as AsyncStream
 from ._exceptions import APIStatusError, CasParserError
@@ -127,72 +128,136 @@ class CasParser(SyncAPIClient):
 
     @cached_property
     def credits(self) -> CreditsResource:
+        """
+        Endpoints for checking API quota and credits usage.
+        These endpoints help you monitor your API usage and remaining quota.
+        """
         from .resources.credits import CreditsResource
 
         return CreditsResource(self)
 
     @cached_property
     def logs(self) -> LogsResource:
+        """
+        Endpoints for checking API quota and credits usage.
+        These endpoints help you monitor your API usage and remaining quota.
+        """
         from .resources.logs import LogsResource
 
         return LogsResource(self)
 
     @cached_property
     def access_token(self) -> AccessTokenResource:
+        """
+        Endpoints for managing access tokens for the Portfolio Connect SDK.
+        Use these to generate short-lived `at_` prefixed tokens that can be safely passed to frontend applications.
+        Access tokens can be used in place of API keys on all v4 endpoints.
+        """
         from .resources.access_token import AccessTokenResource
 
         return AccessTokenResource(self)
 
     @cached_property
     def verify_token(self) -> VerifyTokenResource:
+        """
+        Endpoints for managing access tokens for the Portfolio Connect SDK.
+        Use these to generate short-lived `at_` prefixed tokens that can be safely passed to frontend applications.
+        Access tokens can be used in place of API keys on all v4 endpoints.
+        """
         from .resources.verify_token import VerifyTokenResource
 
         return VerifyTokenResource(self)
 
     @cached_property
     def cams_kfintech(self) -> CamsKfintechResource:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.cams_kfintech import CamsKfintechResource
 
         return CamsKfintechResource(self)
 
     @cached_property
     def cdsl(self) -> CdslResource:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.cdsl import CdslResource
 
         return CdslResource(self)
 
     @cached_property
     def contract_note(self) -> ContractNoteResource:
+        """
+        Endpoints for parsing Contract Note PDF files from various SEBI brokers like Zerodha, Groww, Upstox, ICICI etc.
+        """
         from .resources.contract_note import ContractNoteResource
 
         return ContractNoteResource(self)
 
     @cached_property
     def inbox(self) -> InboxResource:
+        """Endpoints for importing CAS files directly from user email inboxes.
+
+        **Supported Providers:** Gmail (more coming soon)
+
+        **How it works:**
+        1. Call `POST /v4/inbox/connect` to get an OAuth URL
+        2. Redirect user to the OAuth URL for consent
+        3. User is redirected back to your `redirect_uri` with an encrypted `inbox_token`
+        4. Use the token to list/fetch CAS files from their inbox (`/v4/inbox/cas`)
+        5. Files are uploaded to temporary cloud storage (URLs expire in 24 hours)
+
+        **Security:**
+        - Read-only access (we cannot send emails)
+        - Tokens are encrypted with server-side secret
+        - User can revoke access anytime via `/v4/inbox/disconnect`
+        """
         from .resources.inbox import InboxResource
 
         return InboxResource(self)
 
     @cached_property
     def kfintech(self) -> KfintechResource:
+        """Endpoints for generating new CAS documents via email mailback (KFintech)."""
         from .resources.kfintech import KfintechResource
 
         return KfintechResource(self)
 
     @cached_property
     def nsdl(self) -> NsdlResource:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.nsdl import NsdlResource
 
         return NsdlResource(self)
 
     @cached_property
     def smart(self) -> SmartResource:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.smart import SmartResource
 
         return SmartResource(self)
 
     @cached_property
     def inbound_email(self) -> InboundEmailResource:
+        """
+        Create dedicated inbound email addresses for investors to forward their CAS statements.
+
+        **Use Case:** Your app wants to collect CAS statements from users without requiring OAuth or file upload.
+
+        **How it works:**
+        1. Call `POST /v4/inbound-email` to create a unique inbound email address
+        2. Display this email to your user: "Forward your CAS statement to ie_xxx@import.casparser.in"
+        3. When user forwards a CAS email, we verify sender authenticity (SPF/DKIM) and call your webhook
+        4. Your webhook receives email metadata + attachment download URLs
+
+        **Sender Validation:**
+        - Only emails from verified CAS authorities are processed:
+          - CDSL: `eCAS@cdslstatement.com`
+          - NSDL: `NSDL-CAS@nsdl.co.in`
+          - CAMS: `donotreply@camsonline.com`
+          - KFintech: `samfS@kfintech.com`
+        - Emails failing SPF/DKIM/DMARC are rejected
+        - Forwarded emails must contain the original sender in headers
+
+        **Billing:** 0.2 credits per successfully processed valid email
+        """
         from .resources.inbound_email import InboundEmailResource
 
         return InboundEmailResource(self)
@@ -210,9 +275,14 @@ class CasParser(SyncAPIClient):
     def qs(self) -> Querystring:
         return Querystring(array_format="comma")
 
-    @property
     @override
-    def auth_headers(self) -> dict[str, str]:
+    def _auth_headers(self, security: SecurityOptions) -> dict[str, str]:
+        return {
+            **(self._api_key_auth if security.get("api_key_auth", False) else {}),
+        }
+
+    @property
+    def _api_key_auth(self) -> dict[str, str]:
         api_key = self.api_key
         return {"x-api-key": api_key}
 
@@ -367,72 +437,136 @@ class AsyncCasParser(AsyncAPIClient):
 
     @cached_property
     def credits(self) -> AsyncCreditsResource:
+        """
+        Endpoints for checking API quota and credits usage.
+        These endpoints help you monitor your API usage and remaining quota.
+        """
         from .resources.credits import AsyncCreditsResource
 
         return AsyncCreditsResource(self)
 
     @cached_property
     def logs(self) -> AsyncLogsResource:
+        """
+        Endpoints for checking API quota and credits usage.
+        These endpoints help you monitor your API usage and remaining quota.
+        """
         from .resources.logs import AsyncLogsResource
 
         return AsyncLogsResource(self)
 
     @cached_property
     def access_token(self) -> AsyncAccessTokenResource:
+        """
+        Endpoints for managing access tokens for the Portfolio Connect SDK.
+        Use these to generate short-lived `at_` prefixed tokens that can be safely passed to frontend applications.
+        Access tokens can be used in place of API keys on all v4 endpoints.
+        """
         from .resources.access_token import AsyncAccessTokenResource
 
         return AsyncAccessTokenResource(self)
 
     @cached_property
     def verify_token(self) -> AsyncVerifyTokenResource:
+        """
+        Endpoints for managing access tokens for the Portfolio Connect SDK.
+        Use these to generate short-lived `at_` prefixed tokens that can be safely passed to frontend applications.
+        Access tokens can be used in place of API keys on all v4 endpoints.
+        """
         from .resources.verify_token import AsyncVerifyTokenResource
 
         return AsyncVerifyTokenResource(self)
 
     @cached_property
     def cams_kfintech(self) -> AsyncCamsKfintechResource:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.cams_kfintech import AsyncCamsKfintechResource
 
         return AsyncCamsKfintechResource(self)
 
     @cached_property
     def cdsl(self) -> AsyncCdslResource:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.cdsl import AsyncCdslResource
 
         return AsyncCdslResource(self)
 
     @cached_property
     def contract_note(self) -> AsyncContractNoteResource:
+        """
+        Endpoints for parsing Contract Note PDF files from various SEBI brokers like Zerodha, Groww, Upstox, ICICI etc.
+        """
         from .resources.contract_note import AsyncContractNoteResource
 
         return AsyncContractNoteResource(self)
 
     @cached_property
     def inbox(self) -> AsyncInboxResource:
+        """Endpoints for importing CAS files directly from user email inboxes.
+
+        **Supported Providers:** Gmail (more coming soon)
+
+        **How it works:**
+        1. Call `POST /v4/inbox/connect` to get an OAuth URL
+        2. Redirect user to the OAuth URL for consent
+        3. User is redirected back to your `redirect_uri` with an encrypted `inbox_token`
+        4. Use the token to list/fetch CAS files from their inbox (`/v4/inbox/cas`)
+        5. Files are uploaded to temporary cloud storage (URLs expire in 24 hours)
+
+        **Security:**
+        - Read-only access (we cannot send emails)
+        - Tokens are encrypted with server-side secret
+        - User can revoke access anytime via `/v4/inbox/disconnect`
+        """
         from .resources.inbox import AsyncInboxResource
 
         return AsyncInboxResource(self)
 
     @cached_property
     def kfintech(self) -> AsyncKfintechResource:
+        """Endpoints for generating new CAS documents via email mailback (KFintech)."""
         from .resources.kfintech import AsyncKfintechResource
 
         return AsyncKfintechResource(self)
 
     @cached_property
     def nsdl(self) -> AsyncNsdlResource:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.nsdl import AsyncNsdlResource
 
         return AsyncNsdlResource(self)
 
     @cached_property
     def smart(self) -> AsyncSmartResource:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.smart import AsyncSmartResource
 
         return AsyncSmartResource(self)
 
     @cached_property
     def inbound_email(self) -> AsyncInboundEmailResource:
+        """
+        Create dedicated inbound email addresses for investors to forward their CAS statements.
+
+        **Use Case:** Your app wants to collect CAS statements from users without requiring OAuth or file upload.
+
+        **How it works:**
+        1. Call `POST /v4/inbound-email` to create a unique inbound email address
+        2. Display this email to your user: "Forward your CAS statement to ie_xxx@import.casparser.in"
+        3. When user forwards a CAS email, we verify sender authenticity (SPF/DKIM) and call your webhook
+        4. Your webhook receives email metadata + attachment download URLs
+
+        **Sender Validation:**
+        - Only emails from verified CAS authorities are processed:
+          - CDSL: `eCAS@cdslstatement.com`
+          - NSDL: `NSDL-CAS@nsdl.co.in`
+          - CAMS: `donotreply@camsonline.com`
+          - KFintech: `samfS@kfintech.com`
+        - Emails failing SPF/DKIM/DMARC are rejected
+        - Forwarded emails must contain the original sender in headers
+
+        **Billing:** 0.2 credits per successfully processed valid email
+        """
         from .resources.inbound_email import AsyncInboundEmailResource
 
         return AsyncInboundEmailResource(self)
@@ -450,9 +584,14 @@ class AsyncCasParser(AsyncAPIClient):
     def qs(self) -> Querystring:
         return Querystring(array_format="comma")
 
-    @property
     @override
-    def auth_headers(self) -> dict[str, str]:
+    def _auth_headers(self, security: SecurityOptions) -> dict[str, str]:
+        return {
+            **(self._api_key_auth if security.get("api_key_auth", False) else {}),
+        }
+
+    @property
+    def _api_key_auth(self) -> dict[str, str]:
         api_key = self.api_key
         return {"x-api-key": api_key}
 
@@ -558,72 +697,136 @@ class CasParserWithRawResponse:
 
     @cached_property
     def credits(self) -> credits.CreditsResourceWithRawResponse:
+        """
+        Endpoints for checking API quota and credits usage.
+        These endpoints help you monitor your API usage and remaining quota.
+        """
         from .resources.credits import CreditsResourceWithRawResponse
 
         return CreditsResourceWithRawResponse(self._client.credits)
 
     @cached_property
     def logs(self) -> logs.LogsResourceWithRawResponse:
+        """
+        Endpoints for checking API quota and credits usage.
+        These endpoints help you monitor your API usage and remaining quota.
+        """
         from .resources.logs import LogsResourceWithRawResponse
 
         return LogsResourceWithRawResponse(self._client.logs)
 
     @cached_property
     def access_token(self) -> access_token.AccessTokenResourceWithRawResponse:
+        """
+        Endpoints for managing access tokens for the Portfolio Connect SDK.
+        Use these to generate short-lived `at_` prefixed tokens that can be safely passed to frontend applications.
+        Access tokens can be used in place of API keys on all v4 endpoints.
+        """
         from .resources.access_token import AccessTokenResourceWithRawResponse
 
         return AccessTokenResourceWithRawResponse(self._client.access_token)
 
     @cached_property
     def verify_token(self) -> verify_token.VerifyTokenResourceWithRawResponse:
+        """
+        Endpoints for managing access tokens for the Portfolio Connect SDK.
+        Use these to generate short-lived `at_` prefixed tokens that can be safely passed to frontend applications.
+        Access tokens can be used in place of API keys on all v4 endpoints.
+        """
         from .resources.verify_token import VerifyTokenResourceWithRawResponse
 
         return VerifyTokenResourceWithRawResponse(self._client.verify_token)
 
     @cached_property
     def cams_kfintech(self) -> cams_kfintech.CamsKfintechResourceWithRawResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.cams_kfintech import CamsKfintechResourceWithRawResponse
 
         return CamsKfintechResourceWithRawResponse(self._client.cams_kfintech)
 
     @cached_property
     def cdsl(self) -> cdsl.CdslResourceWithRawResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.cdsl import CdslResourceWithRawResponse
 
         return CdslResourceWithRawResponse(self._client.cdsl)
 
     @cached_property
     def contract_note(self) -> contract_note.ContractNoteResourceWithRawResponse:
+        """
+        Endpoints for parsing Contract Note PDF files from various SEBI brokers like Zerodha, Groww, Upstox, ICICI etc.
+        """
         from .resources.contract_note import ContractNoteResourceWithRawResponse
 
         return ContractNoteResourceWithRawResponse(self._client.contract_note)
 
     @cached_property
     def inbox(self) -> inbox.InboxResourceWithRawResponse:
+        """Endpoints for importing CAS files directly from user email inboxes.
+
+        **Supported Providers:** Gmail (more coming soon)
+
+        **How it works:**
+        1. Call `POST /v4/inbox/connect` to get an OAuth URL
+        2. Redirect user to the OAuth URL for consent
+        3. User is redirected back to your `redirect_uri` with an encrypted `inbox_token`
+        4. Use the token to list/fetch CAS files from their inbox (`/v4/inbox/cas`)
+        5. Files are uploaded to temporary cloud storage (URLs expire in 24 hours)
+
+        **Security:**
+        - Read-only access (we cannot send emails)
+        - Tokens are encrypted with server-side secret
+        - User can revoke access anytime via `/v4/inbox/disconnect`
+        """
         from .resources.inbox import InboxResourceWithRawResponse
 
         return InboxResourceWithRawResponse(self._client.inbox)
 
     @cached_property
     def kfintech(self) -> kfintech.KfintechResourceWithRawResponse:
+        """Endpoints for generating new CAS documents via email mailback (KFintech)."""
         from .resources.kfintech import KfintechResourceWithRawResponse
 
         return KfintechResourceWithRawResponse(self._client.kfintech)
 
     @cached_property
     def nsdl(self) -> nsdl.NsdlResourceWithRawResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.nsdl import NsdlResourceWithRawResponse
 
         return NsdlResourceWithRawResponse(self._client.nsdl)
 
     @cached_property
     def smart(self) -> smart.SmartResourceWithRawResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.smart import SmartResourceWithRawResponse
 
         return SmartResourceWithRawResponse(self._client.smart)
 
     @cached_property
     def inbound_email(self) -> inbound_email.InboundEmailResourceWithRawResponse:
+        """
+        Create dedicated inbound email addresses for investors to forward their CAS statements.
+
+        **Use Case:** Your app wants to collect CAS statements from users without requiring OAuth or file upload.
+
+        **How it works:**
+        1. Call `POST /v4/inbound-email` to create a unique inbound email address
+        2. Display this email to your user: "Forward your CAS statement to ie_xxx@import.casparser.in"
+        3. When user forwards a CAS email, we verify sender authenticity (SPF/DKIM) and call your webhook
+        4. Your webhook receives email metadata + attachment download URLs
+
+        **Sender Validation:**
+        - Only emails from verified CAS authorities are processed:
+          - CDSL: `eCAS@cdslstatement.com`
+          - NSDL: `NSDL-CAS@nsdl.co.in`
+          - CAMS: `donotreply@camsonline.com`
+          - KFintech: `samfS@kfintech.com`
+        - Emails failing SPF/DKIM/DMARC are rejected
+        - Forwarded emails must contain the original sender in headers
+
+        **Billing:** 0.2 credits per successfully processed valid email
+        """
         from .resources.inbound_email import InboundEmailResourceWithRawResponse
 
         return InboundEmailResourceWithRawResponse(self._client.inbound_email)
@@ -637,72 +840,136 @@ class AsyncCasParserWithRawResponse:
 
     @cached_property
     def credits(self) -> credits.AsyncCreditsResourceWithRawResponse:
+        """
+        Endpoints for checking API quota and credits usage.
+        These endpoints help you monitor your API usage and remaining quota.
+        """
         from .resources.credits import AsyncCreditsResourceWithRawResponse
 
         return AsyncCreditsResourceWithRawResponse(self._client.credits)
 
     @cached_property
     def logs(self) -> logs.AsyncLogsResourceWithRawResponse:
+        """
+        Endpoints for checking API quota and credits usage.
+        These endpoints help you monitor your API usage and remaining quota.
+        """
         from .resources.logs import AsyncLogsResourceWithRawResponse
 
         return AsyncLogsResourceWithRawResponse(self._client.logs)
 
     @cached_property
     def access_token(self) -> access_token.AsyncAccessTokenResourceWithRawResponse:
+        """
+        Endpoints for managing access tokens for the Portfolio Connect SDK.
+        Use these to generate short-lived `at_` prefixed tokens that can be safely passed to frontend applications.
+        Access tokens can be used in place of API keys on all v4 endpoints.
+        """
         from .resources.access_token import AsyncAccessTokenResourceWithRawResponse
 
         return AsyncAccessTokenResourceWithRawResponse(self._client.access_token)
 
     @cached_property
     def verify_token(self) -> verify_token.AsyncVerifyTokenResourceWithRawResponse:
+        """
+        Endpoints for managing access tokens for the Portfolio Connect SDK.
+        Use these to generate short-lived `at_` prefixed tokens that can be safely passed to frontend applications.
+        Access tokens can be used in place of API keys on all v4 endpoints.
+        """
         from .resources.verify_token import AsyncVerifyTokenResourceWithRawResponse
 
         return AsyncVerifyTokenResourceWithRawResponse(self._client.verify_token)
 
     @cached_property
     def cams_kfintech(self) -> cams_kfintech.AsyncCamsKfintechResourceWithRawResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.cams_kfintech import AsyncCamsKfintechResourceWithRawResponse
 
         return AsyncCamsKfintechResourceWithRawResponse(self._client.cams_kfintech)
 
     @cached_property
     def cdsl(self) -> cdsl.AsyncCdslResourceWithRawResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.cdsl import AsyncCdslResourceWithRawResponse
 
         return AsyncCdslResourceWithRawResponse(self._client.cdsl)
 
     @cached_property
     def contract_note(self) -> contract_note.AsyncContractNoteResourceWithRawResponse:
+        """
+        Endpoints for parsing Contract Note PDF files from various SEBI brokers like Zerodha, Groww, Upstox, ICICI etc.
+        """
         from .resources.contract_note import AsyncContractNoteResourceWithRawResponse
 
         return AsyncContractNoteResourceWithRawResponse(self._client.contract_note)
 
     @cached_property
     def inbox(self) -> inbox.AsyncInboxResourceWithRawResponse:
+        """Endpoints for importing CAS files directly from user email inboxes.
+
+        **Supported Providers:** Gmail (more coming soon)
+
+        **How it works:**
+        1. Call `POST /v4/inbox/connect` to get an OAuth URL
+        2. Redirect user to the OAuth URL for consent
+        3. User is redirected back to your `redirect_uri` with an encrypted `inbox_token`
+        4. Use the token to list/fetch CAS files from their inbox (`/v4/inbox/cas`)
+        5. Files are uploaded to temporary cloud storage (URLs expire in 24 hours)
+
+        **Security:**
+        - Read-only access (we cannot send emails)
+        - Tokens are encrypted with server-side secret
+        - User can revoke access anytime via `/v4/inbox/disconnect`
+        """
         from .resources.inbox import AsyncInboxResourceWithRawResponse
 
         return AsyncInboxResourceWithRawResponse(self._client.inbox)
 
     @cached_property
     def kfintech(self) -> kfintech.AsyncKfintechResourceWithRawResponse:
+        """Endpoints for generating new CAS documents via email mailback (KFintech)."""
         from .resources.kfintech import AsyncKfintechResourceWithRawResponse
 
         return AsyncKfintechResourceWithRawResponse(self._client.kfintech)
 
     @cached_property
     def nsdl(self) -> nsdl.AsyncNsdlResourceWithRawResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.nsdl import AsyncNsdlResourceWithRawResponse
 
         return AsyncNsdlResourceWithRawResponse(self._client.nsdl)
 
     @cached_property
     def smart(self) -> smart.AsyncSmartResourceWithRawResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.smart import AsyncSmartResourceWithRawResponse
 
         return AsyncSmartResourceWithRawResponse(self._client.smart)
 
     @cached_property
     def inbound_email(self) -> inbound_email.AsyncInboundEmailResourceWithRawResponse:
+        """
+        Create dedicated inbound email addresses for investors to forward their CAS statements.
+
+        **Use Case:** Your app wants to collect CAS statements from users without requiring OAuth or file upload.
+
+        **How it works:**
+        1. Call `POST /v4/inbound-email` to create a unique inbound email address
+        2. Display this email to your user: "Forward your CAS statement to ie_xxx@import.casparser.in"
+        3. When user forwards a CAS email, we verify sender authenticity (SPF/DKIM) and call your webhook
+        4. Your webhook receives email metadata + attachment download URLs
+
+        **Sender Validation:**
+        - Only emails from verified CAS authorities are processed:
+          - CDSL: `eCAS@cdslstatement.com`
+          - NSDL: `NSDL-CAS@nsdl.co.in`
+          - CAMS: `donotreply@camsonline.com`
+          - KFintech: `samfS@kfintech.com`
+        - Emails failing SPF/DKIM/DMARC are rejected
+        - Forwarded emails must contain the original sender in headers
+
+        **Billing:** 0.2 credits per successfully processed valid email
+        """
         from .resources.inbound_email import AsyncInboundEmailResourceWithRawResponse
 
         return AsyncInboundEmailResourceWithRawResponse(self._client.inbound_email)
@@ -716,72 +983,136 @@ class CasParserWithStreamedResponse:
 
     @cached_property
     def credits(self) -> credits.CreditsResourceWithStreamingResponse:
+        """
+        Endpoints for checking API quota and credits usage.
+        These endpoints help you monitor your API usage and remaining quota.
+        """
         from .resources.credits import CreditsResourceWithStreamingResponse
 
         return CreditsResourceWithStreamingResponse(self._client.credits)
 
     @cached_property
     def logs(self) -> logs.LogsResourceWithStreamingResponse:
+        """
+        Endpoints for checking API quota and credits usage.
+        These endpoints help you monitor your API usage and remaining quota.
+        """
         from .resources.logs import LogsResourceWithStreamingResponse
 
         return LogsResourceWithStreamingResponse(self._client.logs)
 
     @cached_property
     def access_token(self) -> access_token.AccessTokenResourceWithStreamingResponse:
+        """
+        Endpoints for managing access tokens for the Portfolio Connect SDK.
+        Use these to generate short-lived `at_` prefixed tokens that can be safely passed to frontend applications.
+        Access tokens can be used in place of API keys on all v4 endpoints.
+        """
         from .resources.access_token import AccessTokenResourceWithStreamingResponse
 
         return AccessTokenResourceWithStreamingResponse(self._client.access_token)
 
     @cached_property
     def verify_token(self) -> verify_token.VerifyTokenResourceWithStreamingResponse:
+        """
+        Endpoints for managing access tokens for the Portfolio Connect SDK.
+        Use these to generate short-lived `at_` prefixed tokens that can be safely passed to frontend applications.
+        Access tokens can be used in place of API keys on all v4 endpoints.
+        """
         from .resources.verify_token import VerifyTokenResourceWithStreamingResponse
 
         return VerifyTokenResourceWithStreamingResponse(self._client.verify_token)
 
     @cached_property
     def cams_kfintech(self) -> cams_kfintech.CamsKfintechResourceWithStreamingResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.cams_kfintech import CamsKfintechResourceWithStreamingResponse
 
         return CamsKfintechResourceWithStreamingResponse(self._client.cams_kfintech)
 
     @cached_property
     def cdsl(self) -> cdsl.CdslResourceWithStreamingResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.cdsl import CdslResourceWithStreamingResponse
 
         return CdslResourceWithStreamingResponse(self._client.cdsl)
 
     @cached_property
     def contract_note(self) -> contract_note.ContractNoteResourceWithStreamingResponse:
+        """
+        Endpoints for parsing Contract Note PDF files from various SEBI brokers like Zerodha, Groww, Upstox, ICICI etc.
+        """
         from .resources.contract_note import ContractNoteResourceWithStreamingResponse
 
         return ContractNoteResourceWithStreamingResponse(self._client.contract_note)
 
     @cached_property
     def inbox(self) -> inbox.InboxResourceWithStreamingResponse:
+        """Endpoints for importing CAS files directly from user email inboxes.
+
+        **Supported Providers:** Gmail (more coming soon)
+
+        **How it works:**
+        1. Call `POST /v4/inbox/connect` to get an OAuth URL
+        2. Redirect user to the OAuth URL for consent
+        3. User is redirected back to your `redirect_uri` with an encrypted `inbox_token`
+        4. Use the token to list/fetch CAS files from their inbox (`/v4/inbox/cas`)
+        5. Files are uploaded to temporary cloud storage (URLs expire in 24 hours)
+
+        **Security:**
+        - Read-only access (we cannot send emails)
+        - Tokens are encrypted with server-side secret
+        - User can revoke access anytime via `/v4/inbox/disconnect`
+        """
         from .resources.inbox import InboxResourceWithStreamingResponse
 
         return InboxResourceWithStreamingResponse(self._client.inbox)
 
     @cached_property
     def kfintech(self) -> kfintech.KfintechResourceWithStreamingResponse:
+        """Endpoints for generating new CAS documents via email mailback (KFintech)."""
         from .resources.kfintech import KfintechResourceWithStreamingResponse
 
         return KfintechResourceWithStreamingResponse(self._client.kfintech)
 
     @cached_property
     def nsdl(self) -> nsdl.NsdlResourceWithStreamingResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.nsdl import NsdlResourceWithStreamingResponse
 
         return NsdlResourceWithStreamingResponse(self._client.nsdl)
 
     @cached_property
     def smart(self) -> smart.SmartResourceWithStreamingResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.smart import SmartResourceWithStreamingResponse
 
         return SmartResourceWithStreamingResponse(self._client.smart)
 
     @cached_property
     def inbound_email(self) -> inbound_email.InboundEmailResourceWithStreamingResponse:
+        """
+        Create dedicated inbound email addresses for investors to forward their CAS statements.
+
+        **Use Case:** Your app wants to collect CAS statements from users without requiring OAuth or file upload.
+
+        **How it works:**
+        1. Call `POST /v4/inbound-email` to create a unique inbound email address
+        2. Display this email to your user: "Forward your CAS statement to ie_xxx@import.casparser.in"
+        3. When user forwards a CAS email, we verify sender authenticity (SPF/DKIM) and call your webhook
+        4. Your webhook receives email metadata + attachment download URLs
+
+        **Sender Validation:**
+        - Only emails from verified CAS authorities are processed:
+          - CDSL: `eCAS@cdslstatement.com`
+          - NSDL: `NSDL-CAS@nsdl.co.in`
+          - CAMS: `donotreply@camsonline.com`
+          - KFintech: `samfS@kfintech.com`
+        - Emails failing SPF/DKIM/DMARC are rejected
+        - Forwarded emails must contain the original sender in headers
+
+        **Billing:** 0.2 credits per successfully processed valid email
+        """
         from .resources.inbound_email import InboundEmailResourceWithStreamingResponse
 
         return InboundEmailResourceWithStreamingResponse(self._client.inbound_email)
@@ -795,72 +1126,136 @@ class AsyncCasParserWithStreamedResponse:
 
     @cached_property
     def credits(self) -> credits.AsyncCreditsResourceWithStreamingResponse:
+        """
+        Endpoints for checking API quota and credits usage.
+        These endpoints help you monitor your API usage and remaining quota.
+        """
         from .resources.credits import AsyncCreditsResourceWithStreamingResponse
 
         return AsyncCreditsResourceWithStreamingResponse(self._client.credits)
 
     @cached_property
     def logs(self) -> logs.AsyncLogsResourceWithStreamingResponse:
+        """
+        Endpoints for checking API quota and credits usage.
+        These endpoints help you monitor your API usage and remaining quota.
+        """
         from .resources.logs import AsyncLogsResourceWithStreamingResponse
 
         return AsyncLogsResourceWithStreamingResponse(self._client.logs)
 
     @cached_property
     def access_token(self) -> access_token.AsyncAccessTokenResourceWithStreamingResponse:
+        """
+        Endpoints for managing access tokens for the Portfolio Connect SDK.
+        Use these to generate short-lived `at_` prefixed tokens that can be safely passed to frontend applications.
+        Access tokens can be used in place of API keys on all v4 endpoints.
+        """
         from .resources.access_token import AsyncAccessTokenResourceWithStreamingResponse
 
         return AsyncAccessTokenResourceWithStreamingResponse(self._client.access_token)
 
     @cached_property
     def verify_token(self) -> verify_token.AsyncVerifyTokenResourceWithStreamingResponse:
+        """
+        Endpoints for managing access tokens for the Portfolio Connect SDK.
+        Use these to generate short-lived `at_` prefixed tokens that can be safely passed to frontend applications.
+        Access tokens can be used in place of API keys on all v4 endpoints.
+        """
         from .resources.verify_token import AsyncVerifyTokenResourceWithStreamingResponse
 
         return AsyncVerifyTokenResourceWithStreamingResponse(self._client.verify_token)
 
     @cached_property
     def cams_kfintech(self) -> cams_kfintech.AsyncCamsKfintechResourceWithStreamingResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.cams_kfintech import AsyncCamsKfintechResourceWithStreamingResponse
 
         return AsyncCamsKfintechResourceWithStreamingResponse(self._client.cams_kfintech)
 
     @cached_property
     def cdsl(self) -> cdsl.AsyncCdslResourceWithStreamingResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.cdsl import AsyncCdslResourceWithStreamingResponse
 
         return AsyncCdslResourceWithStreamingResponse(self._client.cdsl)
 
     @cached_property
     def contract_note(self) -> contract_note.AsyncContractNoteResourceWithStreamingResponse:
+        """
+        Endpoints for parsing Contract Note PDF files from various SEBI brokers like Zerodha, Groww, Upstox, ICICI etc.
+        """
         from .resources.contract_note import AsyncContractNoteResourceWithStreamingResponse
 
         return AsyncContractNoteResourceWithStreamingResponse(self._client.contract_note)
 
     @cached_property
     def inbox(self) -> inbox.AsyncInboxResourceWithStreamingResponse:
+        """Endpoints for importing CAS files directly from user email inboxes.
+
+        **Supported Providers:** Gmail (more coming soon)
+
+        **How it works:**
+        1. Call `POST /v4/inbox/connect` to get an OAuth URL
+        2. Redirect user to the OAuth URL for consent
+        3. User is redirected back to your `redirect_uri` with an encrypted `inbox_token`
+        4. Use the token to list/fetch CAS files from their inbox (`/v4/inbox/cas`)
+        5. Files are uploaded to temporary cloud storage (URLs expire in 24 hours)
+
+        **Security:**
+        - Read-only access (we cannot send emails)
+        - Tokens are encrypted with server-side secret
+        - User can revoke access anytime via `/v4/inbox/disconnect`
+        """
         from .resources.inbox import AsyncInboxResourceWithStreamingResponse
 
         return AsyncInboxResourceWithStreamingResponse(self._client.inbox)
 
     @cached_property
     def kfintech(self) -> kfintech.AsyncKfintechResourceWithStreamingResponse:
+        """Endpoints for generating new CAS documents via email mailback (KFintech)."""
         from .resources.kfintech import AsyncKfintechResourceWithStreamingResponse
 
         return AsyncKfintechResourceWithStreamingResponse(self._client.kfintech)
 
     @cached_property
     def nsdl(self) -> nsdl.AsyncNsdlResourceWithStreamingResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.nsdl import AsyncNsdlResourceWithStreamingResponse
 
         return AsyncNsdlResourceWithStreamingResponse(self._client.nsdl)
 
     @cached_property
     def smart(self) -> smart.AsyncSmartResourceWithStreamingResponse:
+        """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.smart import AsyncSmartResourceWithStreamingResponse
 
         return AsyncSmartResourceWithStreamingResponse(self._client.smart)
 
     @cached_property
     def inbound_email(self) -> inbound_email.AsyncInboundEmailResourceWithStreamingResponse:
+        """
+        Create dedicated inbound email addresses for investors to forward their CAS statements.
+
+        **Use Case:** Your app wants to collect CAS statements from users without requiring OAuth or file upload.
+
+        **How it works:**
+        1. Call `POST /v4/inbound-email` to create a unique inbound email address
+        2. Display this email to your user: "Forward your CAS statement to ie_xxx@import.casparser.in"
+        3. When user forwards a CAS email, we verify sender authenticity (SPF/DKIM) and call your webhook
+        4. Your webhook receives email metadata + attachment download URLs
+
+        **Sender Validation:**
+        - Only emails from verified CAS authorities are processed:
+          - CDSL: `eCAS@cdslstatement.com`
+          - NSDL: `NSDL-CAS@nsdl.co.in`
+          - CAMS: `donotreply@camsonline.com`
+          - KFintech: `samfS@kfintech.com`
+        - Emails failing SPF/DKIM/DMARC are rejected
+        - Forwarded emails must contain the original sender in headers
+
+        **Billing:** 0.2 credits per successfully processed valid email
+        """
         from .resources.inbound_email import AsyncInboundEmailResourceWithStreamingResponse
 
         return AsyncInboundEmailResourceWithStreamingResponse(self._client.inbound_email)

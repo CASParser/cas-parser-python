@@ -23,6 +23,11 @@ __all__ = ["FetchResource", "AsyncFetchResource"]
 
 
 class FetchResource(SyncAPIResource):
+    """
+    Endpoints for fetching CAS documents with instant download.
+    Currently supports CDSL via OTP authentication.
+    """
+
     @cached_property
     def with_raw_response(self) -> FetchResourceWithRawResponse:
         """
@@ -149,6 +154,11 @@ class FetchResource(SyncAPIResource):
 
 
 class AsyncFetchResource(AsyncAPIResource):
+    """
+    Endpoints for fetching CAS documents with instant download.
+    Currently supports CDSL via OTP authentication.
+    """
+
     @cached_property
     def with_raw_response(self) -> AsyncFetchResourceWithRawResponse:
         """

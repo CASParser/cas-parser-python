@@ -22,6 +22,12 @@ __all__ = ["AccessTokenResource", "AsyncAccessTokenResource"]
 
 
 class AccessTokenResource(SyncAPIResource):
+    """
+    Endpoints for managing access tokens for the Portfolio Connect SDK.
+    Use these to generate short-lived `at_` prefixed tokens that can be safely passed to frontend applications.
+    Access tokens can be used in place of API keys on all v4 endpoints.
+    """
+
     @cached_property
     def with_raw_response(self) -> AccessTokenResourceWithRawResponse:
         """
@@ -91,6 +97,12 @@ class AccessTokenResource(SyncAPIResource):
 
 
 class AsyncAccessTokenResource(AsyncAPIResource):
+    """
+    Endpoints for managing access tokens for the Portfolio Connect SDK.
+    Use these to generate short-lived `at_` prefixed tokens that can be safely passed to frontend applications.
+    Access tokens can be used in place of API keys on all v4 endpoints.
+    """
+
     @cached_property
     def with_raw_response(self) -> AsyncAccessTokenResourceWithRawResponse:
         """

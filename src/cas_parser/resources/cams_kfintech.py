@@ -24,6 +24,8 @@ __all__ = ["CamsKfintechResource", "AsyncCamsKfintechResource"]
 
 
 class CamsKfintechResource(SyncAPIResource):
+    """Endpoints for parsing CAS PDF files from different sources."""
+
     @cached_property
     def with_raw_response(self) -> CamsKfintechResourceWithRawResponse:
         """
@@ -101,6 +103,8 @@ class CamsKfintechResource(SyncAPIResource):
 
 
 class AsyncCamsKfintechResource(AsyncAPIResource):
+    """Endpoints for parsing CAS PDF files from different sources."""
+
     @cached_property
     def with_raw_response(self) -> AsyncCamsKfintechResourceWithRawResponse:
         """

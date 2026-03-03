@@ -26,6 +26,11 @@ __all__ = ["LogsResource", "AsyncLogsResource"]
 
 
 class LogsResource(SyncAPIResource):
+    """
+    Endpoints for checking API quota and credits usage.
+    These endpoints help you monitor your API usage and remaining quota.
+    """
+
     @cached_property
     def with_raw_response(self) -> LogsResourceWithRawResponse:
         """
@@ -147,6 +152,11 @@ class LogsResource(SyncAPIResource):
 
 
 class AsyncLogsResource(AsyncAPIResource):
+    """
+    Endpoints for checking API quota and credits usage.
+    These endpoints help you monitor your API usage and remaining quota.
+    """
+
     @cached_property
     def with_raw_response(self) -> AsyncLogsResourceWithRawResponse:
         """
