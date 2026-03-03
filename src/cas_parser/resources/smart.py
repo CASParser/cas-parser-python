@@ -24,6 +24,8 @@ __all__ = ["SmartResource", "AsyncSmartResource"]
 
 
 class SmartResource(SyncAPIResource):
+    """Endpoints for parsing CAS PDF files from different sources."""
+
     @cached_property
     def with_raw_response(self) -> SmartResourceWithRawResponse:
         """
@@ -102,6 +104,8 @@ class SmartResource(SyncAPIResource):
 
 
 class AsyncSmartResource(AsyncAPIResource):
+    """Endpoints for parsing CAS PDF files from different sources."""
+
     @cached_property
     def with_raw_response(self) -> AsyncSmartResourceWithRawResponse:
         """

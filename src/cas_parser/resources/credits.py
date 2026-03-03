@@ -20,6 +20,11 @@ __all__ = ["CreditsResource", "AsyncCreditsResource"]
 
 
 class CreditsResource(SyncAPIResource):
+    """
+    Endpoints for checking API quota and credits usage.
+    These endpoints help you monitor your API usage and remaining quota.
+    """
+
     @cached_property
     def with_raw_response(self) -> CreditsResourceWithRawResponse:
         """
@@ -70,6 +75,11 @@ class CreditsResource(SyncAPIResource):
 
 
 class AsyncCreditsResource(AsyncAPIResource):
+    """
+    Endpoints for checking API quota and credits usage.
+    These endpoints help you monitor your API usage and remaining quota.
+    """
+
     @cached_property
     def with_raw_response(self) -> AsyncCreditsResourceWithRawResponse:
         """

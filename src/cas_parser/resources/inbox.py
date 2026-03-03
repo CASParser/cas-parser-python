@@ -29,6 +29,23 @@ __all__ = ["InboxResource", "AsyncInboxResource"]
 
 
 class InboxResource(SyncAPIResource):
+    """Endpoints for importing CAS files directly from user email inboxes.
+
+    **Supported Providers:** Gmail (more coming soon)
+
+    **How it works:**
+    1. Call `POST /v4/inbox/connect` to get an OAuth URL
+    2. Redirect user to the OAuth URL for consent
+    3. User is redirected back to your `redirect_uri` with an encrypted `inbox_token`
+    4. Use the token to list/fetch CAS files from their inbox (`/v4/inbox/cas`)
+    5. Files are uploaded to temporary cloud storage (URLs expire in 24 hours)
+
+    **Security:**
+    - Read-only access (we cannot send emails)
+    - Tokens are encrypted with server-side secret
+    - User can revoke access anytime via `/v4/inbox/disconnect`
+    """
+
     @cached_property
     def with_raw_response(self) -> InboxResourceWithRawResponse:
         """
@@ -246,6 +263,23 @@ class InboxResource(SyncAPIResource):
 
 
 class AsyncInboxResource(AsyncAPIResource):
+    """Endpoints for importing CAS files directly from user email inboxes.
+
+    **Supported Providers:** Gmail (more coming soon)
+
+    **How it works:**
+    1. Call `POST /v4/inbox/connect` to get an OAuth URL
+    2. Redirect user to the OAuth URL for consent
+    3. User is redirected back to your `redirect_uri` with an encrypted `inbox_token`
+    4. Use the token to list/fetch CAS files from their inbox (`/v4/inbox/cas`)
+    5. Files are uploaded to temporary cloud storage (URLs expire in 24 hours)
+
+    **Security:**
+    - Read-only access (we cannot send emails)
+    - Tokens are encrypted with server-side secret
+    - User can revoke access anytime via `/v4/inbox/disconnect`
+    """
+
     @cached_property
     def with_raw_response(self) -> AsyncInboxResourceWithRawResponse:
         """
