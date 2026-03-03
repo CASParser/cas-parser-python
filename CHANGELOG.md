@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.6.1 (2026-03-03)
+
+Full Changelog: [v1.6.0...v1.6.1](https://github.com/CASParser/cas-parser-python/compare/v1.6.0...v1.6.1)
+
+### Chores
+
+* **ci:** bump uv version ([8b38574](https://github.com/CASParser/cas-parser-python/commit/8b38574493387605ea62763e2dac86b90cb41697))
+* **internal:** add request options to SSE classes ([7488011](https://github.com/CASParser/cas-parser-python/commit/74880111923232fba22d9870f00aabf17cd7ef2f))
+* **internal:** codegen related update ([b9079a9](https://github.com/CASParser/cas-parser-python/commit/b9079a9473681d297cfdd4165e2aae413d784bfd))
+* **internal:** make `test_proxy_environment_variables` more resilient ([3608c6e](https://github.com/CASParser/cas-parser-python/commit/3608c6eddf68e65c153c4e186346b79859aab866))
+* **internal:** make `test_proxy_environment_variables` more resilient to env ([60ab278](https://github.com/CASParser/cas-parser-python/commit/60ab27826aeea8d2b9dc6ec19f8a94bc4108b180))
+* **internal:** refactor authentication internals ([deb70b3](https://github.com/CASParser/cas-parser-python/commit/deb70b3a007f6596260f115d964f69cd55b456c3))
+
 ## 1.6.0 (2026-02-23)
 
 Full Changelog: [v1.5.0...v1.6.0](https://github.com/CASParser/cas-parser-python/compare/v1.5.0...v1.6.0)
