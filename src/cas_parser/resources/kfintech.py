@@ -22,6 +22,8 @@ __all__ = ["KfintechResource", "AsyncKfintechResource"]
 
 
 class KfintechResource(SyncAPIResource):
+    """Endpoints for generating new CAS documents via email mailback (KFintech)."""
+
     @cached_property
     def with_raw_response(self) -> KfintechResourceWithRawResponse:
         """
@@ -103,6 +105,8 @@ class KfintechResource(SyncAPIResource):
 
 
 class AsyncKfintechResource(AsyncAPIResource):
+    """Endpoints for generating new CAS documents via email mailback (KFintech)."""
+
     @cached_property
     def with_raw_response(self) -> AsyncKfintechResourceWithRawResponse:
         """

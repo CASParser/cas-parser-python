@@ -32,8 +32,14 @@ __all__ = ["CdslResource", "AsyncCdslResource"]
 
 
 class CdslResource(SyncAPIResource):
+    """Endpoints for parsing CAS PDF files from different sources."""
+
     @cached_property
     def fetch(self) -> FetchResource:
+        """
+        Endpoints for fetching CAS documents with instant download.
+        Currently supports CDSL via OTP authentication.
+        """
         return FetchResource(self._client)
 
     @cached_property
@@ -113,8 +119,14 @@ class CdslResource(SyncAPIResource):
 
 
 class AsyncCdslResource(AsyncAPIResource):
+    """Endpoints for parsing CAS PDF files from different sources."""
+
     @cached_property
     def fetch(self) -> AsyncFetchResource:
+        """
+        Endpoints for fetching CAS documents with instant download.
+        Currently supports CDSL via OTP authentication.
+        """
         return AsyncFetchResource(self._client)
 
     @cached_property
@@ -203,6 +215,10 @@ class CdslResourceWithRawResponse:
 
     @cached_property
     def fetch(self) -> FetchResourceWithRawResponse:
+        """
+        Endpoints for fetching CAS documents with instant download.
+        Currently supports CDSL via OTP authentication.
+        """
         return FetchResourceWithRawResponse(self._cdsl.fetch)
 
 
@@ -216,6 +232,10 @@ class AsyncCdslResourceWithRawResponse:
 
     @cached_property
     def fetch(self) -> AsyncFetchResourceWithRawResponse:
+        """
+        Endpoints for fetching CAS documents with instant download.
+        Currently supports CDSL via OTP authentication.
+        """
         return AsyncFetchResourceWithRawResponse(self._cdsl.fetch)
 
 
@@ -229,6 +249,10 @@ class CdslResourceWithStreamingResponse:
 
     @cached_property
     def fetch(self) -> FetchResourceWithStreamingResponse:
+        """
+        Endpoints for fetching CAS documents with instant download.
+        Currently supports CDSL via OTP authentication.
+        """
         return FetchResourceWithStreamingResponse(self._cdsl.fetch)
 
 
@@ -242,4 +266,8 @@ class AsyncCdslResourceWithStreamingResponse:
 
     @cached_property
     def fetch(self) -> AsyncFetchResourceWithStreamingResponse:
+        """
+        Endpoints for fetching CAS documents with instant download.
+        Currently supports CDSL via OTP authentication.
+        """
         return AsyncFetchResourceWithStreamingResponse(self._cdsl.fetch)
