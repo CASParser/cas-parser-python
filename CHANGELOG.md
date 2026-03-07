@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.2 (2026-03-07)
+
+Full Changelog: [v1.6.1...v1.6.2](https://github.com/CASParser/cas-parser-python/compare/v1.6.1...v1.6.2)
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([a3b3292](https://github.com/CASParser/cas-parser-python/commit/a3b329233e5e5f10acd8aad8d888de2112475af1))
+
 ## 1.6.1 (2026-03-03)
 
 Full Changelog: [v1.6.0...v1.6.1](https://github.com/CASParser/cas-parser-python/compare/v1.6.0...v1.6.1)
