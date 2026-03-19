@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.6.3 (2026-03-17)
+
+Full Changelog: [v1.6.2...v1.6.3](https://github.com/CASParser/cas-parser-python/compare/v1.6.2...v1.6.3)
+
+### Bug Fixes
+
+* **deps:** bump minimum typing-extensions version ([f287f8f](https://github.com/CASParser/cas-parser-python/commit/f287f8fa5bd9a7bc28ee45fb5eb5bc88ed15efd6))
+* **pydantic:** do not pass `by_alias` unless set ([194da96](https://github.com/CASParser/cas-parser-python/commit/194da969949332a8e76968bdce5ddd5c24aa4eab))
+
+
+### Chores
+
+* **internal:** tweak CI branches ([5f370c3](https://github.com/CASParser/cas-parser-python/commit/5f370c3cf3447548fa4e801de902efa881043788))
+
 ## 1.6.2 (2026-03-07)
 
 Full Changelog: [v1.6.1...v1.6.2](https://github.com/CASParser/cas-parser-python/compare/v1.6.1...v1.6.2)
