@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.7.0 (2026-03-27)
+
+Full Changelog: [v1.6.3...v1.7.0](https://github.com/CASParser/cas-parser-python/compare/v1.6.3...v1.7.0)
+
+### Features
+
+* **internal:** implement indices array format for query and form serialization ([80766b1](https://github.com/CASParser/cas-parser-python/commit/80766b13d42f7b06973be98f5e2eb9e62fd411d8))
+
+
+### Bug Fixes
+
+* sanitize endpoint path params ([83a2f2c](https://github.com/CASParser/cas-parser-python/commit/83a2f2c62dc993603487e8b19b6e329b7475510e))
+
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([dec3e9b](https://github.com/CASParser/cas-parser-python/commit/dec3e9bf8d1857ae839eca13cbe76f6146845d31))
+* **internal:** update gitignore ([c5e98a4](https://github.com/CASParser/cas-parser-python/commit/c5e98a45887d92948399e3be7c7f0bcacf68b5cf))
+
 ## 1.6.3 (2026-03-17)
 
 Full Changelog: [v1.6.2...v1.6.3](https://github.com/CASParser/cas-parser-python/compare/v1.6.2...v1.6.3)
