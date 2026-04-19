@@ -69,7 +69,7 @@ class TestInboundEmail:
     @parametrize
     def test_method_retrieve(self, client: CasParser) -> None:
         inbound_email = client.inbound_email.retrieve(
-            "ie_a1b2c3d4e5f6",
+            "inbound_email_id",
         )
         assert_matches_type(InboundEmailRetrieveResponse, inbound_email, path=["response"])
 
@@ -77,7 +77,7 @@ class TestInboundEmail:
     @parametrize
     def test_raw_response_retrieve(self, client: CasParser) -> None:
         response = client.inbound_email.with_raw_response.retrieve(
-            "ie_a1b2c3d4e5f6",
+            "inbound_email_id",
         )
 
         assert response.is_closed is True
@@ -89,7 +89,7 @@ class TestInboundEmail:
     @parametrize
     def test_streaming_response_retrieve(self, client: CasParser) -> None:
         with client.inbound_email.with_streaming_response.retrieve(
-            "ie_a1b2c3d4e5f6",
+            "inbound_email_id",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -240,7 +240,7 @@ class TestAsyncInboundEmail:
     @parametrize
     async def test_method_retrieve(self, async_client: AsyncCasParser) -> None:
         inbound_email = await async_client.inbound_email.retrieve(
-            "ie_a1b2c3d4e5f6",
+            "inbound_email_id",
         )
         assert_matches_type(InboundEmailRetrieveResponse, inbound_email, path=["response"])
 
@@ -248,7 +248,7 @@ class TestAsyncInboundEmail:
     @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncCasParser) -> None:
         response = await async_client.inbound_email.with_raw_response.retrieve(
-            "ie_a1b2c3d4e5f6",
+            "inbound_email_id",
         )
 
         assert response.is_closed is True
@@ -260,7 +260,7 @@ class TestAsyncInboundEmail:
     @parametrize
     async def test_streaming_response_retrieve(self, async_client: AsyncCasParser) -> None:
         async with async_client.inbound_email.with_streaming_response.retrieve(
-            "ie_a1b2c3d4e5f6",
+            "inbound_email_id",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
