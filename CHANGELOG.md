@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.8.0 (2026-04-19)
+
+Full Changelog: [v1.7.0...v1.8.0](https://github.com/CASParser/cas-parser-python/compare/v1.7.0...v1.8.0)
+
+### Features
+
+* **api:** api update ([78f7f97](https://github.com/CASParser/cas-parser-python/commit/78f7f97e1f17e44bc4443c43e92baf1888b2808a))
+* **api:** api update ([2e57117](https://github.com/CASParser/cas-parser-python/commit/2e571178acf86c879c727a43cff97ab4e05c1e2d))
+
+
+### Bug Fixes
+
+* **client:** preserve hardcoded query params when merging with user params ([3e5eea1](https://github.com/CASParser/cas-parser-python/commit/3e5eea1e92928bd98243022c607f6f15afa24d52))
+* ensure file data are only sent as 1 parameter ([4985a34](https://github.com/CASParser/cas-parser-python/commit/4985a349eee6f59007dfdf770c26deba75acc7dd))
+
+
+### Performance Improvements
+
+* **client:** optimize file structure copying in multipart requests ([1c854af](https://github.com/CASParser/cas-parser-python/commit/1c854af1baa2f1e702881692b65e9a85efffedd5))
+
 ## 1.7.0 (2026-03-27)
 
 Full Changelog: [v1.6.3...v1.7.0](https://github.com/CASParser/cas-parser-python/compare/v1.6.3...v1.7.0)
