@@ -2,27 +2,18 @@
 
 from __future__ import annotations
 
-from typing import Dict, List
-from typing_extensions import Literal, Required, TypedDict
+from typing import Dict, List, Optional
+from typing_extensions import Literal, TypedDict
 
 __all__ = ["InboundEmailCreateParams"]
 
 
 class InboundEmailCreateParams(TypedDict, total=False):
-    callback_url: Required[str]
-    """
-    Webhook URL where we POST email notifications. Must be HTTPS in production (HTTP
-    allowed for localhost during development).
-    """
-
     alias: str
-    """Optional custom email prefix for user-friendly addresses.
+    """Optional custom email prefix (e.g. `john-portfolio@import.casparser.in`).
 
-    - Must be 3-32 characters
-    - Alphanumeric + hyphens only
-    - Must start and end with letter/number
-    - Example: `john-portfolio@import.casparser.in`
-    - If omitted, generates random ID like `ie_abc123xyz@import.casparser.in`
+    3-32 chars, alphanumeric + hyphens, must start/end with a letter or number. If
+    omitted, a random ID is generated.
     """
 
     allowed_sources: List[Literal["cdsl", "nsdl", "cams", "kfintech"]]
@@ -32,6 +23,13 @@ class InboundEmailCreateParams(TypedDict, total=False):
     - `nsdl` → NSDL-CAS@nsdl.co.in
     - `cams` → donotreply@camsonline.com
     - `kfintech` → samfS@kfintech.com
+    """
+
+    callback_url: Optional[str]
+    """Optional webhook URL where we POST parsed emails.
+
+    Must be HTTPS in production (HTTP allowed for localhost). If omitted, retrieve
+    files via `GET /v4/inbound-email/{id}/files`.
     """
 
     metadata: Dict[str, str]
