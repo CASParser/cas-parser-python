@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Dict, List
+from typing import Dict, List, Optional
 from typing_extensions import Literal
 
 import httpx
@@ -73,9 +73,9 @@ class InboundEmailResource(SyncAPIResource):
     def create(
         self,
         *,
-        callback_url: str,
         alias: str | Omit = omit,
         allowed_sources: List[Literal["cdsl", "nsdl", "cams", "kfintech"]] | Omit = omit,
+        callback_url: Optional[str] | Omit = omit,
         metadata: Dict[str, str] | Omit = omit,
         reference: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -87,38 +87,19 @@ class InboundEmailResource(SyncAPIResource):
     ) -> InboundEmailCreateResponse:
         """
         Create a dedicated inbound email address for collecting CAS statements via email
-        forwarding.
+        forwarding. When an investor forwards a CAS email to this address, we verify the
+        sender and make the file available to you.
 
-        **How it works:**
+        `callback_url` is **optional**:
 
-        1. Create an inbound email with your webhook URL
-        2. Display the email address to your user (e.g., "Forward your CAS to
-           ie_xxx@import.casparser.in")
-        3. When an investor forwards a CAS email, we verify the sender and deliver to
-           your webhook
-
-        **Webhook Delivery:**
-
-        - We POST to your `callback_url` with JSON body containing files (matching
-          EmailCASFile schema)
-        - Failed deliveries are retried automatically with exponential backoff
-
-        **Inactivity:**
-
-        - Inbound emails with no activity in 30 days are marked inactive
-        - Active inbound emails remain operational indefinitely
+        - **Set it** — we POST each parsed email to your webhook as it arrives.
+        - **Omit it** — retrieve files via `GET /v4/inbound-email/{id}/files` without
+          building a webhook consumer.
 
         Args:
-          callback_url: Webhook URL where we POST email notifications. Must be HTTPS in production (HTTP
-              allowed for localhost during development).
-
-          alias: Optional custom email prefix for user-friendly addresses.
-
-              - Must be 3-32 characters
-              - Alphanumeric + hyphens only
-              - Must start and end with letter/number
-              - Example: `john-portfolio@import.casparser.in`
-              - If omitted, generates random ID like `ie_abc123xyz@import.casparser.in`
+          alias: Optional custom email prefix (e.g. `john-portfolio@import.casparser.in`). 3-32
+              chars, alphanumeric + hyphens, must start/end with a letter or number. If
+              omitted, a random ID is generated.
 
           allowed_sources: Filter emails by CAS provider. If omitted, accepts all providers.
 
@@ -126,6 +107,10 @@ class InboundEmailResource(SyncAPIResource):
               - `nsdl` → NSDL-CAS@nsdl.co.in
               - `cams` → donotreply@camsonline.com
               - `kfintech` → samfS@kfintech.com
+
+          callback_url: Optional webhook URL where we POST parsed emails. Must be HTTPS in production
+              (HTTP allowed for localhost). If omitted, retrieve files via
+              `GET /v4/inbound-email/{id}/files`.
 
           metadata: Optional key-value pairs (max 10) to include in webhook payload. Useful for
               passing context like plan_type, campaign_id, etc.
@@ -145,9 +130,9 @@ class InboundEmailResource(SyncAPIResource):
             "/v4/inbound-email",
             body=maybe_transform(
                 {
-                    "callback_url": callback_url,
                     "alias": alias,
                     "allowed_sources": allowed_sources,
+                    "callback_url": callback_url,
                     "metadata": metadata,
                     "reference": reference,
                 },
@@ -328,9 +313,9 @@ class AsyncInboundEmailResource(AsyncAPIResource):
     async def create(
         self,
         *,
-        callback_url: str,
         alias: str | Omit = omit,
         allowed_sources: List[Literal["cdsl", "nsdl", "cams", "kfintech"]] | Omit = omit,
+        callback_url: Optional[str] | Omit = omit,
         metadata: Dict[str, str] | Omit = omit,
         reference: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -342,38 +327,19 @@ class AsyncInboundEmailResource(AsyncAPIResource):
     ) -> InboundEmailCreateResponse:
         """
         Create a dedicated inbound email address for collecting CAS statements via email
-        forwarding.
+        forwarding. When an investor forwards a CAS email to this address, we verify the
+        sender and make the file available to you.
 
-        **How it works:**
+        `callback_url` is **optional**:
 
-        1. Create an inbound email with your webhook URL
-        2. Display the email address to your user (e.g., "Forward your CAS to
-           ie_xxx@import.casparser.in")
-        3. When an investor forwards a CAS email, we verify the sender and deliver to
-           your webhook
-
-        **Webhook Delivery:**
-
-        - We POST to your `callback_url` with JSON body containing files (matching
-          EmailCASFile schema)
-        - Failed deliveries are retried automatically with exponential backoff
-
-        **Inactivity:**
-
-        - Inbound emails with no activity in 30 days are marked inactive
-        - Active inbound emails remain operational indefinitely
+        - **Set it** — we POST each parsed email to your webhook as it arrives.
+        - **Omit it** — retrieve files via `GET /v4/inbound-email/{id}/files` without
+          building a webhook consumer.
 
         Args:
-          callback_url: Webhook URL where we POST email notifications. Must be HTTPS in production (HTTP
-              allowed for localhost during development).
-
-          alias: Optional custom email prefix for user-friendly addresses.
-
-              - Must be 3-32 characters
-              - Alphanumeric + hyphens only
-              - Must start and end with letter/number
-              - Example: `john-portfolio@import.casparser.in`
-              - If omitted, generates random ID like `ie_abc123xyz@import.casparser.in`
+          alias: Optional custom email prefix (e.g. `john-portfolio@import.casparser.in`). 3-32
+              chars, alphanumeric + hyphens, must start/end with a letter or number. If
+              omitted, a random ID is generated.
 
           allowed_sources: Filter emails by CAS provider. If omitted, accepts all providers.
 
@@ -381,6 +347,10 @@ class AsyncInboundEmailResource(AsyncAPIResource):
               - `nsdl` → NSDL-CAS@nsdl.co.in
               - `cams` → donotreply@camsonline.com
               - `kfintech` → samfS@kfintech.com
+
+          callback_url: Optional webhook URL where we POST parsed emails. Must be HTTPS in production
+              (HTTP allowed for localhost). If omitted, retrieve files via
+              `GET /v4/inbound-email/{id}/files`.
 
           metadata: Optional key-value pairs (max 10) to include in webhook payload. Useful for
               passing context like plan_type, campaign_id, etc.
@@ -400,9 +370,9 @@ class AsyncInboundEmailResource(AsyncAPIResource):
             "/v4/inbound-email",
             body=await async_maybe_transform(
                 {
-                    "callback_url": callback_url,
                     "alias": alias,
                     "allowed_sources": allowed_sources,
+                    "callback_url": callback_url,
                     "metadata": metadata,
                     "reference": reference,
                 },
