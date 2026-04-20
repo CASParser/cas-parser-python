@@ -8,8 +8,9 @@ from typing_extensions import Literal
 import httpx
 
 from ..types import contract_note_parse_params
+from .._files import deepcopy_with_paths
 from .._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
-from .._utils import extract_files, maybe_transform, deepcopy_minimal, async_maybe_transform
+from .._utils import extract_files, maybe_transform, async_maybe_transform
 from .._compat import cached_property
 from .._resource import SyncAPIResource, AsyncAPIResource
 from .._response import (
@@ -110,13 +111,14 @@ class ContractNoteResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        body = deepcopy_minimal(
+        body = deepcopy_with_paths(
             {
                 "broker_type": broker_type,
                 "password": password,
                 "pdf_file": pdf_file,
                 "pdf_url": pdf_url,
-            }
+            },
+            [["pdf_file"]],
         )
         files = extract_files(cast(Mapping[str, object], body), paths=[["pdf_file"]])
         if files:
@@ -221,13 +223,14 @@ class AsyncContractNoteResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
-        body = deepcopy_minimal(
+        body = deepcopy_with_paths(
             {
                 "broker_type": broker_type,
                 "password": password,
                 "pdf_file": pdf_file,
                 "pdf_url": pdf_url,
-            }
+            },
+            [["pdf_file"]],
         )
         files = extract_files(cast(Mapping[str, object], body), paths=[["pdf_file"]])
         if files:

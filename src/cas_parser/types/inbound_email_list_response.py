@@ -16,7 +16,11 @@ class InboundEmail(BaseModel):
     """Accepted CAS providers (empty = all)"""
 
     callback_url: Optional[str] = None
-    """Webhook URL for email notifications"""
+    """Webhook URL for email notifications.
+
+    `null` means files are only retrievable via `GET /v4/inbound-email/{id}/files`
+    (pull delivery).
+    """
 
     created_at: Optional[datetime] = None
     """When the mailbox was created"""
