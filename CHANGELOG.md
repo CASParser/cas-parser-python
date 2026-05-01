@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.9.0 (2026-05-01)
+
+Full Changelog: [v1.8.0...v1.9.0](https://github.com/CASParser/cas-parser-python/compare/v1.8.0...v1.9.0)
+
+### Features
+
+* support setting headers via env ([cddcbfe](https://github.com/CASParser/cas-parser-python/commit/cddcbfeb1bc2304e73bc00e209a36e54835bff65))
+
+
+### Bug Fixes
+
+* use correct field name format for multipart file arrays ([f944611](https://github.com/CASParser/cas-parser-python/commit/f9446112d528f85c0b81de683fb920173ccd419f))
+
+
+### Chores
+
+* **internal:** more robust bootstrap script ([058a8e9](https://github.com/CASParser/cas-parser-python/commit/058a8e9da54a73314e16eb650e8e45e3982cc677))
+* **internal:** reformat pyproject.toml ([c619569](https://github.com/CASParser/cas-parser-python/commit/c619569d3b418561dc076a8e6eb11a080479e34e))
+
 ## 1.8.0 (2026-04-19)
 
 Full Changelog: [v1.7.0...v1.8.0](https://github.com/CASParser/cas-parser-python/compare/v1.7.0...v1.8.0)
