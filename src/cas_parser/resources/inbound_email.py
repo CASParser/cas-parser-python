@@ -156,7 +156,7 @@ class InboundEmailResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> InboundEmailRetrieveResponse:
         """
-        Retrieve details of a specific mailbox including statistics.
+        Retrieve details of a specific inbound email including statistics.
 
         Args:
           extra_headers: Send extra headers
@@ -190,10 +190,10 @@ class InboundEmailResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> InboundEmailListResponse:
-        """List all mailboxes associated with your API key.
+        """List all inbound emails associated with your API key.
 
-        Returns active and inactive
-        mailboxes (deleted mailboxes are excluded).
+        Returns active and paused
+        inbound emails (deleted ones are excluded).
 
         Args:
           limit: Maximum number of inbound emails to return
@@ -396,7 +396,7 @@ class AsyncInboundEmailResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> InboundEmailRetrieveResponse:
         """
-        Retrieve details of a specific mailbox including statistics.
+        Retrieve details of a specific inbound email including statistics.
 
         Args:
           extra_headers: Send extra headers
@@ -430,10 +430,10 @@ class AsyncInboundEmailResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> InboundEmailListResponse:
-        """List all mailboxes associated with your API key.
+        """List all inbound emails associated with your API key.
 
-        Returns active and inactive
-        mailboxes (deleted mailboxes are excluded).
+        Returns active and paused
+        inbound emails (deleted ones are excluded).
 
         Args:
           limit: Maximum number of inbound emails to return
