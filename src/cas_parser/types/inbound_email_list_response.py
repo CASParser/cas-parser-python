@@ -18,12 +18,12 @@ class InboundEmail(BaseModel):
     callback_url: Optional[str] = None
     """Webhook URL for email notifications.
 
-    `null` means files are only retrievable via `GET /v4/inbound-email/{id}/files`
-    (pull delivery).
+    Empty string (`""`) means files are only retrievable via
+    `GET /v4/inbound-email/{id}/files` (SDK / pull mode).
     """
 
     created_at: Optional[datetime] = None
-    """When the mailbox was created"""
+    """When the inbound email was created"""
 
     email: Optional[str] = None
     """The inbound email address to forward CAS statements to"""
@@ -38,10 +38,10 @@ class InboundEmail(BaseModel):
     """Your internal reference identifier"""
 
     status: Optional[Literal["active", "paused"]] = None
-    """Current mailbox status"""
+    """Current inbound email lifecycle status"""
 
     updated_at: Optional[datetime] = None
-    """When the mailbox was last updated"""
+    """When the inbound email was last updated"""
 
 
 class InboundEmailListResponse(BaseModel):
