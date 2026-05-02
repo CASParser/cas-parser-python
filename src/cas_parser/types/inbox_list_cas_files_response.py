@@ -16,7 +16,12 @@ class File(BaseModel):
     """Detected CAS provider based on sender email"""
 
     expires_in: Optional[int] = None
-    """URL expiration time in seconds (default 86400 = 24 hours)"""
+    """URL expiration time in seconds. Defaults vary by source:
+
+    - Gmail Inbox Import: 86400 (24h)
+    - Inbound Email (webhook mode): 172800 (48h)
+    - Inbound Email (SDK mode): aligned with the session TTL (~30 min)
+    """
 
     filename: Optional[str] = None
     """Standardized filename (provider_YYYYMMDD_uniqueid.pdf)"""
