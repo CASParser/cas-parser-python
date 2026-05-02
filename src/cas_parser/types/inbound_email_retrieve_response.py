@@ -18,8 +18,8 @@ class InboundEmailRetrieveResponse(BaseModel):
     callback_url: Optional[str] = None
     """Webhook URL for email notifications.
 
-    Empty string (`""`) means files are only retrievable via
-    `GET /v4/inbound-email/{id}/files` (SDK / pull mode).
+    If set, we POST each parsed email here. If omitted, files are only retrievable
+    via `GET /v4/inbound-email/{id}/files`.
     """
 
     created_at: Optional[datetime] = None
