@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.11.0 (2026-05-13)
+
+Full Changelog: [v1.10.0...v1.11.0](https://github.com/CASParser/cas-parser-python/compare/v1.10.0...v1.11.0)
+
+### Features
+
+* **internal/types:** support eagerly validating pydantic iterators ([47b37f5](https://github.com/CASParser/cas-parser-python/commit/47b37f58341741936a5b3e9954fecd63b4a0ccaf))
+
 ## 1.10.0 (2026-05-09)
 
 Full Changelog: [v1.9.0...v1.10.0](https://github.com/CASParser/cas-parser-python/compare/v1.9.0...v1.10.0)
