@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.11.0 (2026-06-18)
+
+Full Changelog: [v1.10.0...v1.11.0](https://github.com/CASParser/cas-parser-python/compare/v1.10.0...v1.11.0)
+
+### Features
+
+* **internal/types:** support eagerly validating pydantic iterators ([47b37f5](https://github.com/CASParser/cas-parser-python/commit/47b37f58341741936a5b3e9954fecd63b4a0ccaf))
+
+
+### Bug Fixes
+
+* **auth:** prioritize first auth header ([b0e3a92](https://github.com/CASParser/cas-parser-python/commit/b0e3a923509d1c47c31bf6a65884dce31d11ea54))
+
 ## 1.10.0 (2026-05-09)
 
 Full Changelog: [v1.9.0...v1.10.0](https://github.com/CASParser/cas-parser-python/compare/v1.9.0...v1.10.0)
