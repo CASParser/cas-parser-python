@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.12.0 (2026-07-18)
+
+Full Changelog: [v1.11.0...v1.12.0](https://github.com/CASParser/cas-parser-python/compare/v1.11.0...v1.12.0)
+
+### Features
+
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([8af3718](https://github.com/CASParser/cas-parser-python/commit/8af3718c0ec8748968f412683b73ce530edd3a4a))
+
+
+### Bug Fixes
+
+* **internal:** resolve build failures ([0318675](https://github.com/CASParser/cas-parser-python/commit/0318675bbf3ff0b4faa30cb952a08d3137f320ac))
+
 ## 1.11.0 (2026-06-18)
 
 Full Changelog: [v1.10.0...v1.11.0](https://github.com/CASParser/cas-parser-python/compare/v1.10.0...v1.11.0)
