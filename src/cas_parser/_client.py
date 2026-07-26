@@ -43,7 +43,6 @@ if TYPE_CHECKING:
         inbox,
         smart,
         credits,
-        kfintech,
         access_token,
         verify_token,
         cams_kfintech,
@@ -55,7 +54,6 @@ if TYPE_CHECKING:
     from .resources.inbox import InboxResource, AsyncInboxResource
     from .resources.smart import SmartResource, AsyncSmartResource
     from .resources.credits import CreditsResource, AsyncCreditsResource
-    from .resources.kfintech import KfintechResource, AsyncKfintechResource
     from .resources.cdsl.cdsl import CdslResource, AsyncCdslResource
     from .resources.access_token import AccessTokenResource, AsyncAccessTokenResource
     from .resources.verify_token import VerifyTokenResource, AsyncVerifyTokenResource
@@ -225,13 +223,6 @@ class CasParser(SyncAPIClient):
         from .resources.inbox import InboxResource
 
         return InboxResource(self)
-
-    @cached_property
-    def kfintech(self) -> KfintechResource:
-        """Endpoints for generating new CAS documents via email mailback (KFintech)."""
-        from .resources.kfintech import KfintechResource
-
-        return KfintechResource(self)
 
     @cached_property
     def nsdl(self) -> NsdlResource:
@@ -547,13 +538,6 @@ class AsyncCasParser(AsyncAPIClient):
         return AsyncInboxResource(self)
 
     @cached_property
-    def kfintech(self) -> AsyncKfintechResource:
-        """Endpoints for generating new CAS documents via email mailback (KFintech)."""
-        from .resources.kfintech import AsyncKfintechResource
-
-        return AsyncKfintechResource(self)
-
-    @cached_property
     def nsdl(self) -> AsyncNsdlResource:
         """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.nsdl import AsyncNsdlResource
@@ -809,13 +793,6 @@ class CasParserWithRawResponse:
         return InboxResourceWithRawResponse(self._client.inbox)
 
     @cached_property
-    def kfintech(self) -> kfintech.KfintechResourceWithRawResponse:
-        """Endpoints for generating new CAS documents via email mailback (KFintech)."""
-        from .resources.kfintech import KfintechResourceWithRawResponse
-
-        return KfintechResourceWithRawResponse(self._client.kfintech)
-
-    @cached_property
     def nsdl(self) -> nsdl.NsdlResourceWithRawResponse:
         """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.nsdl import NsdlResourceWithRawResponse
@@ -950,13 +927,6 @@ class AsyncCasParserWithRawResponse:
         from .resources.inbox import AsyncInboxResourceWithRawResponse
 
         return AsyncInboxResourceWithRawResponse(self._client.inbox)
-
-    @cached_property
-    def kfintech(self) -> kfintech.AsyncKfintechResourceWithRawResponse:
-        """Endpoints for generating new CAS documents via email mailback (KFintech)."""
-        from .resources.kfintech import AsyncKfintechResourceWithRawResponse
-
-        return AsyncKfintechResourceWithRawResponse(self._client.kfintech)
 
     @cached_property
     def nsdl(self) -> nsdl.AsyncNsdlResourceWithRawResponse:
@@ -1095,13 +1065,6 @@ class CasParserWithStreamedResponse:
         return InboxResourceWithStreamingResponse(self._client.inbox)
 
     @cached_property
-    def kfintech(self) -> kfintech.KfintechResourceWithStreamingResponse:
-        """Endpoints for generating new CAS documents via email mailback (KFintech)."""
-        from .resources.kfintech import KfintechResourceWithStreamingResponse
-
-        return KfintechResourceWithStreamingResponse(self._client.kfintech)
-
-    @cached_property
     def nsdl(self) -> nsdl.NsdlResourceWithStreamingResponse:
         """Endpoints for parsing CAS PDF files from different sources."""
         from .resources.nsdl import NsdlResourceWithStreamingResponse
@@ -1236,13 +1199,6 @@ class AsyncCasParserWithStreamedResponse:
         from .resources.inbox import AsyncInboxResourceWithStreamingResponse
 
         return AsyncInboxResourceWithStreamingResponse(self._client.inbox)
-
-    @cached_property
-    def kfintech(self) -> kfintech.AsyncKfintechResourceWithStreamingResponse:
-        """Endpoints for generating new CAS documents via email mailback (KFintech)."""
-        from .resources.kfintech import AsyncKfintechResourceWithStreamingResponse
-
-        return AsyncKfintechResourceWithStreamingResponse(self._client.kfintech)
 
     @cached_property
     def nsdl(self) -> nsdl.AsyncNsdlResourceWithStreamingResponse:

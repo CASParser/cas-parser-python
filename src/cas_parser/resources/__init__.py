@@ -48,14 +48,6 @@ from .credits import (
     CreditsResourceWithStreamingResponse,
     AsyncCreditsResourceWithStreamingResponse,
 )
-from .kfintech import (
-    KfintechResource,
-    AsyncKfintechResource,
-    KfintechResourceWithRawResponse,
-    AsyncKfintechResourceWithRawResponse,
-    KfintechResourceWithStreamingResponse,
-    AsyncKfintechResourceWithStreamingResponse,
-)
 from .access_token import (
     AccessTokenResource,
     AsyncAccessTokenResource,
@@ -146,12 +138,6 @@ __all__ = [
     "AsyncInboxResourceWithRawResponse",
     "InboxResourceWithStreamingResponse",
     "AsyncInboxResourceWithStreamingResponse",
-    "KfintechResource",
-    "AsyncKfintechResource",
-    "KfintechResourceWithRawResponse",
-    "AsyncKfintechResourceWithRawResponse",
-    "KfintechResourceWithStreamingResponse",
-    "AsyncKfintechResourceWithStreamingResponse",
     "NsdlResource",
     "AsyncNsdlResource",
     "NsdlResourceWithRawResponse",
