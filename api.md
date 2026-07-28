@@ -110,18 +110,6 @@ Methods:
 - <code title="post /v4/inbox/disconnect">client.inbox.<a href="./src/cas_parser/resources/inbox.py">disconnect_email</a>() -> <a href="./src/cas_parser/types/inbox_disconnect_email_response.py">InboxDisconnectEmailResponse</a></code>
 - <code title="post /v4/inbox/cas">client.inbox.<a href="./src/cas_parser/resources/inbox.py">list_cas_files</a>(\*\*<a href="src/cas_parser/types/inbox_list_cas_files_params.py">params</a>) -> <a href="./src/cas_parser/types/inbox_list_cas_files_response.py">InboxListCasFilesResponse</a></code>
 
-# Kfintech
-
-Types:
-
-```python
-from cas_parser.types import KfintechGenerateCasResponse
-```
-
-Methods:
-
-- <code title="post /v4/kfintech/generate">client.kfintech.<a href="./src/cas_parser/resources/kfintech.py">generate_cas</a>(\*\*<a href="src/cas_parser/types/kfintech_generate_cas_params.py">params</a>) -> <a href="./src/cas_parser/types/kfintech_generate_cas_response.py">KfintechGenerateCasResponse</a></code>
-
 # Nsdl
 
 Methods:
