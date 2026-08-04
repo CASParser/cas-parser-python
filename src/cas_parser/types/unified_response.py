@@ -364,6 +364,12 @@ class MutualFundSchemeAdditionalInfo(BaseModel):
     close_units: Optional[float] = None
     """Closing balance units for the statement period"""
 
+    is_demat: Optional[bool] = None
+    """Whether the scheme is held in demat form (CAMS/KFintech).
+
+    true = Demat, false = Non-Demat, null = not specified.
+    """
+
     open_units: Optional[float] = None
     """Opening balance units for the statement period"""
 
