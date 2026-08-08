@@ -104,6 +104,7 @@ class InboxResource(SyncAPIResource):
         self,
         *,
         redirect_uri: str,
+        provider: Literal["gmail", "outlook"] | Omit = omit,
         state: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -136,6 +137,14 @@ class InboxResource(SyncAPIResource):
         Args:
           redirect_uri: Your callback URL to receive the inbox_token (must be http or https)
 
+          provider: Mail provider to connect. Defaults to `gmail`.
+
+              - `gmail` - Google accounts
+              - `outlook` - Microsoft accounts
+
+              Any value other than `outlook` is treated as `gmail`. The resolved provider is
+              returned in the response.
+
           state: State parameter for CSRF protection (returned in redirect)
 
           extra_headers: Send extra headers
@@ -151,6 +160,7 @@ class InboxResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "redirect_uri": redirect_uri,
+                    "provider": provider,
                     "state": state,
                 },
                 inbox_connect_email_params.InboxConnectEmailParams,
@@ -338,6 +348,7 @@ class AsyncInboxResource(AsyncAPIResource):
         self,
         *,
         redirect_uri: str,
+        provider: Literal["gmail", "outlook"] | Omit = omit,
         state: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -370,6 +381,14 @@ class AsyncInboxResource(AsyncAPIResource):
         Args:
           redirect_uri: Your callback URL to receive the inbox_token (must be http or https)
 
+          provider: Mail provider to connect. Defaults to `gmail`.
+
+              - `gmail` - Google accounts
+              - `outlook` - Microsoft accounts
+
+              Any value other than `outlook` is treated as `gmail`. The resolved provider is
+              returned in the response.
+
           state: State parameter for CSRF protection (returned in redirect)
 
           extra_headers: Send extra headers
@@ -385,6 +404,7 @@ class AsyncInboxResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "redirect_uri": redirect_uri,
+                    "provider": provider,
                     "state": state,
                 },
                 inbox_connect_email_params.InboxConnectEmailParams,
