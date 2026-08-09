@@ -15,7 +15,7 @@ class InboxConnectEmailResponse(BaseModel):
     oauth_url: Optional[str] = None
     """Redirect user to this URL to start OAuth flow"""
 
-    provider: Optional[Literal["gmail", "outlook"]] = None
+    provider: Optional[Literal["gmail", "outlook", "zoho"]] = None
     """The provider this OAuth URL was generated for"""
 
     status: Optional[str] = None

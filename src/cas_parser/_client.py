@@ -206,7 +206,14 @@ class CasParser(SyncAPIClient):
     def inbox(self) -> InboxResource:
         """Endpoints for importing CAS files directly from user email inboxes.
 
-        **Supported Providers:** Gmail (more coming soon)
+        **Supported Providers:**
+
+        - **Gmail** (`gmail`, default) — `@gmail.com` and Google Workspace domains
+        - **Microsoft** (`outlook`) — personal Microsoft accounts: `@outlook.com`,
+          `@hotmail.com`, `@live.com`, `@msn.com`, and localised variants such as
+          `@hotmail.co.uk`, `@live.in`, `@hotmail.fr`. Any other address registered
+          as a personal Microsoft account also works, including custom domains.
+        - **Zoho Mail** (`zoho`) — Zoho-hosted mailboxes, including custom domains
 
         **How it works:**
         1. Call `POST /v4/inbox/connect` to get an OAuth URL
@@ -519,7 +526,14 @@ class AsyncCasParser(AsyncAPIClient):
     def inbox(self) -> AsyncInboxResource:
         """Endpoints for importing CAS files directly from user email inboxes.
 
-        **Supported Providers:** Gmail (more coming soon)
+        **Supported Providers:**
+
+        - **Gmail** (`gmail`, default) — `@gmail.com` and Google Workspace domains
+        - **Microsoft** (`outlook`) — personal Microsoft accounts: `@outlook.com`,
+          `@hotmail.com`, `@live.com`, `@msn.com`, and localised variants such as
+          `@hotmail.co.uk`, `@live.in`, `@hotmail.fr`. Any other address registered
+          as a personal Microsoft account also works, including custom domains.
+        - **Zoho Mail** (`zoho`) — Zoho-hosted mailboxes, including custom domains
 
         **How it works:**
         1. Call `POST /v4/inbox/connect` to get an OAuth URL
@@ -774,7 +788,14 @@ class CasParserWithRawResponse:
     def inbox(self) -> inbox.InboxResourceWithRawResponse:
         """Endpoints for importing CAS files directly from user email inboxes.
 
-        **Supported Providers:** Gmail (more coming soon)
+        **Supported Providers:**
+
+        - **Gmail** (`gmail`, default) — `@gmail.com` and Google Workspace domains
+        - **Microsoft** (`outlook`) — personal Microsoft accounts: `@outlook.com`,
+          `@hotmail.com`, `@live.com`, `@msn.com`, and localised variants such as
+          `@hotmail.co.uk`, `@live.in`, `@hotmail.fr`. Any other address registered
+          as a personal Microsoft account also works, including custom domains.
+        - **Zoho Mail** (`zoho`) — Zoho-hosted mailboxes, including custom domains
 
         **How it works:**
         1. Call `POST /v4/inbox/connect` to get an OAuth URL
@@ -910,7 +931,14 @@ class AsyncCasParserWithRawResponse:
     def inbox(self) -> inbox.AsyncInboxResourceWithRawResponse:
         """Endpoints for importing CAS files directly from user email inboxes.
 
-        **Supported Providers:** Gmail (more coming soon)
+        **Supported Providers:**
+
+        - **Gmail** (`gmail`, default) — `@gmail.com` and Google Workspace domains
+        - **Microsoft** (`outlook`) — personal Microsoft accounts: `@outlook.com`,
+          `@hotmail.com`, `@live.com`, `@msn.com`, and localised variants such as
+          `@hotmail.co.uk`, `@live.in`, `@hotmail.fr`. Any other address registered
+          as a personal Microsoft account also works, including custom domains.
+        - **Zoho Mail** (`zoho`) — Zoho-hosted mailboxes, including custom domains
 
         **How it works:**
         1. Call `POST /v4/inbox/connect` to get an OAuth URL
@@ -1046,7 +1074,14 @@ class CasParserWithStreamedResponse:
     def inbox(self) -> inbox.InboxResourceWithStreamingResponse:
         """Endpoints for importing CAS files directly from user email inboxes.
 
-        **Supported Providers:** Gmail (more coming soon)
+        **Supported Providers:**
+
+        - **Gmail** (`gmail`, default) — `@gmail.com` and Google Workspace domains
+        - **Microsoft** (`outlook`) — personal Microsoft accounts: `@outlook.com`,
+          `@hotmail.com`, `@live.com`, `@msn.com`, and localised variants such as
+          `@hotmail.co.uk`, `@live.in`, `@hotmail.fr`. Any other address registered
+          as a personal Microsoft account also works, including custom domains.
+        - **Zoho Mail** (`zoho`) — Zoho-hosted mailboxes, including custom domains
 
         **How it works:**
         1. Call `POST /v4/inbox/connect` to get an OAuth URL
@@ -1182,7 +1217,14 @@ class AsyncCasParserWithStreamedResponse:
     def inbox(self) -> inbox.AsyncInboxResourceWithStreamingResponse:
         """Endpoints for importing CAS files directly from user email inboxes.
 
-        **Supported Providers:** Gmail (more coming soon)
+        **Supported Providers:**
+
+        - **Gmail** (`gmail`, default) — `@gmail.com` and Google Workspace domains
+        - **Microsoft** (`outlook`) — personal Microsoft accounts: `@outlook.com`,
+          `@hotmail.com`, `@live.com`, `@msn.com`, and localised variants such as
+          `@hotmail.co.uk`, `@live.in`, `@hotmail.fr`. Any other address registered
+          as a personal Microsoft account also works, including custom domains.
+        - **Zoho Mail** (`zoho`) — Zoho-hosted mailboxes, including custom domains
 
         **How it works:**
         1. Call `POST /v4/inbox/connect` to get an OAuth URL
