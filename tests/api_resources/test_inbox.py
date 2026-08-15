@@ -70,6 +70,7 @@ class TestInbox:
     def test_method_connect_email_with_all_params(self, client: CasParser) -> None:
         inbox = client.inbox.connect_email(
             redirect_uri="https://yourapp.com/oauth-callback",
+            provider="outlook",
             state="abc123",
         )
         assert_matches_type(InboxConnectEmailResponse, inbox, path=["response"])
@@ -232,6 +233,7 @@ class TestAsyncInbox:
     async def test_method_connect_email_with_all_params(self, async_client: AsyncCasParser) -> None:
         inbox = await async_client.inbox.connect_email(
             redirect_uri="https://yourapp.com/oauth-callback",
+            provider="outlook",
             state="abc123",
         )
         assert_matches_type(InboxConnectEmailResponse, inbox, path=["response"])
