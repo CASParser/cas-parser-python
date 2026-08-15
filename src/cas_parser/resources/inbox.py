@@ -31,7 +31,14 @@ __all__ = ["InboxResource", "AsyncInboxResource"]
 class InboxResource(SyncAPIResource):
     """Endpoints for importing CAS files directly from user email inboxes.
 
-    **Supported Providers:** Gmail (more coming soon)
+    **Supported Providers:**
+
+    - **Gmail** (`gmail`, default) — `@gmail.com` and Google Workspace domains
+    - **Microsoft** (`outlook`) — personal Microsoft accounts: `@outlook.com`,
+      `@hotmail.com`, `@live.com`, `@msn.com`, and localised variants such as
+      `@hotmail.co.uk`, `@live.in`, `@hotmail.fr`. Any other address registered
+      as a personal Microsoft account also works, including custom domains.
+    - **Zoho Mail** (`zoho`) — Zoho-hosted mailboxes, including custom domains
 
     **How it works:**
     1. Call `POST /v4/inbox/connect` to get an OAuth URL
@@ -104,7 +111,7 @@ class InboxResource(SyncAPIResource):
         self,
         *,
         redirect_uri: str,
-        provider: Literal["gmail", "outlook"] | Omit = omit,
+        provider: Literal["gmail", "outlook", "zoho"] | Omit = omit,
         state: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -132,18 +139,25 @@ class InboxResource(SyncAPIResource):
         - `state` - Your original state parameter
 
         **Store the `inbox_token` client-side** and use it for all subsequent inbox API
-        calls.
+        calls. The token is long-lived (it stores an encrypted refresh token), so a
+        single OAuth connect gives ongoing access to both historical and future CAS
+        statements in the user's inbox. Reuse the same token until the user revokes
+        access via `/v4/inbox/disconnect` or their provider's account settings.
 
         Args:
           redirect_uri: Your callback URL to receive the inbox_token (must be http or https)
 
           provider: Mail provider to connect. Defaults to `gmail`.
 
-              - `gmail` - Google accounts
-              - `outlook` - Microsoft accounts
+              - `gmail` - Google accounts: `@gmail.com` and Google Workspace domains.
+              - `outlook` - personal Microsoft accounts: `@outlook.com`, `@hotmail.com`,
+                `@live.com`, `@msn.com` and localised variants (`@hotmail.co.uk`, `@live.in`,
+                `@hotmail.fr`). Any other address registered as a personal Microsoft account
+                also works, including custom domains.
+              - `zoho` - Zoho Mail accounts, including custom domains hosted on Zoho.
 
-              Any value other than `outlook` is treated as `gmail`. The resolved provider is
-              returned in the response.
+              Any unrecognised value is treated as `gmail`. The resolved provider is returned
+              in the response.
 
           state: State parameter for CSRF protection (returned in redirect)
 
@@ -275,7 +289,14 @@ class InboxResource(SyncAPIResource):
 class AsyncInboxResource(AsyncAPIResource):
     """Endpoints for importing CAS files directly from user email inboxes.
 
-    **Supported Providers:** Gmail (more coming soon)
+    **Supported Providers:**
+
+    - **Gmail** (`gmail`, default) — `@gmail.com` and Google Workspace domains
+    - **Microsoft** (`outlook`) — personal Microsoft accounts: `@outlook.com`,
+      `@hotmail.com`, `@live.com`, `@msn.com`, and localised variants such as
+      `@hotmail.co.uk`, `@live.in`, `@hotmail.fr`. Any other address registered
+      as a personal Microsoft account also works, including custom domains.
+    - **Zoho Mail** (`zoho`) — Zoho-hosted mailboxes, including custom domains
 
     **How it works:**
     1. Call `POST /v4/inbox/connect` to get an OAuth URL
@@ -348,7 +369,7 @@ class AsyncInboxResource(AsyncAPIResource):
         self,
         *,
         redirect_uri: str,
-        provider: Literal["gmail", "outlook"] | Omit = omit,
+        provider: Literal["gmail", "outlook", "zoho"] | Omit = omit,
         state: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -376,18 +397,25 @@ class AsyncInboxResource(AsyncAPIResource):
         - `state` - Your original state parameter
 
         **Store the `inbox_token` client-side** and use it for all subsequent inbox API
-        calls.
+        calls. The token is long-lived (it stores an encrypted refresh token), so a
+        single OAuth connect gives ongoing access to both historical and future CAS
+        statements in the user's inbox. Reuse the same token until the user revokes
+        access via `/v4/inbox/disconnect` or their provider's account settings.
 
         Args:
           redirect_uri: Your callback URL to receive the inbox_token (must be http or https)
 
           provider: Mail provider to connect. Defaults to `gmail`.
 
-              - `gmail` - Google accounts
-              - `outlook` - Microsoft accounts
+              - `gmail` - Google accounts: `@gmail.com` and Google Workspace domains.
+              - `outlook` - personal Microsoft accounts: `@outlook.com`, `@hotmail.com`,
+                `@live.com`, `@msn.com` and localised variants (`@hotmail.co.uk`, `@live.in`,
+                `@hotmail.fr`). Any other address registered as a personal Microsoft account
+                also works, including custom domains.
+              - `zoho` - Zoho Mail accounts, including custom domains hosted on Zoho.
 
-              Any value other than `outlook` is treated as `gmail`. The resolved provider is
-              returned in the response.
+              Any unrecognised value is treated as `gmail`. The resolved provider is returned
+              in the response.
 
           state: State parameter for CSRF protection (returned in redirect)
 
