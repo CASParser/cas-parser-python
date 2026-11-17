@@ -12,6 +12,7 @@ import respx
 import pytest
 
 from cas_parser import CasParser, AsyncCasParser, types
+from cas_parser._models import BaseModel
 
 base_url = "http://stub.test"
 
@@ -36,6 +37,16 @@ def _check_request(route: respx.Route, case: Dict[str, Any]) -> None:
 
 
 def _check_response(result: Any, case: Dict[str, Any]) -> None:
+    expected = case["response"]
+    if isinstance(result, BaseModel):
+        # every field of the documented response came back, under its wire name
+        assert set(result.to_dict(use_api_names=True).keys()) == set(expected.keys())
+    elif isinstance(expected, str):
+        # a string response comes back as the response body's text, as the existing string methods do
+        assert result == json.dumps(expected)
+    else:
+        # a list or map response is returned as parsed
+        assert result == expected
     expected_type = getattr(types, case["response_type"])
     if isinstance(expected_type, type):
         assert isinstance(result, expected_type)
