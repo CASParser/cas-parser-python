@@ -37,27 +37,35 @@ from ._base_client import (
 
 if TYPE_CHECKING:
     from .resources import (
+        kyc,
         cdsl,
         logs,
         nsdl,
         inbox,
         smart,
         credits,
+        agent_auth,
         access_token,
+        verification,
         verify_token,
         cams_kfintech,
+        cas_generator,
         contract_note,
         inbound_email,
     )
+    from .resources.kyc import KycResource, AsyncKycResource
     from .resources.logs import LogsResource, AsyncLogsResource
     from .resources.nsdl import NsdlResource, AsyncNsdlResource
     from .resources.inbox import InboxResource, AsyncInboxResource
     from .resources.smart import SmartResource, AsyncSmartResource
     from .resources.credits import CreditsResource, AsyncCreditsResource
     from .resources.cdsl.cdsl import CdslResource, AsyncCdslResource
+    from .resources.agent_auth import AgentAuthResource, AsyncAgentAuthResource
     from .resources.access_token import AccessTokenResource, AsyncAccessTokenResource
+    from .resources.verification import VerificationResource, AsyncVerificationResource
     from .resources.verify_token import VerifyTokenResource, AsyncVerifyTokenResource
     from .resources.cams_kfintech import CamsKfintechResource, AsyncCamsKfintechResource
+    from .resources.cas_generator import CasGeneratorResource, AsyncCasGeneratorResource
     from .resources.contract_note import ContractNoteResource, AsyncContractNoteResource
     from .resources.inbound_email import InboundEmailResource, AsyncInboundEmailResource
 
@@ -272,6 +280,73 @@ class CasParser(SyncAPIClient):
         from .resources.inbound_email import InboundEmailResource
 
         return InboundEmailResource(self)
+
+    @cached_property
+    def agent_auth(self) -> AgentAuthResource:
+        """
+        Endpoints for coding agents to obtain API keys via a browser-based approval flow.
+
+        **How it works:**
+        1. Agent generates a random token locally (e.g. `openssl rand -hex 32`). No API call needed.
+        2. Agent asks the user to open `https://app.casparser.in/agent-auth?token=<token>&client_name=<name>`
+        3. User signs in via the browser and clicks Approve.
+        4. Agent polls `GET /v1/agent-auth/token/{token}` every 5 seconds until the key is delivered.
+
+        **Security:**
+        - Token must be 16-128 characters (recommended: 64 hex chars / 256 bits)
+        - Approved keys are delivered once (one-shot) and then deleted
+        - Tokens expire after 10 minutes if not approved
+        """
+        from .resources.agent_auth import AgentAuthResource
+
+        return AgentAuthResource(self)
+
+    @cached_property
+    def kyc(self) -> KycResource:
+        """
+        Endpoints for verifying KYC (Know Your Customer) status of Indian investors.
+
+        **Data source:** CVL KRA public inquiry portal (cvlkra.com), which aggregates
+        records from all five SEBI-registered KRAs: CVL, NDML, CAMS, Karvy, and KFin.
+
+        **Status normalization:** Raw CVL portal strings are normalized into clean enums.
+        See the `kyc_status` property on `KycPanStatusResponse` for the full list.
+
+        **Credits:** 0.25 per successful lookup. Failed lookups are not billed.
+        """
+        from .resources.kyc import KycResource
+
+        return KycResource(self)
+
+    @cached_property
+    def verification(self) -> VerificationResource:
+        """
+        Verify the regulatory registration of a financial intermediary — a yes/no
+        check rather than a directory search.
+
+        - **`/v1/verify/sebi`** — any SEBI-registered intermediary (Investment
+          Adviser, Research Analyst, Portfolio Manager, Stock Broker, Mutual Fund,
+          AIF, and more). Send a `registration_number` and the category is
+          auto-detected from its sequence; or send a `name` with an explicit `type`.
+        - **`/v1/verify/mfd`** — AMFI mutual-fund distributors by ARN, including a
+          screen against AMFI's suspended / terminated / terminated-EUIN lists.
+
+        A "not found" result is a successful verification (HTTP 200,
+        `verified: false`) and is billed. Upstream failures surface as 5xx and are
+        not billed.
+
+        **Credits:** 0.25 per successful verification.
+        """
+        from .resources.verification import VerificationResource
+
+        return VerificationResource(self)
+
+    @cached_property
+    def cas_generator(self) -> CasGeneratorResource:
+        """Endpoints for generating new CAS documents via email mailback (KFintech and CAMS)."""
+        from .resources.cas_generator import CasGeneratorResource
+
+        return CasGeneratorResource(self)
 
     @cached_property
     def with_raw_response(self) -> CasParserWithRawResponse:
@@ -594,6 +669,73 @@ class AsyncCasParser(AsyncAPIClient):
         return AsyncInboundEmailResource(self)
 
     @cached_property
+    def agent_auth(self) -> AsyncAgentAuthResource:
+        """
+        Endpoints for coding agents to obtain API keys via a browser-based approval flow.
+
+        **How it works:**
+        1. Agent generates a random token locally (e.g. `openssl rand -hex 32`). No API call needed.
+        2. Agent asks the user to open `https://app.casparser.in/agent-auth?token=<token>&client_name=<name>`
+        3. User signs in via the browser and clicks Approve.
+        4. Agent polls `GET /v1/agent-auth/token/{token}` every 5 seconds until the key is delivered.
+
+        **Security:**
+        - Token must be 16-128 characters (recommended: 64 hex chars / 256 bits)
+        - Approved keys are delivered once (one-shot) and then deleted
+        - Tokens expire after 10 minutes if not approved
+        """
+        from .resources.agent_auth import AsyncAgentAuthResource
+
+        return AsyncAgentAuthResource(self)
+
+    @cached_property
+    def kyc(self) -> AsyncKycResource:
+        """
+        Endpoints for verifying KYC (Know Your Customer) status of Indian investors.
+
+        **Data source:** CVL KRA public inquiry portal (cvlkra.com), which aggregates
+        records from all five SEBI-registered KRAs: CVL, NDML, CAMS, Karvy, and KFin.
+
+        **Status normalization:** Raw CVL portal strings are normalized into clean enums.
+        See the `kyc_status` property on `KycPanStatusResponse` for the full list.
+
+        **Credits:** 0.25 per successful lookup. Failed lookups are not billed.
+        """
+        from .resources.kyc import AsyncKycResource
+
+        return AsyncKycResource(self)
+
+    @cached_property
+    def verification(self) -> AsyncVerificationResource:
+        """
+        Verify the regulatory registration of a financial intermediary — a yes/no
+        check rather than a directory search.
+
+        - **`/v1/verify/sebi`** — any SEBI-registered intermediary (Investment
+          Adviser, Research Analyst, Portfolio Manager, Stock Broker, Mutual Fund,
+          AIF, and more). Send a `registration_number` and the category is
+          auto-detected from its sequence; or send a `name` with an explicit `type`.
+        - **`/v1/verify/mfd`** — AMFI mutual-fund distributors by ARN, including a
+          screen against AMFI's suspended / terminated / terminated-EUIN lists.
+
+        A "not found" result is a successful verification (HTTP 200,
+        `verified: false`) and is billed. Upstream failures surface as 5xx and are
+        not billed.
+
+        **Credits:** 0.25 per successful verification.
+        """
+        from .resources.verification import AsyncVerificationResource
+
+        return AsyncVerificationResource(self)
+
+    @cached_property
+    def cas_generator(self) -> AsyncCasGeneratorResource:
+        """Endpoints for generating new CAS documents via email mailback (KFintech and CAMS)."""
+        from .resources.cas_generator import AsyncCasGeneratorResource
+
+        return AsyncCasGeneratorResource(self)
+
+    @cached_property
     def with_raw_response(self) -> AsyncCasParserWithRawResponse:
         return AsyncCasParserWithRawResponse(self)
 
@@ -855,6 +997,73 @@ class CasParserWithRawResponse:
 
         return InboundEmailResourceWithRawResponse(self._client.inbound_email)
 
+    @cached_property
+    def agent_auth(self) -> agent_auth.AgentAuthResourceWithRawResponse:
+        """
+        Endpoints for coding agents to obtain API keys via a browser-based approval flow.
+
+        **How it works:**
+        1. Agent generates a random token locally (e.g. `openssl rand -hex 32`). No API call needed.
+        2. Agent asks the user to open `https://app.casparser.in/agent-auth?token=<token>&client_name=<name>`
+        3. User signs in via the browser and clicks Approve.
+        4. Agent polls `GET /v1/agent-auth/token/{token}` every 5 seconds until the key is delivered.
+
+        **Security:**
+        - Token must be 16-128 characters (recommended: 64 hex chars / 256 bits)
+        - Approved keys are delivered once (one-shot) and then deleted
+        - Tokens expire after 10 minutes if not approved
+        """
+        from .resources.agent_auth import AgentAuthResourceWithRawResponse
+
+        return AgentAuthResourceWithRawResponse(self._client.agent_auth)
+
+    @cached_property
+    def kyc(self) -> kyc.KycResourceWithRawResponse:
+        """
+        Endpoints for verifying KYC (Know Your Customer) status of Indian investors.
+
+        **Data source:** CVL KRA public inquiry portal (cvlkra.com), which aggregates
+        records from all five SEBI-registered KRAs: CVL, NDML, CAMS, Karvy, and KFin.
+
+        **Status normalization:** Raw CVL portal strings are normalized into clean enums.
+        See the `kyc_status` property on `KycPanStatusResponse` for the full list.
+
+        **Credits:** 0.25 per successful lookup. Failed lookups are not billed.
+        """
+        from .resources.kyc import KycResourceWithRawResponse
+
+        return KycResourceWithRawResponse(self._client.kyc)
+
+    @cached_property
+    def verification(self) -> verification.VerificationResourceWithRawResponse:
+        """
+        Verify the regulatory registration of a financial intermediary — a yes/no
+        check rather than a directory search.
+
+        - **`/v1/verify/sebi`** — any SEBI-registered intermediary (Investment
+          Adviser, Research Analyst, Portfolio Manager, Stock Broker, Mutual Fund,
+          AIF, and more). Send a `registration_number` and the category is
+          auto-detected from its sequence; or send a `name` with an explicit `type`.
+        - **`/v1/verify/mfd`** — AMFI mutual-fund distributors by ARN, including a
+          screen against AMFI's suspended / terminated / terminated-EUIN lists.
+
+        A "not found" result is a successful verification (HTTP 200,
+        `verified: false`) and is billed. Upstream failures surface as 5xx and are
+        not billed.
+
+        **Credits:** 0.25 per successful verification.
+        """
+        from .resources.verification import VerificationResourceWithRawResponse
+
+        return VerificationResourceWithRawResponse(self._client.verification)
+
+    @cached_property
+    def cas_generator(self) -> cas_generator.CasGeneratorResourceWithRawResponse:
+        """Endpoints for generating new CAS documents via email mailback (KFintech and CAMS)."""
+        from .resources.cas_generator import CasGeneratorResourceWithRawResponse
+
+        return CasGeneratorResourceWithRawResponse(self._client.cas_generator)
+
 
 class AsyncCasParserWithRawResponse:
     _client: AsyncCasParser
@@ -997,6 +1206,73 @@ class AsyncCasParserWithRawResponse:
         from .resources.inbound_email import AsyncInboundEmailResourceWithRawResponse
 
         return AsyncInboundEmailResourceWithRawResponse(self._client.inbound_email)
+
+    @cached_property
+    def agent_auth(self) -> agent_auth.AsyncAgentAuthResourceWithRawResponse:
+        """
+        Endpoints for coding agents to obtain API keys via a browser-based approval flow.
+
+        **How it works:**
+        1. Agent generates a random token locally (e.g. `openssl rand -hex 32`). No API call needed.
+        2. Agent asks the user to open `https://app.casparser.in/agent-auth?token=<token>&client_name=<name>`
+        3. User signs in via the browser and clicks Approve.
+        4. Agent polls `GET /v1/agent-auth/token/{token}` every 5 seconds until the key is delivered.
+
+        **Security:**
+        - Token must be 16-128 characters (recommended: 64 hex chars / 256 bits)
+        - Approved keys are delivered once (one-shot) and then deleted
+        - Tokens expire after 10 minutes if not approved
+        """
+        from .resources.agent_auth import AsyncAgentAuthResourceWithRawResponse
+
+        return AsyncAgentAuthResourceWithRawResponse(self._client.agent_auth)
+
+    @cached_property
+    def kyc(self) -> kyc.AsyncKycResourceWithRawResponse:
+        """
+        Endpoints for verifying KYC (Know Your Customer) status of Indian investors.
+
+        **Data source:** CVL KRA public inquiry portal (cvlkra.com), which aggregates
+        records from all five SEBI-registered KRAs: CVL, NDML, CAMS, Karvy, and KFin.
+
+        **Status normalization:** Raw CVL portal strings are normalized into clean enums.
+        See the `kyc_status` property on `KycPanStatusResponse` for the full list.
+
+        **Credits:** 0.25 per successful lookup. Failed lookups are not billed.
+        """
+        from .resources.kyc import AsyncKycResourceWithRawResponse
+
+        return AsyncKycResourceWithRawResponse(self._client.kyc)
+
+    @cached_property
+    def verification(self) -> verification.AsyncVerificationResourceWithRawResponse:
+        """
+        Verify the regulatory registration of a financial intermediary — a yes/no
+        check rather than a directory search.
+
+        - **`/v1/verify/sebi`** — any SEBI-registered intermediary (Investment
+          Adviser, Research Analyst, Portfolio Manager, Stock Broker, Mutual Fund,
+          AIF, and more). Send a `registration_number` and the category is
+          auto-detected from its sequence; or send a `name` with an explicit `type`.
+        - **`/v1/verify/mfd`** — AMFI mutual-fund distributors by ARN, including a
+          screen against AMFI's suspended / terminated / terminated-EUIN lists.
+
+        A "not found" result is a successful verification (HTTP 200,
+        `verified: false`) and is billed. Upstream failures surface as 5xx and are
+        not billed.
+
+        **Credits:** 0.25 per successful verification.
+        """
+        from .resources.verification import AsyncVerificationResourceWithRawResponse
+
+        return AsyncVerificationResourceWithRawResponse(self._client.verification)
+
+    @cached_property
+    def cas_generator(self) -> cas_generator.AsyncCasGeneratorResourceWithRawResponse:
+        """Endpoints for generating new CAS documents via email mailback (KFintech and CAMS)."""
+        from .resources.cas_generator import AsyncCasGeneratorResourceWithRawResponse
+
+        return AsyncCasGeneratorResourceWithRawResponse(self._client.cas_generator)
 
 
 class CasParserWithStreamedResponse:
@@ -1141,6 +1417,73 @@ class CasParserWithStreamedResponse:
 
         return InboundEmailResourceWithStreamingResponse(self._client.inbound_email)
 
+    @cached_property
+    def agent_auth(self) -> agent_auth.AgentAuthResourceWithStreamingResponse:
+        """
+        Endpoints for coding agents to obtain API keys via a browser-based approval flow.
+
+        **How it works:**
+        1. Agent generates a random token locally (e.g. `openssl rand -hex 32`). No API call needed.
+        2. Agent asks the user to open `https://app.casparser.in/agent-auth?token=<token>&client_name=<name>`
+        3. User signs in via the browser and clicks Approve.
+        4. Agent polls `GET /v1/agent-auth/token/{token}` every 5 seconds until the key is delivered.
+
+        **Security:**
+        - Token must be 16-128 characters (recommended: 64 hex chars / 256 bits)
+        - Approved keys are delivered once (one-shot) and then deleted
+        - Tokens expire after 10 minutes if not approved
+        """
+        from .resources.agent_auth import AgentAuthResourceWithStreamingResponse
+
+        return AgentAuthResourceWithStreamingResponse(self._client.agent_auth)
+
+    @cached_property
+    def kyc(self) -> kyc.KycResourceWithStreamingResponse:
+        """
+        Endpoints for verifying KYC (Know Your Customer) status of Indian investors.
+
+        **Data source:** CVL KRA public inquiry portal (cvlkra.com), which aggregates
+        records from all five SEBI-registered KRAs: CVL, NDML, CAMS, Karvy, and KFin.
+
+        **Status normalization:** Raw CVL portal strings are normalized into clean enums.
+        See the `kyc_status` property on `KycPanStatusResponse` for the full list.
+
+        **Credits:** 0.25 per successful lookup. Failed lookups are not billed.
+        """
+        from .resources.kyc import KycResourceWithStreamingResponse
+
+        return KycResourceWithStreamingResponse(self._client.kyc)
+
+    @cached_property
+    def verification(self) -> verification.VerificationResourceWithStreamingResponse:
+        """
+        Verify the regulatory registration of a financial intermediary — a yes/no
+        check rather than a directory search.
+
+        - **`/v1/verify/sebi`** — any SEBI-registered intermediary (Investment
+          Adviser, Research Analyst, Portfolio Manager, Stock Broker, Mutual Fund,
+          AIF, and more). Send a `registration_number` and the category is
+          auto-detected from its sequence; or send a `name` with an explicit `type`.
+        - **`/v1/verify/mfd`** — AMFI mutual-fund distributors by ARN, including a
+          screen against AMFI's suspended / terminated / terminated-EUIN lists.
+
+        A "not found" result is a successful verification (HTTP 200,
+        `verified: false`) and is billed. Upstream failures surface as 5xx and are
+        not billed.
+
+        **Credits:** 0.25 per successful verification.
+        """
+        from .resources.verification import VerificationResourceWithStreamingResponse
+
+        return VerificationResourceWithStreamingResponse(self._client.verification)
+
+    @cached_property
+    def cas_generator(self) -> cas_generator.CasGeneratorResourceWithStreamingResponse:
+        """Endpoints for generating new CAS documents via email mailback (KFintech and CAMS)."""
+        from .resources.cas_generator import CasGeneratorResourceWithStreamingResponse
+
+        return CasGeneratorResourceWithStreamingResponse(self._client.cas_generator)
+
 
 class AsyncCasParserWithStreamedResponse:
     _client: AsyncCasParser
@@ -1283,6 +1626,73 @@ class AsyncCasParserWithStreamedResponse:
         from .resources.inbound_email import AsyncInboundEmailResourceWithStreamingResponse
 
         return AsyncInboundEmailResourceWithStreamingResponse(self._client.inbound_email)
+
+    @cached_property
+    def agent_auth(self) -> agent_auth.AsyncAgentAuthResourceWithStreamingResponse:
+        """
+        Endpoints for coding agents to obtain API keys via a browser-based approval flow.
+
+        **How it works:**
+        1. Agent generates a random token locally (e.g. `openssl rand -hex 32`). No API call needed.
+        2. Agent asks the user to open `https://app.casparser.in/agent-auth?token=<token>&client_name=<name>`
+        3. User signs in via the browser and clicks Approve.
+        4. Agent polls `GET /v1/agent-auth/token/{token}` every 5 seconds until the key is delivered.
+
+        **Security:**
+        - Token must be 16-128 characters (recommended: 64 hex chars / 256 bits)
+        - Approved keys are delivered once (one-shot) and then deleted
+        - Tokens expire after 10 minutes if not approved
+        """
+        from .resources.agent_auth import AsyncAgentAuthResourceWithStreamingResponse
+
+        return AsyncAgentAuthResourceWithStreamingResponse(self._client.agent_auth)
+
+    @cached_property
+    def kyc(self) -> kyc.AsyncKycResourceWithStreamingResponse:
+        """
+        Endpoints for verifying KYC (Know Your Customer) status of Indian investors.
+
+        **Data source:** CVL KRA public inquiry portal (cvlkra.com), which aggregates
+        records from all five SEBI-registered KRAs: CVL, NDML, CAMS, Karvy, and KFin.
+
+        **Status normalization:** Raw CVL portal strings are normalized into clean enums.
+        See the `kyc_status` property on `KycPanStatusResponse` for the full list.
+
+        **Credits:** 0.25 per successful lookup. Failed lookups are not billed.
+        """
+        from .resources.kyc import AsyncKycResourceWithStreamingResponse
+
+        return AsyncKycResourceWithStreamingResponse(self._client.kyc)
+
+    @cached_property
+    def verification(self) -> verification.AsyncVerificationResourceWithStreamingResponse:
+        """
+        Verify the regulatory registration of a financial intermediary — a yes/no
+        check rather than a directory search.
+
+        - **`/v1/verify/sebi`** — any SEBI-registered intermediary (Investment
+          Adviser, Research Analyst, Portfolio Manager, Stock Broker, Mutual Fund,
+          AIF, and more). Send a `registration_number` and the category is
+          auto-detected from its sequence; or send a `name` with an explicit `type`.
+        - **`/v1/verify/mfd`** — AMFI mutual-fund distributors by ARN, including a
+          screen against AMFI's suspended / terminated / terminated-EUIN lists.
+
+        A "not found" result is a successful verification (HTTP 200,
+        `verified: false`) and is billed. Upstream failures surface as 5xx and are
+        not billed.
+
+        **Credits:** 0.25 per successful verification.
+        """
+        from .resources.verification import AsyncVerificationResourceWithStreamingResponse
+
+        return AsyncVerificationResourceWithStreamingResponse(self._client.verification)
+
+    @cached_property
+    def cas_generator(self) -> cas_generator.AsyncCasGeneratorResourceWithStreamingResponse:
+        """Endpoints for generating new CAS documents via email mailback (KFintech and CAMS)."""
+        from .resources.cas_generator import AsyncCasGeneratorResourceWithStreamingResponse
+
+        return AsyncCasGeneratorResourceWithStreamingResponse(self._client.cas_generator)
 
 
 Client = CasParser

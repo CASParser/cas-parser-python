@@ -10,6 +10,7 @@ import pytest
 from cas_parser import CasParser, AsyncCasParser
 from tests.utils import assert_matches_type
 from cas_parser.types import (
+    InboxReadResponse,
     InboxConnectEmailResponse,
     InboxListCasFilesResponse,
     InboxDisconnectEmailResponse,
@@ -180,6 +181,55 @@ class TestInbox:
 
         assert cast(Any, response.is_closed) is True
 
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_read(self, client: CasParser) -> None:
+        inbox = client.inbox.read(
+            x_inbox_token="x-inbox-token",
+        )
+        assert_matches_type(InboxReadResponse, inbox, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_read_with_all_params(self, client: CasParser) -> None:
+        inbox = client.inbox.read(
+            x_inbox_token="x-inbox-token",
+            categories=["investments"],
+            document_types=["consolidated_statement"],
+            end_date=parse_date("2026-10-31"),
+            include_body=True,
+            senders=["senders"],
+            sources=["cams"],
+            start_date=parse_date("2026-08-01"),
+        )
+        assert_matches_type(InboxReadResponse, inbox, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_read(self, client: CasParser) -> None:
+        response = client.inbox.with_raw_response.read(
+            x_inbox_token="x-inbox-token",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        inbox = response.parse()
+        assert_matches_type(InboxReadResponse, inbox, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_read(self, client: CasParser) -> None:
+        with client.inbox.with_streaming_response.read(
+            x_inbox_token="x-inbox-token",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            inbox = response.parse()
+            assert_matches_type(InboxReadResponse, inbox, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
 
 class TestAsyncInbox:
     parametrize = pytest.mark.parametrize(
@@ -340,5 +390,54 @@ class TestAsyncInbox:
 
             inbox = await response.parse()
             assert_matches_type(InboxListCasFilesResponse, inbox, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_read(self, async_client: AsyncCasParser) -> None:
+        inbox = await async_client.inbox.read(
+            x_inbox_token="x-inbox-token",
+        )
+        assert_matches_type(InboxReadResponse, inbox, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_read_with_all_params(self, async_client: AsyncCasParser) -> None:
+        inbox = await async_client.inbox.read(
+            x_inbox_token="x-inbox-token",
+            categories=["investments"],
+            document_types=["consolidated_statement"],
+            end_date=parse_date("2026-10-31"),
+            include_body=True,
+            senders=["senders"],
+            sources=["cams"],
+            start_date=parse_date("2026-08-01"),
+        )
+        assert_matches_type(InboxReadResponse, inbox, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_read(self, async_client: AsyncCasParser) -> None:
+        response = await async_client.inbox.with_raw_response.read(
+            x_inbox_token="x-inbox-token",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        inbox = await response.parse()
+        assert_matches_type(InboxReadResponse, inbox, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_read(self, async_client: AsyncCasParser) -> None:
+        async with async_client.inbox.with_streaming_response.read(
+            x_inbox_token="x-inbox-token",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            inbox = await response.parse()
+            assert_matches_type(InboxReadResponse, inbox, path=["response"])
 
         assert cast(Any, response.is_closed) is True

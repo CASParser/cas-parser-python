@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Union, Optional
+from datetime import datetime
 from typing_extensions import Literal
 
 import httpx
 
-from ..types import inbound_email_list_params, inbound_email_create_params
+from ..types import inbound_email_list_params, inbound_email_create_params, inbound_email_list_files_params
 from .._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from .._utils import path_template, maybe_transform, async_maybe_transform
 from .._compat import cached_property
@@ -23,6 +24,7 @@ from ..types.inbound_email_list_response import InboundEmailListResponse
 from ..types.inbound_email_create_response import InboundEmailCreateResponse
 from ..types.inbound_email_delete_response import InboundEmailDeleteResponse
 from ..types.inbound_email_retrieve_response import InboundEmailRetrieveResponse
+from ..types.inbound_email_list_files_response import InboundEmailListFilesResponse
 
 __all__ = ["InboundEmailResource", "AsyncInboundEmailResource"]
 
@@ -266,6 +268,63 @@ class InboundEmailResource(SyncAPIResource):
             cast_to=InboundEmailDeleteResponse,
         )
 
+    def list_files(
+        self,
+        inbound_email_id: str,
+        *,
+        since: Union[str, datetime] | Omit = omit,
+        limit: int | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> InboundEmailListFilesResponse:
+        """
+        Retrieve CAS files forwarded to this inbound email. Available for every
+        inbound email, regardless of whether a `callback_url` was set — use it
+        to avoid building a webhook consumer, to poll alongside a webhook, or
+        to replay missed webhook deliveries.
+
+        Pass the `cursor` from the previous response as `since` to receive only
+        new files.
+
+        Args:
+          since: ISO 8601 timestamp. Only files with `received_at` strictly greater
+              than this value are returned. Use the `cursor` value from the
+              previous response.
+
+          limit: Maximum files to return.
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not inbound_email_id:
+            raise ValueError(f"Expected a non-empty value for `inbound_email_id` but received {inbound_email_id!r}")
+        return self._get(
+            path_template("/v4/inbound-email/{inbound_email_id}/files", inbound_email_id=inbound_email_id),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform(
+                    {
+                        "since": since,
+                        "limit": limit,
+                    },
+                    inbound_email_list_files_params.InboundEmailListFilesParams,
+                ),
+            ),
+            cast_to=InboundEmailListFilesResponse,
+        )
+
 
 class AsyncInboundEmailResource(AsyncAPIResource):
     """
@@ -506,6 +565,63 @@ class AsyncInboundEmailResource(AsyncAPIResource):
             cast_to=InboundEmailDeleteResponse,
         )
 
+    async def list_files(
+        self,
+        inbound_email_id: str,
+        *,
+        since: Union[str, datetime] | Omit = omit,
+        limit: int | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> InboundEmailListFilesResponse:
+        """
+        Retrieve CAS files forwarded to this inbound email. Available for every
+        inbound email, regardless of whether a `callback_url` was set — use it
+        to avoid building a webhook consumer, to poll alongside a webhook, or
+        to replay missed webhook deliveries.
+
+        Pass the `cursor` from the previous response as `since` to receive only
+        new files.
+
+        Args:
+          since: ISO 8601 timestamp. Only files with `received_at` strictly greater
+              than this value are returned. Use the `cursor` value from the
+              previous response.
+
+          limit: Maximum files to return.
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not inbound_email_id:
+            raise ValueError(f"Expected a non-empty value for `inbound_email_id` but received {inbound_email_id!r}")
+        return await self._get(
+            path_template("/v4/inbound-email/{inbound_email_id}/files", inbound_email_id=inbound_email_id),
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=await async_maybe_transform(
+                    {
+                        "since": since,
+                        "limit": limit,
+                    },
+                    inbound_email_list_files_params.InboundEmailListFilesParams,
+                ),
+            ),
+            cast_to=InboundEmailListFilesResponse,
+        )
+
 
 class InboundEmailResourceWithRawResponse:
     def __init__(self, inbound_email: InboundEmailResource) -> None:
@@ -522,6 +638,9 @@ class InboundEmailResourceWithRawResponse:
         )
         self.delete = to_raw_response_wrapper(
             inbound_email.delete,
+        )
+        self.list_files = to_raw_response_wrapper(
+            inbound_email.list_files,
         )
 
 
@@ -541,6 +660,9 @@ class AsyncInboundEmailResourceWithRawResponse:
         self.delete = async_to_raw_response_wrapper(
             inbound_email.delete,
         )
+        self.list_files = async_to_raw_response_wrapper(
+            inbound_email.list_files,
+        )
 
 
 class InboundEmailResourceWithStreamingResponse:
@@ -559,6 +681,9 @@ class InboundEmailResourceWithStreamingResponse:
         self.delete = to_streamed_response_wrapper(
             inbound_email.delete,
         )
+        self.list_files = to_streamed_response_wrapper(
+            inbound_email.list_files,
+        )
 
 
 class AsyncInboundEmailResourceWithStreamingResponse:
@@ -576,4 +701,7 @@ class AsyncInboundEmailResourceWithStreamingResponse:
         )
         self.delete = async_to_streamed_response_wrapper(
             inbound_email.delete,
+        )
+        self.list_files = async_to_streamed_response_wrapper(
+            inbound_email.list_files,
         )
